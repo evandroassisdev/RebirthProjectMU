@@ -427,20 +427,23 @@ typedef struct
 	BYTE		btMNextExp6;
 	BYTE		btMNextExp7;
 	BYTE		btMNextExp8;
-	WORD         LevelUpPoint;
-	//BYTE         LevelUpPoint;
+	// Widened WORD->DWORD (matches Protocol.h's PMSG_CHARACTER_INFO_SEND) --
+	// a character with all 5 stats maxed at 32767 + many resets can accrue
+	// well over 65535 unspent points, which silently wrapped in a WORD.
+	DWORD        LevelUpPoint;
 	WORD         Strength;
 	WORD         Dexterity;
 	WORD         Vitality;
 	WORD         Energy;
-	WORD         Life;
-	WORD         LifeMax;
-	WORD         Mana;
-	WORD         ManaMax;
-	WORD		 Shield;
-	WORD		 ShieldMax;
-	WORD		 SkillMana;
-	WORD		 SkillManaMax;
+	// Widened WORD->DWORD (matches Protocol.h's PMSG_CHARACTER_INFO_SEND).
+	DWORD        Life;
+	DWORD        LifeMax;
+	DWORD        Mana;
+	DWORD        ManaMax;
+	DWORD		 Shield; // widened WORD->DWORD, same reason as Life
+	DWORD		 ShieldMax;
+	DWORD		 SkillMana; // BP, widened WORD->DWORD, same reason
+	DWORD		 SkillManaMax;
 	DWORD        Gold;
 	BYTE         PK;
 	BYTE		 CtlCode;
@@ -460,10 +463,10 @@ typedef struct
 	BYTE         PositionY;
 	BYTE         Map;
 	BYTE         Angle;
-	WORD         Life;
-	WORD         Mana;
-	WORD		 Shield;
-	WORD		 SkillMana;
+	DWORD        Life; // widened WORD->DWORD (matches Protocol.h's PMSG_CHARACTER_REGEN_SEND)
+	DWORD        Mana; // widened WORD->DWORD, same reason
+	DWORD		 Shield; // widened WORD->DWORD, same reason
+	DWORD		 SkillMana; // BP, widened WORD->DWORD, same reason
 	BYTE		btMExp1;
 	BYTE		btMExp2;
 	BYTE		btMExp3;
@@ -862,11 +865,13 @@ typedef struct {
 	PBMSG_HEADER Header;
 	BYTE         SubCode;
 	WORD         Level;
-	WORD         LevelUpPoint;
-	WORD         MaxLife;
-	WORD         MaxMana;
-	WORD		 MaxShield;
-	WORD		 SkillManaMax;
+	// Widened WORD->DWORD (matches Protocol.h's PMSG_LEVEL_UP_SEND) -- same
+	// overflow reason as PRECEIVE_JOIN_MAP_SERVER above.
+	DWORD        LevelUpPoint;
+	DWORD        MaxLife; // widened WORD->DWORD, same reason as above
+	DWORD        MaxMana; // widened WORD->DWORD, same reason
+	DWORD		 MaxShield; // widened WORD->DWORD, same reason
+	DWORD		 SkillManaMax; // BP, widened WORD->DWORD, same reason
     short        AddPoint;
     short        MaxAddPoint;
 	WORD		 wMinusPoint;
@@ -876,7 +881,11 @@ typedef struct {
 typedef struct {
 	PBMSG_HEADER  Header;
 	BYTE          Index;
-	BYTE		  Life[5];
+	// This same struct/buffer is reused by ReceiveLife (PMSG_LIFE_SEND: life[4]+
+	// flag[1]+shield[4] = 9 bytes) AND ReceiveMana (PMSG_MANA_SEND: mana[4]+
+	// bp[4] = 8 bytes, read via the same Life[] array, no separate flag byte
+	// there). 9 bytes covers both.
+	BYTE		  Life[9];
 } PRECEIVE_LIFE, * LPPRECEIVE_LIFE;
 
 //receive add point
@@ -884,9 +893,11 @@ typedef struct {
 	PBMSG_HEADER Header;
 	BYTE         SubCode;
 	BYTE         Result;
-	WORD         Max;
-	WORD		 ShieldMax;
-	WORD		 SkillManaMax;
+	WORD         Max; // shared field, kept WORD for layout -- see MaxLifeAndManaWide
+	DWORD		 ShieldMax; // widened WORD->DWORD, same overflow reason as Life -- not shared with anything
+	DWORD		 SkillManaMax; // BP, widened WORD->DWORD, same reason
+	WORD         Amount; // how many points this confirmation grants (server: Protocol.h's PMSG_LEVEL_UP_POINT_SEND.Amount)
+	DWORD        MaxLifeAndManaWide; // widened counterpart to Max -- MaxLife when type==2 (Vitality), MaxMana when type==3 (Energy)
 } PRECEIVE_ADD_POINT, * LPPRECEIVE_ADD_POINT;
 
 typedef struct {
@@ -1010,7 +1021,7 @@ typedef struct {
 	BYTE         GuildKeyL;
 } PRECEIVE_GUILD_PLAYER, * LPPRECEIVE_GUILD_PLAYER;
 
-// ±æµå¿ø ¸ñ·Ï
+// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 typedef struct {
 	BYTE         ID[MAX_ID_SIZE];
 	BYTE         Number;
@@ -1018,7 +1029,7 @@ typedef struct {
 	BYTE		 GuildStatus;
 } PRECEIVE_GUILD_LIST, * LPPRECEIVE_GUILD_LIST;
 
-// ±æµå¿ø ¸ñ·Ï ¸®½ºÆ®
+// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®
 typedef struct {
 	PWMSG_HEADER Header;
 	BYTE         Result;
@@ -1361,7 +1372,7 @@ typedef struct
 } NPC_QUESTEXP_REQUEST_INFO, *LPNPC_QUESTEXP_REQUEST_INFO;
 #pragma pack(pop)
 
-// º¸»ó
+// ï¿½ï¿½ï¿½ï¿½
 enum QUEST_REWARD_TYPE
 {
 	QUEST_REWARD_NONE		= 0x0000,
@@ -2468,7 +2479,7 @@ typedef struct
 } PMSG_ANS_CRYWOLF_INFO, *LPPMSG_ANS_CRYWOLF_INFO;
 
 //--------------------------------------------------------------------------
-// GC [0xBD][0x02] ¹æ¾î¸·, Á¦´Ü »óÅÂ Á¤º¸
+// GC [0xBD][0x02] ï¿½ï¿½î¸·, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 //--------------------------------------------------------------------------
 typedef struct
 {
@@ -2836,10 +2847,10 @@ typedef struct
 	BYTE		btMNextExp7;
 	BYTE		btMNextExp8;
 	short		nMLPoint;
-	WORD		wMaxLife;
-	WORD		wMaxMana;
-	WORD		wMaxShield;
-	WORD		wMaxSkillMana;
+	DWORD		wMaxLife; // widened WORD->DWORD, matches Protocol.h's PMSG_MASTER_INFO_SEND
+	DWORD		wMaxMana; // widened WORD->DWORD, same reason
+	DWORD		wMaxShield; // widened WORD->DWORD, same reason
+	DWORD		wMaxSkillMana; // BP, widened WORD->DWORD, same reason
 } PMSG_MASTERLEVEL_INFO, *LPPMSG_MASTERLEVEL_INFO;
 
 typedef struct 
@@ -2851,10 +2862,10 @@ typedef struct
 	short       nMLevelUpMPoint;
 //	short		nTotalMPoint;
 	short		nMaxPoint;
-	WORD		wMaxLife;
-	WORD		wMaxMana;
-	WORD		wMaxShield;
-	WORD		wMaxBP;
+	DWORD		wMaxLife; // widened WORD->DWORD, matches Protocol.h's PMSG_MASTER_LEVEL_UP_SEND
+	DWORD		wMaxMana; // widened WORD->DWORD, same reason
+	DWORD		wMaxShield; // widened WORD->DWORD, same reason
+	DWORD		wMaxBP; // widened WORD->DWORD, same reason
 } PMSG_MASTERLEVEL_UP, *LPPMSG_MASTERLEVEL_UP;
 
 typedef struct  
@@ -3201,7 +3212,7 @@ typedef struct
 }PMSG_CASHSHOP_BUYITEM_REQ, *LPPMSG_CASHSHOP_BUYITEM_REQ;
 
 //----------------------------------------------------------------------------
-// ¾ÆÀÌÅÛ ±¸¸Å °á°ú (0xD2)(0x03)
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ (0xD2)(0x03)
 //----------------------------------------------------------------------------
 typedef struct
 {

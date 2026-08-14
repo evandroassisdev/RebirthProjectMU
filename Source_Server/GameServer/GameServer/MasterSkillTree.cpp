@@ -2088,13 +2088,13 @@ void CMasterSkillTree::GCMasterInfoSend(LPOBJ lpObj) // OK
 
 	pMsg.MasterPoint = lpObj->MasterPoint;
 
-	pMsg.MaxLife = GET_MAX_WORD_VALUE((lpObj->MaxLife+lpObj->AddLife));
+	pMsg.MaxLife = (DWORD)(lpObj->MaxLife+lpObj->AddLife); // no longer clamped, see PMSG_MASTER_INFO_SEND
 
-	pMsg.MaxMana = GET_MAX_WORD_VALUE((lpObj->MaxMana+lpObj->AddMana));
+	pMsg.MaxMana = (DWORD)(lpObj->MaxMana+lpObj->AddMana); // no longer clamped
 
-	pMsg.MaxShield = GET_MAX_WORD_VALUE((lpObj->MaxShield+lpObj->AddShield));
+	pMsg.MaxShield = (DWORD)(lpObj->MaxShield+lpObj->AddShield); // no longer clamped
 
-	pMsg.MaxBP = GET_MAX_WORD_VALUE((lpObj->MaxBP+lpObj->AddBP));
+	pMsg.MaxBP = (DWORD)(lpObj->MaxBP+lpObj->AddBP); // no longer clamped
 
 	#if(GAMESERVER_EXTRA==1)
 	pMsg.ViewMaxHP = (DWORD)(lpObj->MaxLife+lpObj->AddLife);
@@ -2124,13 +2124,13 @@ void CMasterSkillTree::GCMasterLevelUpSend(LPOBJ lpObj) // OK
 
 	pMsg.MaxMasterLevel = gServerInfo.m_MasterSkillTreeMaxLevel;
 
-	pMsg.MaxLife = GET_MAX_WORD_VALUE((lpObj->MaxLife+lpObj->AddLife));
+	pMsg.MaxLife = (DWORD)(lpObj->MaxLife+lpObj->AddLife); // no longer clamped, see PMSG_MASTER_LEVEL_UP_SEND
 
-	pMsg.MaxMana = GET_MAX_WORD_VALUE((lpObj->MaxMana+lpObj->AddMana));
+	pMsg.MaxMana = (DWORD)(lpObj->MaxMana+lpObj->AddMana); // no longer clamped
 
-	pMsg.MaxShield = GET_MAX_WORD_VALUE((lpObj->MaxShield+lpObj->AddShield));
+	pMsg.MaxShield = (DWORD)(lpObj->MaxShield+lpObj->AddShield); // no longer clamped
 
-	pMsg.MaxBP = GET_MAX_WORD_VALUE((lpObj->MaxBP+lpObj->AddBP));
+	pMsg.MaxBP = (DWORD)(lpObj->MaxBP+lpObj->AddBP); // no longer clamped
 
 	#if(GAMESERVER_EXTRA==1)
 	pMsg.ViewMaxHP = (DWORD)(lpObj->MaxLife+lpObj->AddLife);

@@ -385,12 +385,14 @@ typedef struct
 	WORD Vitality;
 	WORD Energy;
 	WORD Charisma;
-	WORD Life;
-	WORD Mana;
-	WORD LifeMax;
-	WORD ManaMax;
-	WORD Shield;
-	WORD ShieldMax;
+	// Widened WORD->DWORD, same overflow reason as LevelUpPoint above: with
+	// Vitality/Energy maxed, these blow way past 65535.
+	DWORD Life;
+	DWORD Mana;
+	DWORD LifeMax;
+	DWORD ManaMax;
+	DWORD Shield;
+	DWORD ShieldMax;
 	WORD AttackRatingPK;
 	WORD SuccessfulBlockingPK;
 	WORD AddStrength;
@@ -400,8 +402,10 @@ typedef struct
 	WORD AddLifeMax;
 	WORD AddManaMax;
 	WORD AddCharisma;
-	WORD SkillMana;
-	WORD SkillManaMax;
+	// SkillMana/SkillManaMax are this client's naming for server's BP/MaxBP.
+	// Widened WORD->DWORD, same overflow reason as Life/Mana above.
+	DWORD SkillMana;
+	DWORD SkillManaMax;
 	BYTE Ability;
 	WORD AbilityTime[3];
 
@@ -425,7 +429,11 @@ typedef struct
 	WORD Defense;
 	WORD MagicDefense;
 	WORD WalkSpeed;
-	WORD LevelUpPoint;
+	// Widened WORD->DWORD -- a character with all 5 stats maxed at 32767 plus
+	// many resets can accrue well over 65535 unspent points to distribute,
+	// which wrapped/rendered wrong when this was a WORD (matches the widened
+	// LevelUpPoint fields in WSclient.h's PRECEIVE_JOIN_MAP_SERVER/PRECEIVE_LEVEL_UP).
+	DWORD LevelUpPoint;
 	BYTE SkillNumber;
 	BYTE SkillMasterNumber;
 	WORD Skill[MAX_SKILLS];
@@ -444,10 +452,10 @@ typedef struct _MASTER_LEVEL_VALUE
 	short		nTotalMPoint;
 	short		nMaxPoint;
 
-	WORD		wMaxLife;
-	WORD		wMaxMana;
-	WORD		wMaxShield;
-	WORD		wMaxBP;
+	DWORD		wMaxLife; // widened WORD->DWORD, same overflow reason as CHARACTER_ATTRIBUTE::LifeMax
+	DWORD		wMaxMana; // widened WORD->DWORD, same reason
+	DWORD		wMaxShield; // widened WORD->DWORD, same reason
+	DWORD		wMaxBP; // widened WORD->DWORD, same reason
 
 } MASTER_LEVEL_VALUE;
 

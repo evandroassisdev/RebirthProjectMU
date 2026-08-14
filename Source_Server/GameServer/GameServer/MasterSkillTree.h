@@ -585,10 +585,13 @@ struct PMSG_MASTER_INFO_SEND
 	BYTE Experience[8];
 	BYTE NextExperience[8];
 	WORD MasterPoint;
-	WORD MaxLife;
-	WORD MaxMana;
-	WORD MaxShield;
-	WORD MaxBP;
+	// Widened WORD->DWORD (matches WSclient.h's PMSG_MASTERLEVEL_INFO) -- same
+	// overflow reason as the regular Life/Mana/Shield/BP fields; Master Level
+	// characters hit this via GCMasterInfoSend.
+	DWORD MaxLife;
+	DWORD MaxMana;
+	DWORD MaxShield;
+	DWORD MaxBP;
 	#if(GAMESERVER_EXTRA==1)
 	DWORD ViewMaxHP;
 	DWORD ViewMaxMP;
@@ -604,10 +607,10 @@ struct PMSG_MASTER_LEVEL_UP_SEND
 	WORD MinMasterLevel;
 	WORD MasterPoint;
 	WORD MaxMasterLevel;
-	WORD MaxLife;
-	WORD MaxMana;
-	WORD MaxShield;
-	WORD MaxBP;
+	DWORD MaxLife; // widened WORD->DWORD, matches WSclient.h's PMSG_MASTERLEVEL_UP
+	DWORD MaxMana; // widened WORD->DWORD, same reason
+	DWORD MaxShield; // widened WORD->DWORD, same reason
+	DWORD MaxBP; // widened WORD->DWORD, same reason
 	#if(GAMESERVER_EXTRA==1)
 	DWORD ViewMaxHP;
 	DWORD ViewMaxMP;

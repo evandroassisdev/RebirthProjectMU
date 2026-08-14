@@ -320,7 +320,7 @@ void ReceiveServerList( BYTE *ReceiveBuffer )
 		
 	g_ConsoleDebug->Write(MCD_RECEIVE, "0xF4 [ReceiveServerList]");
 }
-void ReceiveServerConnect(BYTE* ReceiveBuffer) //Recebe informação do ConnectServer sobre a sala e envia a conexão para a sala escolhida
+void ReceiveServerConnect(BYTE* ReceiveBuffer) //Recebe informaï¿½ï¿½o do ConnectServer sobre a sala e envia a conexï¿½o para a sala escolhida
 {
 	LPPRECEIVE_SERVER_ADDRESS Data = (LPPRECEIVE_SERVER_ADDRESS)ReceiveBuffer;
 	char IP[16];
@@ -1556,7 +1556,7 @@ void ReceiveChatKey( BYTE *ReceiveBuffer )
 	int Key = ((int)(Data->KeyH)<<8) + Data->KeyL;
 	int Index = FindCharacterIndex(Key);
 	
-	if( Hero->GuildStatus == G_MASTER && !strcmp( CharactersClient[Index].ID, "±æµå ¸¶½ºÅÍ" ) )
+	if( Hero->GuildStatus == G_MASTER && !strcmp( CharactersClient[Index].ID, "ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" ) )
 	{
 		g_pNewUISystem->Show(SEASON3B::INTERFACE_NPCGUILDMASTER);
 		
@@ -3515,7 +3515,7 @@ void ReceiveMagicFinish( BYTE *ReceiveBuffer )
 	case AT_SKILL_BLAST_FREEZE:
 		UnRegisterBuff( eDeBuff_Freeze, o);
 		break;
-        //  ¸ó½ºÅÍ.
+        //  ï¿½ï¿½ï¿½ï¿½.
     case AT_SKILL_MONSTER_MAGIC_DEF:
         SetActionDestroy_Def ( o );
 		UnRegisterBuff( eBuff_Defense, o);
@@ -3952,7 +3952,7 @@ BOOL ReceiveMagic(BYTE *ReceiveBuffer,int Size, BOOL bEncrypted)
 				PlayBuffer(SOUND_SKILL_SWORD4);
 				break;
 				
-			case AT_SKILL_SWORD5://º£±â
+			case AT_SKILL_SWORD5://ï¿½ï¿½ï¿½ï¿½
 				if(sc->SwordCount%2==0)
 				{
 					SetAction(so,PLAYER_ATTACK_SKILL_SWORD1+MagicNumber-AT_SKILL_SWORD1);
@@ -3977,7 +3977,7 @@ BOOL ReceiveMagic(BYTE *ReceiveBuffer,int Size, BOOL bEncrypted)
 				PlayBuffer( SOUND_SKILL_SWORD4 );
 				break;
 				
-			case AT_SKILL_SPEAR:	// Ã¢Âî¸£±â
+			case AT_SKILL_SPEAR:	// Ã¢ï¿½î¸£ï¿½ï¿½
 				if(sc->Helper.Type == MODEL_HELPER+37)
 					SetAction(so, PLAYER_FENRIR_ATTACK_SPEAR);
 				else
@@ -5843,9 +5843,9 @@ BOOL ReceiveTalk(BYTE *ReceiveBuffer, BOOL bEncrypted)
 		g_MixRecipeMgr.SetMixType(SEASON3A::MIXTYPE_GOBLIN_NORMAL);
 		g_pNewUISystem->Show(SEASON3B::INTERFACE_MIXINVENTORY);
 		//BYTE *pbyChaosRate = ( &Data->Value) + 1;
-		//int iDummyRate[6];	// ±¤ÀåÇ¥ È®·üÀ» ¼­¹ö¿¡¼­ ¹ÞÀ¸³ª »ç¿ëÇÏÁö ¾Ê°í ¹ö¸²
+		//int iDummyRate[6];	// ï¿½ï¿½ï¿½ï¿½Ç¥ È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½ ï¿½ï¿½ï¿½ï¿½
 		//for ( int i = 0; i < 6; ++i)
-		//	iDummyRate[i] = ( int)pbyChaosRate[i];	// ±¤ÀåÇ¥ È®·üÀ» ¼­¹ö¿¡¼­ ¹ÞÀ¸³ª »ç¿ëÇÏÁö ¾Ê°í ¹ö¸²(½ºÅ©¸³Æ®»ç¿ë)
+		//	iDummyRate[i] = ( int)pbyChaosRate[i];	// ï¿½ï¿½ï¿½ï¿½Ç¥ È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ï¿½)
 		break;
 		
 	case 4:
@@ -6129,25 +6129,32 @@ void ReceiveAddPoint( BYTE *ReceiveBuffer )
     LPPRECEIVE_ADD_POINT Data = (LPPRECEIVE_ADD_POINT)ReceiveBuffer;
 	if(Data->Result>>4)
 	{
-		CharacterAttribute->LevelUpPoint --;
+		// Amount is 1 for the native "+" button; the /v /a /s /e /c chat
+		// commands can send an arbitrary amount in this single packet instead
+		// of one packet per point (older packs/builds without this field
+		// would read 0 here from unread trailing bytes, so fall back to 1).
+		WORD amount = (Data->Amount>0) ? Data->Amount : 1;
+		CharacterAttribute->LevelUpPoint -= amount;
 		switch(Data->Result&0xf)
 		{
 		case 0:
-			CharacterAttribute->Strength ++;
+			CharacterAttribute->Strength += amount;
 			break;
 		case 1:
-			CharacterAttribute->Dexterity ++;
+			CharacterAttribute->Dexterity += amount;
 			break;
 		case 2:
-			CharacterAttribute->Vitality ++;
-			CharacterAttribute->LifeMax = Data->Max;
+			CharacterAttribute->Vitality += amount;
+			// Data->Max is still capped at 65000 (server-side GET_MAX_WORD_VALUE
+			// clamp on the shared field); MaxLifeAndManaWide carries the real value.
+			CharacterAttribute->LifeMax = Data->MaxLifeAndManaWide;
 			break;
 		case 3:
-			CharacterAttribute->Energy ++;
-			CharacterAttribute->ManaMax = Data->Max;
+			CharacterAttribute->Energy += amount;
+			CharacterAttribute->ManaMax = Data->MaxLifeAndManaWide;
 			break;
         case 4:
-			CharacterAttribute->Charisma ++;
+			CharacterAttribute->Charisma += amount;
             break;
 		}
 		CharacterAttribute->SkillManaMax = Data->SkillManaMax;
@@ -6159,11 +6166,16 @@ void ReceiveAddPoint( BYTE *ReceiveBuffer )
 void ReceiveLife( BYTE *ReceiveBuffer )
 {
 	LPPRECEIVE_LIFE Data = (LPPRECEIVE_LIFE)ReceiveBuffer;
+	// Life AND Shield are now packed as 4 bytes each (both were 2), so flag
+	// shifted from index 2 to 4, and shield from index 3-4 to 5-8. See
+	// PRECEIVE_LIFE and Protocol.h's PMSG_LIFE_SEND.
+	DWORD lifeWide = ((DWORD)(Data->Life[0])<<24) + ((DWORD)(Data->Life[1])<<16) + ((DWORD)(Data->Life[2])<<8) + Data->Life[3];
+	DWORD shieldWide = ((DWORD)(Data->Life[5])<<24) + ((DWORD)(Data->Life[6])<<16) + ((DWORD)(Data->Life[7])<<8) + Data->Life[8];
 	switch(Data->Index)
 	{
 	case 0xff:
-		CharacterAttribute->Life = ((WORD)(Data->Life[0])<<8) + Data->Life[1];
-		CharacterAttribute->Shield = ((WORD)(Data->Life[3])<<8) + Data->Life[4];
+		CharacterAttribute->Life = lifeWide;
+		CharacterAttribute->Shield = shieldWide;
 		break;
 	case 0xfe:
 		if(gCharacterManager.IsMasterLevel(Hero->Class) == true)
@@ -6171,13 +6183,14 @@ void ReceiveLife( BYTE *ReceiveBuffer )
 			//	Master_Level_Data.wMaxLife			= Data->LifeMax;
 			//	Master_Level_Data.wMaxMana			= Data->ManaMax;
 			//	Master_Level_Data.wMaxShield		= Data->ShieldMax;
-			Master_Level_Data.wMaxLife = ((WORD)(Data->Life[0])<<8) + Data->Life[1];
-			Master_Level_Data.wMaxShield = ((WORD)(Data->Life[3])<<8) + Data->Life[4];
+			// Master_Level_Data.wMaxLife/wMaxShield are now DWORD too -- no longer clamped.
+			Master_Level_Data.wMaxLife = lifeWide;
+			Master_Level_Data.wMaxShield = shieldWide;
 		}
 		else
 		{
-			CharacterAttribute->LifeMax = ((WORD)(Data->Life[0])<<8) + Data->Life[1];
-			CharacterAttribute->ShieldMax = ((WORD)(Data->Life[3])<<8) + Data->Life[4];
+			CharacterAttribute->LifeMax = lifeWide;
+			CharacterAttribute->ShieldMax = shieldWide;
 		}
 		break;
 	case 0xfd:
@@ -6202,11 +6215,15 @@ void ReceiveLife( BYTE *ReceiveBuffer )
 void ReceiveMana( BYTE *ReceiveBuffer )
 {
 	LPPRECEIVE_LIFE Data = (LPPRECEIVE_LIFE)ReceiveBuffer;
+	// mana/bp are now packed as 4 bytes each (were 2), so bp shifted from
+	// index 2-3 to 4-7. See PRECEIVE_LIFE and Protocol.h's PMSG_MANA_SEND.
+	DWORD manaWide = ((DWORD)(Data->Life[0])<<24) + ((DWORD)(Data->Life[1])<<16) + ((DWORD)(Data->Life[2])<<8) + Data->Life[3];
+	DWORD bpWide = ((DWORD)(Data->Life[4])<<24) + ((DWORD)(Data->Life[5])<<16) + ((DWORD)(Data->Life[6])<<8) + Data->Life[7];
 	switch(Data->Index)
 	{
 	case 0xff:
-		CharacterAttribute->Mana = ((WORD)(Data->Life[0])<<8) + Data->Life[1];
-		CharacterAttribute->SkillMana = ((WORD)(Data->Life[2])<<8) + Data->Life[3];
+		CharacterAttribute->Mana = manaWide;
+		CharacterAttribute->SkillMana = bpWide;
 		break;
 	case 0xfe:
 		if(gCharacterManager.IsMasterLevel(Hero->Class) == true)
@@ -6214,17 +6231,17 @@ void ReceiveMana( BYTE *ReceiveBuffer )
 			//	Master_Level_Data.wMaxLife			= Data->LifeMax;
 			//	Master_Level_Data.wMaxMana			= Data->ManaMax;
 			//	Master_Level_Data.wMaxShield		= Data->ShieldMax;
-			Master_Level_Data.wMaxMana = ((WORD)(Data->Life[0])<<8) + Data->Life[1];
-			Master_Level_Data.wMaxBP = ((WORD)(Data->Life[2])<<8) + Data->Life[3];
+			Master_Level_Data.wMaxMana = manaWide;
+			Master_Level_Data.wMaxBP = bpWide;
 		}
 		else
 		{
-			CharacterAttribute->ManaMax = ((WORD)(Data->Life[0])<<8) + Data->Life[1];
-			CharacterAttribute->SkillManaMax = ((WORD)(Data->Life[2])<<8) + Data->Life[3];
+			CharacterAttribute->ManaMax = manaWide;
+			CharacterAttribute->SkillManaMax = bpWide;
 		}
 		break;
 	default:
-		CharacterAttribute->Mana = ((WORD)(Data->Life[0])<<8) + Data->Life[1];
+		CharacterAttribute->Mana = manaWide;
 		if(Inventory[Data->Index-12].Durability > 0)
 			Inventory[Data->Index-12].Durability --;
 		if(Inventory[Data->Index-12].Durability <= 0)
@@ -6967,7 +6984,7 @@ void ReceiveGuildInfo( BYTE *ReceiveBuffer )
 	int Index = g_GuildCache.SetGuildMark( Data->GuildKey, Data->UnionName, Data->GuildName, Data->Mark );
 }
 
-// ±æµåÁ÷Ã¥À» ÀÓ¸í/º¯°æ/ÇØÁ¦ °á°ú
+// ï¿½ï¿½ï¿½ï¿½ï¿½Ã¥ï¿½ï¿½ ï¿½Ó¸ï¿½/ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 void ReceiveGuildAssign( BYTE *ReceiveBuffer )
 {
 	char szTemp[MAX_GLOBAL_TEXT_STRING] = "Invalid GuildAssign";
@@ -7660,7 +7677,7 @@ void ReceiveMix( BYTE *ReceiveBuffer )
 				g_pChatListBox->AddText("", szText, SEASON3B::TYPE_ERROR_MESSAGE);
 				break;
 				// 			case SEASON3A::MIXTYPE_TRAINER:
-				// 				unicode::_sprintf(szText, GlobalText[1208]);	// ºÎÈ° ½ÇÆÐ
+				// 				unicode::_sprintf(szText, GlobalText[1208]);	// ï¿½ï¿½È° ï¿½ï¿½ï¿½ï¿½
 				// 				g_pChatListBox->AddText("", szText, SEASON3B::TYPE_ERROR_MESSAGE);
 				// 				break;
 			case SEASON3A::MIXTYPE_OSBOURNE:
@@ -8804,7 +8821,7 @@ void ReceiveFriendList(BYTE* ReceiveBuffer)
 	g_pFriendList->Sort(1);
 	g_pWindowMgr->RefreshMainWndPalList();
 	
-	// Ã¤ÆÃ ¼­¹ö »ì¾Æ³²
+	// Ã¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ³ï¿½
 	g_pWindowMgr->SetServerEnable(TRUE);
 	if (g_iChatInputType == 0) SendRequestChangeState(2);
 	

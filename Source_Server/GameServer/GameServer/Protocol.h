@@ -516,9 +516,15 @@ struct PMSG_LIFE_SEND
 {
 	PBMSG_HEAD header; // C1:26
 	BYTE type;
-	BYTE life[2];
+	// Widened from packed 2-byte (WORD) values to packed 4-byte (DWORD)
+	// values -- this is the packet sent on every damage/heal/regen tick, so
+	// it was the main reason Life/Shield still capped out at 65000 even after
+	// widening the other fields. Big-endian byte order (byte[0]=highest),
+	// matching the original HB/LB convention. flag stays BYTE. Matches
+	// WSclient.h's PRECEIVE_LIFE.
+	BYTE life[4];
 	BYTE flag;
-	BYTE shield[2];
+	BYTE shield[4];
 	#if(GAMESERVER_EXTRA==1)
 	DWORD ViewHP;
 	DWORD ViewSD;
@@ -529,8 +535,10 @@ struct PMSG_MANA_SEND
 {
 	PBMSG_HEAD header; // C1:27
 	BYTE type;
-	BYTE mana[2];
-	BYTE bp[2];
+	// Widened from packed 2-byte (WORD) values to packed 4-byte (DWORD)
+	// values, same reason/format as PMSG_LIFE_SEND's life[]/shield[].
+	BYTE mana[4];
+	BYTE bp[4];
 	#if(GAMESERVER_EXTRA==1)
 	DWORD ViewMP;
 	DWORD ViewBP;
@@ -827,19 +835,24 @@ struct PMSG_CHARACTER_INFO_SEND
 	BYTE Dir;
 	BYTE Experience[8];
 	BYTE NextExperience[8];
-	WORD LevelUpPoint;
+	// Widened WORD->DWORD (matches WSclient.h's PRECEIVE_JOIN_MAP_SERVER):
+	// a character with all 5 stats maxed at 32767 + many resets can accrue
+	// well over 65535 unspent points, which silently wrapped in a WORD.
+	DWORD LevelUpPoint;
 	WORD Strength;
 	WORD Dexterity;
 	WORD Vitality;
 	WORD Energy;
-	WORD Life;
-	WORD MaxLife;
-	WORD Mana;
-	WORD MaxMana;
-	WORD Shield;
-	WORD MaxShield;
-	WORD BP;
-	WORD MaxBP;
+	// Widened WORD->DWORD (matches WSclient.h's PRECEIVE_JOIN_MAP_SERVER) --
+	// same overflow reason as LevelUpPoint above, once Vitality/Energy are maxed.
+	DWORD Life;
+	DWORD MaxLife;
+	DWORD Mana;
+	DWORD MaxMana;
+	DWORD Shield;
+	DWORD MaxShield;
+	DWORD BP;
+	DWORD MaxBP;
 	DWORD Money;
 	BYTE PKLevel;
 	BYTE CtlCode;
@@ -877,10 +890,10 @@ struct PMSG_CHARACTER_REGEN_SEND
 	BYTE Y;
 	BYTE Map;
 	BYTE Dir;
-	WORD Life;
-	WORD Mana;
-	WORD Shield;
-	WORD BP;
+	DWORD Life; // widened WORD->DWORD, same reason as PMSG_CHARACTER_INFO_SEND above
+	DWORD Mana; // widened WORD->DWORD, same reason
+	DWORD Shield; // widened WORD->DWORD, same reason
+	DWORD BP; // widened WORD->DWORD, same reason
 	BYTE Experience[8];
 	DWORD Money;
 	#if(GAMESERVER_EXTRA==1)
@@ -895,11 +908,13 @@ struct PMSG_LEVEL_UP_SEND
 {
 	PSBMSG_HEAD header; // C1:F3:05
 	WORD Level;
-	WORD LevelUpPoint;
-	WORD MaxLife;
-	WORD MaxMana;
-	WORD MaxShield;
-	WORD MaxBP;
+	// Widened WORD->DWORD (matches WSclient.h's PRECEIVE_LEVEL_UP) -- same
+	// overflow reason as PMSG_CHARACTER_INFO_SEND above.
+	DWORD LevelUpPoint;
+	DWORD MaxLife; // widened WORD->DWORD, same reason as above
+	DWORD MaxMana; // widened WORD->DWORD, same reason
+	DWORD MaxShield; // widened WORD->DWORD, same reason
+	DWORD MaxBP; // widened WORD->DWORD, same reason
 	WORD FruitAddPoint;
 	WORD MaxFruitAddPoint;
 	WORD FruitSubPoint;
@@ -919,9 +934,23 @@ struct PMSG_LEVEL_UP_POINT_SEND
 {
 	PSBMSG_HEAD header; // C1:F3:06
 	BYTE result;
+	// MaxLifeAndMana is shared: holds MaxLife when type==2 (Vitality) or
+	// MaxMana when type==3 (Energy). Kept as WORD for backward layout
+	// compatibility; the real (unclamped) value is in MaxLifeAndManaWide
+	// below now, for both cases -- see WSclient.cpp's ReceiveAddPoint.
 	WORD MaxLifeAndMana;
-	WORD MaxShield;
-	WORD MaxBP;
+	DWORD MaxShield; // widened WORD->DWORD, same overflow reason as Life -- not shared with anything, unlike MaxLifeAndMana
+	DWORD MaxBP; // widened WORD->DWORD, same reason
+	// How many points this confirmation represents (native "+" button always
+	// sends 1; the /v /a /s /e /c chat commands can send an arbitrary amount
+	// in a single packet instead of one C1:F3:06 per point -- see
+	// GCLevelUpPointSend/CommandAddPoint). Matched by WSclient.h's
+	// PRECEIVE_ADD_POINT.Amount.
+	WORD Amount;
+	// Widened counterpart to MaxLifeAndMana -- MaxLife when type==2
+	// (Vitality), MaxMana when type==3 (Energy). Same overflow reason as
+	// PMSG_CHARACTER_INFO_SEND.
+	DWORD MaxLifeAndManaWide;
 	#if(GAMESERVER_EXTRA==1)
 	DWORD ViewPoint;
 	DWORD ViewMaxHP;
@@ -1243,6 +1272,7 @@ void GCConnectAccountSend(int aIndex,BYTE result,SOCKET socket);
 void GCCloseClientSend(int aIndex,BYTE result);
 void GCCharacterRegenSend(LPOBJ lpObj);
 void GCLevelUpSend(LPOBJ lpObj);
+void GCLevelUpPointSend(LPOBJ lpObj,int type,int amount);
 void GCMonsterDamageSend(int aIndex,int damage,int ShieldDamage);
 void GCPKLevelSend(int aIndex,int PKLevel);
 void GCSummonLifeSend(int aIndex,int life,int MaxLife);
