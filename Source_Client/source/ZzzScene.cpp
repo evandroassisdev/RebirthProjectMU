@@ -1869,6 +1869,19 @@ bool MoveMainCamera()
 			Camera3DFov += MouseWheel;
 			MouseWheel = 0;
 		}
+#ifndef _DEBUG
+		{
+			// ANCHOR_CAMERA3D_FOV_CLAMP: ported from project_mu_main52_63 -
+			// clamps the scroll-wheel zoom (base CameraFOV=35) to [25,40]
+			// in Release builds so it can't be scrolled past 40. Confirmed
+			// working in-game (tested with the guard temporarily removed)
+			// 2026-08-14.
+			constexpr float MIN_CAMERA3D_FOV_RELEASE = 25.f - 35.f;
+			constexpr float MAX_CAMERA3D_FOV_RELEASE = 40.f - 35.f;
+			if (Camera3DFov > MAX_CAMERA3D_FOV_RELEASE) Camera3DFov = MAX_CAMERA3D_FOV_RELEASE;
+			if (Camera3DFov < MIN_CAMERA3D_FOV_RELEASE) Camera3DFov = MIN_CAMERA3D_FOV_RELEASE;
+		}
+#endif // _DEBUG
 		CameraFOV += Camera3DFov;
 
 		if (Camera3DRoll)

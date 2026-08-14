@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Terrain °ü·Ã ÇÔ¼ö
+// Terrain ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
@@ -1986,6 +1986,30 @@ void CreateFrustrum2D(vec3_t Position)
 			}
 		}
 	}
+
+	// ANCHOR_WIDESCREEN_BLACKCORNERS_FIX_START: this quad (p[0..3], rotated
+	// 45 deg below into FrustrumX/FrustrumY) is what TestFrustrum2D() gates
+	// every terrain tile draw against - the actual cause of the widescreen
+	// "black triangle" corners. "Width" above comes from the free
+	// GetScreenWidth() (a UI-panel-occlusion fraction, caps at
+	// 640/640=1.0) - it never reflects real monitor resolution, so this
+	// diamond was always sized for a 4:3 view regardless of the real
+	// screen. Widen WidthFar/WidthNear (never narrow, so this can only
+	// make culling more generous) when the real screen is wider than 4:3.
+	// A plain aspect-ratio widen (1.4815x measured for 1600x900) still
+	// left slivers at the corners - a uniformly-scaled rotated quad never
+	// exactly covers a rectangle's corners - so the excess over baseline
+	// is doubled for extra margin. Confirmed fixing 1600x900 in-game
+	// (Valley of Loren) 2026-08-14.
+	float fLogicalHeight = CameraTopViewEnable ? 480.f : 432.f;
+	float fRealAspect2D = (float)WindowWidth / (fLogicalHeight * (float)WindowHeight / 480.f);
+	if (fRealAspect2D > 4.f / 3.f)
+	{
+		float fWidenFactor2D = 1.f + (fRealAspect2D / (4.f / 3.f) - 1.f) * 2.f;
+		WidthFar *= fWidenFactor2D;
+		WidthNear *= fWidenFactor2D;
+	}
+	// ANCHOR_WIDESCREEN_BLACKCORNERS_FIX_END
 
 	vec3_t p[4];
 	Vector(-WidthFar, CameraViewFar - CameraViewTarget, 0.f, p[0]);
