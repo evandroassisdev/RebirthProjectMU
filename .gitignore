@@ -1,0 +1,49 @@
+# Archives
+*.rar
+*.zip
+*.7z
+
+# Deployed/runnable server (built binaries + live data, not source)
+MuServer/
+
+# Build outputs (client)
+Source_Client/Global Debug/
+Source_Client/Global Release/
+Source_Client/tmp/
+Source_Client/source/Global Debug/
+Source_Client/source/Global Release/
+
+# Build outputs (server, per-sub-project Debug/Release dirs)
+Source_Server/**/Debug/
+Source_Server/**/Release/
+Source_Server/**/bin/
+Source_Server/**/obj/
+
+# Vendored third-party source (large, not ours)
+Source_Server/ConnectServer/Dependences/curl-master/
+
+# Generic build/intermediate artifacts anywhere
+*.obj
+*.pdb
+*.ipdb
+*.iobj
+*.sbr
+*.idb
+*.ilk
+*.exp
+*.lib
+*.exe
+*.res
+*.tlog
+*.log
+*.ncb
+*.aps
+*.sdf
+*.opensdf
+*.suo
+*.VC.db
+*.VC.VC.opendb
+
+# Editor/OS cruft
+.vs/
+Thumbs.db
