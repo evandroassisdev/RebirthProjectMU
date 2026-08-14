@@ -281,7 +281,7 @@ void SetIME_Status (bool halfShape)
 	
     data = ::ImmGetContext( g_hWnd );
 	
-    //  ¹Ý°¢.
+    //  ï¿½Ý°ï¿½.
     dwConv = g_dwOldConv;
     dwSent = g_dwOldSent;
     if( halfShape )
@@ -443,8 +443,8 @@ void RenderTipText(int sx, int sy, const char* Text)
 	int BackupAlphaBlendType = AlphaBlendType;
 	EnableAlphaTest();
 	glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-	RenderColor ((float)sx - 2, (float)sy - 3, (float)TextSize.cx / g_fScreenRate_x + 4, (float)1);	// À§
-	RenderColor ((float)sx - 2, (float)sy - 3, (float)1, (float)TextSize.cy / g_fScreenRate_y + 4);	// ÁÂ
+	RenderColor ((float)sx - 2, (float)sy - 3, (float)TextSize.cx / g_fScreenRate_x + 4, (float)1);	// ï¿½ï¿½
+	RenderColor ((float)sx - 2, (float)sy - 3, (float)1, (float)TextSize.cy / g_fScreenRate_y + 4);	// ï¿½ï¿½
 	RenderColor ((float)sx - 2 + TextSize.cx / g_fScreenRate_x + 3, (float)sy - 3, (float)1, (float)TextSize.cy / g_fScreenRate_y + 4);	
 	RenderColor ((float)sx - 2, (float)sy - 3 + TextSize.cy / g_fScreenRate_y + 3, (float)TextSize.cx / g_fScreenRate_x + 4, (float)1);
 	
@@ -592,6 +592,41 @@ void RenderNotices()
 		}
 	}
 	NoticeInverse++;
+}
+
+// Standalone, self-timed toast - see ZzzInterface.h. Doesn't touch Notice[]/
+// NoticeTime, so it can't shorten how long OTHER notices stay on screen.
+static char g_szQuickNoticeText[256] = {0};
+static int  g_iQuickNoticeColor = 0;
+static DWORD g_dwQuickNoticeEndTime = 0;
+
+void ShowQuickNotice(const char *Text,int Color,int DurationMs)
+{
+	strncpy(g_szQuickNoticeText,Text,sizeof(g_szQuickNoticeText)-1);
+	g_szQuickNoticeText[sizeof(g_szQuickNoticeText)-1] = 0;
+	g_iQuickNoticeColor = Color;
+	g_dwQuickNoticeEndTime = GetTickCount() + DurationMs;
+}
+
+void RenderQuickNotice()
+{
+	if (g_dwQuickNoticeEndTime == 0 || GetTickCount() >= g_dwQuickNoticeEndTime)
+		return;
+
+	EnableAlphaTest();
+
+	g_pRenderText->SetFont(g_hFontBold);
+	g_pRenderText->SetBgColor(0, 0, 0, 128);
+	if(g_iQuickNoticeColor==0)
+	{
+		g_pRenderText->SetTextColor(255, 200, 80, 255);
+	}
+	else
+	{
+		g_pRenderText->SetTextColor(100, 255, 200, 255);
+	}
+
+	g_pRenderText->RenderText(320, 280, g_szQuickNoticeText, 0, 0, RT3_WRITE_CENTER);
 }
 
 void CutText(const char* Text,char *Text1,char *Text2,int Length)
@@ -742,7 +777,7 @@ void SetBooleanPosition(CHAT *c)
 	SIZE Size[5];
 	memset(&Size[0], 0, sizeof(SIZE)*5);
 	
-	if ( g_isCharacterBuff((&c->Owner->Object), eBuff_GMEffect) || // GM ÀÏ°æ¿ì
+	if ( g_isCharacterBuff((&c->Owner->Object), eBuff_GMEffect) || // GM ï¿½Ï°ï¿½ï¿½
 			(c->Owner->CtlCode == CTLCODE_20OPERATOR) || (c->Owner->CtlCode == CTLCODE_08OPERATOR))	
 		{
 			g_pRenderText->SetFont(g_hFontBold);
@@ -801,7 +836,7 @@ void SetPlayerColor(BYTE PK)
 	}
 }
 
-extern float g_fScreenRate_x;	// ¡Ø
+extern float g_fScreenRate_x;	// ï¿½ï¿½
 extern float g_fScreenRate_y;
 const int ciSystemColor = 240;
 
@@ -1435,7 +1470,7 @@ bool CheckAttack_Fenrir(CHARACTER* c)
 	}
 	else if(::IsStrifeMap(gMapManager.WorldActive) && c != Hero && c->m_byGensInfluence != Hero->m_byGensInfluence)
 	{	
-		if(((strcmp(GuildMark[Hero->GuildMarkIndex].GuildName,GuildMark[c->GuildMarkIndex].GuildName)==NULL) ||	(g_pPartyManager->IsPartyMember(SelectedCharacter))) && (HIBYTE(GetAsyncKeyState(VK_CONTROL))==128))
+		if(((strcmp(GuildMark[Hero->GuildMarkIndex].GuildName,GuildMark[c->GuildMarkIndex].GuildName)==NULL) ||	(g_pPartyManager->IsPartyMember(SelectedCharacter))) && (IsCtrlKeyDown()))
 		{
 			return true;
 		}
@@ -1532,7 +1567,7 @@ bool CheckAttack_Fenrir(CHARACTER* c)
 				
 		}
 				
-		if( c->GuildRelationShip == GR_RIVAL || c->GuildRelationShip == GR_RIVALUNION )		//¹ÚÁ¾ÈÆ Ç¥½Ã
+		if( c->GuildRelationShip == GR_RIVAL || c->GuildRelationShip == GR_RIVALUNION )		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½
 		{
 			return true;
 		}
@@ -1565,7 +1600,7 @@ bool CheckAttack_Fenrir(CHARACTER* c)
 				return false;
 			}
 		}
-		else if ( c->PK >= PVP_MURDERER2 || ( HIBYTE(GetAsyncKeyState(VK_CONTROL))==128 && c!=Hero ) )
+		else if ( c->PK >= PVP_MURDERER2 || ( IsCtrlKeyDown() && c!=Hero ) )
 		{
 			return true;
 		}
@@ -1620,7 +1655,7 @@ bool CheckAttack()
 			return false;
 		}
 
-		if(HIBYTE(GetAsyncKeyState(VK_CONTROL))==128)
+		if(IsCtrlKeyDown())
 		{
 			if(EnableGuildWar)
 			{
@@ -1802,7 +1837,7 @@ bool CheckAttack()
 				return false;
 			}
 		}
-		else if ( c->PK >= PVP_MURDERER2 || ( HIBYTE(GetAsyncKeyState(VK_CONTROL))==128 && c != Hero ) )
+		else if ( c->PK >= PVP_MURDERER2 || ( IsCtrlKeyDown() && c != Hero ) )
 		{
 			return true;
 		}
@@ -1870,13 +1905,13 @@ int	getTargetCharacterKey ( CHARACTER* c, int selected )
 		else if((strcmp(GuildMark[Hero->GuildMarkIndex].GuildName,GuildMark[c->GuildMarkIndex].GuildName)==NULL) ||
 			g_pPartyManager->IsPartyMember(SelectedCharacter))
 		{
-			if(HIBYTE(GetAsyncKeyState(VK_CONTROL))==128)
+			if(IsCtrlKeyDown())
 				return sc->Key;
 			else 
 				return -1;
 		}
 	}
-	else if ( sc->PK>=PVP_MURDERER2 || ( HIBYTE(GetAsyncKeyState(VK_CONTROL))==128 && sc!=Hero ) )
+	else if ( sc->PK>=PVP_MURDERER2 || ( IsCtrlKeyDown() && sc!=Hero ) )
 	{
 		return sc->Key;
 	}
@@ -4455,8 +4490,8 @@ void CheckChatText(char* Text)
 	if (FindText(Text, "Greatings") || FindText(Text, "greatings") || FindText(Text, "Hi") || FindText(Text, "hi")
 		// Spanish
 		|| FindText(Text, "Saludos") || FindText(Text, "saludos")
-		// Portugês
-		|| FindText(Text, "Olá") || FindText(Text, "olá") || FindText(Text, "Ola") || FindText(Text, "ola") || FindText(Text, "Oi") || FindText(Text, "oi"))
+		// Portugï¿½s
+		|| FindText(Text, "Olï¿½") || FindText(Text, "olï¿½") || FindText(Text, "Ola") || FindText(Text, "ola") || FindText(Text, "Oi") || FindText(Text, "oi"))
 	{
 		SetActionClass(c, o, PLAYER_GREETING1, AT_GREETING1);
 		SendRequestAction(AT_GREETING1, ((BYTE)((o->Angle[2] + 22.5f) / 360.f * 8.f + 1.f) % 8));
@@ -4464,9 +4499,9 @@ void CheckChatText(char* Text)
 	// English
 	else if (FindText(Text, "Goodbye") || FindText(Text, "goodbye") || FindText(Text, "Bye") || FindText(Text, "bye")
 		// Spanish
-		|| FindText(Text, "Adiós") || FindText(Text, "adiós")
-		// Portugês
-		|| FindText(Text, "Adeus") || FindText(Text, "adeus") || FindText(Text, "Tchau") || FindText(Text, "tchau") || FindText(Text, "Até") || FindText(Text, "até"))
+		|| FindText(Text, "Adiï¿½s") || FindText(Text, "adiï¿½s")
+		// Portugï¿½s
+		|| FindText(Text, "Adeus") || FindText(Text, "adeus") || FindText(Text, "Tchau") || FindText(Text, "tchau") || FindText(Text, "Atï¿½") || FindText(Text, "atï¿½"))
 	{
 		SetActionClass(c, o, PLAYER_GOODBYE1, AT_GOODBYE1);
 		SendRequestAction(AT_GOODBYE1, ((BYTE)((o->Angle[2] + 22.5f) / 360.f * 8.f + 1.f) % 8));
@@ -4475,8 +4510,8 @@ void CheckChatText(char* Text)
 	else if (FindText(Text, "Clap") || FindText(Text, "clap")
 		// Spanish
 		|| FindText(Text, "Felicidades") || FindText(Text, "felicidades")
-		// Portugês
-		|| FindText(Text, "Aplausos") || FindText(Text, "aplausos") || FindText(Text, "Palmas") || FindText(Text, "Palmas") || FindText(Text, "Parabêns") || FindText(Text, "parabêns") || FindText(Text, "Parabens") || FindText(Text, "parabens"))
+		// Portugï¿½s
+		|| FindText(Text, "Aplausos") || FindText(Text, "aplausos") || FindText(Text, "Palmas") || FindText(Text, "Palmas") || FindText(Text, "Parabï¿½ns") || FindText(Text, "parabï¿½ns") || FindText(Text, "Parabens") || FindText(Text, "parabens"))
 	{
 		SetActionClass(c, o, PLAYER_CLAP1, AT_CLAP1);
 		SendRequestAction(AT_CLAP1, ((BYTE)((o->Angle[2] + 22.5f) / 360.f * 8.f + 1.f) % 8));
@@ -4484,8 +4519,8 @@ void CheckChatText(char* Text)
 	// English
 	else if (FindText(Text, "Gesture") || FindText(Text, "gesture")
 		// Spanish
-		|| FindText(Text, "Aquí") || FindText(Text, "aquí")
-		// Portugês
+		|| FindText(Text, "Aquï¿½") || FindText(Text, "aquï¿½")
+		// Portugï¿½s
 		|| FindText(Text, "Venha") || FindText(Text, "venha") || FindText(Text, "Aqui") || FindText(Text, "aqui"))
 	{
 		SetActionClass(c, o, PLAYER_GESTURE1, AT_GESTURE1);
@@ -4494,17 +4529,17 @@ void CheckChatText(char* Text)
 	// English
 	else if (FindText(Text, "There") || FindText(Text, "there")
 		// Spanish
-		|| FindText(Text, "Ahí") || FindText(Text, "ahí") || FindText(Text, "Allí") || FindText(Text, "Allí") || FindText(Text, "Ahi") || FindText(Text, "ahi") || FindText(Text, "Alli") || FindText(Text, "Alli")
-		// Português
-		|| FindText(Text, "Ali") || FindText(Text, "ali") || FindText(Text, "Lá") || FindText(Text, "lá") || FindText(Text, "La") || FindText(Text, "la"))
+		|| FindText(Text, "Ahï¿½") || FindText(Text, "ahï¿½") || FindText(Text, "Allï¿½") || FindText(Text, "Allï¿½") || FindText(Text, "Ahi") || FindText(Text, "ahi") || FindText(Text, "Alli") || FindText(Text, "Alli")
+		// Portuguï¿½s
+		|| FindText(Text, "Ali") || FindText(Text, "ali") || FindText(Text, "Lï¿½") || FindText(Text, "lï¿½") || FindText(Text, "La") || FindText(Text, "la"))
 	{
 		SetActionClass(c, o, PLAYER_DIRECTION1, AT_DIRECTION1);
 		SendRequestAction(AT_DIRECTION1, ((BYTE)((o->Angle[2] + 22.5f) / 360.f * 8.f + 1.f) % 8));
 	}
 	// English
 	else if (FindText(Text, "No") || FindText(Text, "no") || FindText(Text, "Unknow") || FindText(Text, "unknow")
-		// Português
-		|| FindText(Text, "Não") || FindText(Text, "não") || FindText(Text, "Nao") || FindText(Text, "nao"))
+		// Portuguï¿½s
+		|| FindText(Text, "Nï¿½o") || FindText(Text, "nï¿½o") || FindText(Text, "Nao") || FindText(Text, "nao"))
 	{
 		SetActionClass(c, o, PLAYER_UNKNOWN1, AT_UNKNOWN1);
 		SendRequestAction(AT_UNKNOWN1, ((BYTE)((o->Angle[2] + 22.5f) / 360.f * 8.f + 1.f) % 8));
@@ -4512,8 +4547,8 @@ void CheckChatText(char* Text)
 	// English
 	else if (FindText(Text, "Bad") || FindText(Text, "bad") || FindText(Text, "Sorry") || FindText(Text, "sorry")
 		// Spanish
-		|| FindText(Text, "Mala") || FindText(Text, "mala") || FindText(Text, "Perdón") || FindText(Text, "Perdon") || FindText(Text, "perdon")
-		// Português
+		|| FindText(Text, "Mala") || FindText(Text, "mala") || FindText(Text, "Perdï¿½n") || FindText(Text, "Perdon") || FindText(Text, "perdon")
+		// Portuguï¿½s
 		|| FindText(Text, "Mals") || FindText(Text, "mals") || FindText(Text, "Desculpa") || FindText(Text, "desculpa")
 		// Simbols
 		|| FindText(Text, ";"))
@@ -4525,8 +4560,8 @@ void CheckChatText(char* Text)
 	else if (FindText(Text, "lost") || FindText(Text, "lost") || FindText(Text, "Noo") || FindText(Text, "noo") || FindText(Text, "Ohh") || FindText(Text, "ohh")
 		// Spanish
 		|| FindText(Text, "Perdimos") || FindText(Text, "perdimos") || FindText(Text, "perdimos...") || FindText(Text, "Perdimos...") || FindText(Text, "Nooo") || FindText(Text, "nooo")
-		// Português
-		|| FindText(Text, "Perdemos") || FindText(Text, "perdemos") || FindText(Text, "perdemos...") || FindText(Text, "Perdemos...") || FindText(Text, "Nãoo") || FindText(Text, "nãoo") || FindText(Text, "Aaa") || FindText(Text, "aaa")
+		// Portuguï¿½s
+		|| FindText(Text, "Perdemos") || FindText(Text, "perdemos") || FindText(Text, "perdemos...") || FindText(Text, "Perdemos...") || FindText(Text, "Nï¿½oo") || FindText(Text, "nï¿½oo") || FindText(Text, "Aaa") || FindText(Text, "aaa")
 		// Simbols
 		|| FindText(Text, "T.T") || FindText(Text, "t.t"))
 	{
@@ -4537,7 +4572,7 @@ void CheckChatText(char* Text)
 	else if (FindText(Text, "See") || FindText(Text, "see")
 		// Spanish
 		|| FindText(Text, "Ver") || FindText(Text, "ver")
-		// Portugês
+		// Portugï¿½s
 		|| FindText(Text, "Hm") || FindText(Text, "hm"))
 	{
 		SetActionClass(c, o, PLAYER_SEE1, AT_SEE1);
@@ -4547,7 +4582,7 @@ void CheckChatText(char* Text)
 	else if (FindText(Text, "Smile") || FindText(Text, "smile") || FindText(Text, "Lol") || FindText(Text, "lol")
 		// Spanish
 		|| FindText(Text, "Hehe") || FindText(Text, "hehe") || FindText(Text, "Jeje") || FindText(Text, "jeje")
-		// Portugês
+		// Portugï¿½s
 		|| FindText(Text, "kkk") || FindText(Text, "haha") || FindText(Text, "hasuhasu") || FindText(Text, "risada")
 		|| FindText(Text, "risos") || FindText(Text, "Risos") || FindText(Text, "Rindo") || FindText(Text, "rindo") || FindText(Text, "Risada"))
 	{
@@ -4558,7 +4593,7 @@ void CheckChatText(char* Text)
 	else if (FindText(Text, "Wins") || FindText(Text, "wins") || FindText(Text, "Won") || FindText(Text, "won")
 		// Spanish	  
 		|| FindText(Text, "Ganamos") || FindText(Text, "ganamos")
-		// Portugês
+		// Portugï¿½s
 		|| FindText(Text, "Ganhamos") || FindText(Text, "ganhamos") || FindText(Text, "Vencemos") || FindText(Text, "vencemos"))
 	{
 		SetActionClass(c, o, PLAYER_CHEER1, AT_CHEER1);
@@ -4567,8 +4602,8 @@ void CheckChatText(char* Text)
 	// English
 	else if (FindText(Text, "Win") || FindText(Text, "win")
 		// Spanish
-		|| FindText(Text, "Gané") || FindText(Text, "gané") || FindText(Text, "Gane") || FindText(Text, "gane")
-		// Portugês
+		|| FindText(Text, "Ganï¿½") || FindText(Text, "ganï¿½") || FindText(Text, "Gane") || FindText(Text, "gane")
+		// Portugï¿½s
 		|| FindText(Text, "Ganhei") || FindText(Text, "ganhei"))
 	{
 		SetActionClass(c, o, PLAYER_WIN1, AT_WIN1);
@@ -4578,7 +4613,7 @@ void CheckChatText(char* Text)
 	else if (FindText(Text, "Sleep") || FindText(Text, "sleep")
 		// Spanish
 		|| FindText(Text, "Dormir") || FindText(Text, "dormir")
-		// Portugês
+		// Portugï¿½s
 		|| FindText(Text, "Sono") || FindText(Text, "sono") || FindText(Text, "Dormindo") || FindText(Text, "dormindo") || FindText(Text, "ZZ") || FindText(Text, "Zz") || FindText(Text, "zz"))
 	{
 		SetActionClass(c, o, PLAYER_SLEEP1, AT_SLEEP1);
@@ -4588,7 +4623,7 @@ void CheckChatText(char* Text)
 	else if (FindText(Text, "Cold") || FindText(Text, "cold")
 		// Spanish
 		|| FindText(Text, "Verguenza") || FindText(Text, "verguenza")
-		// Portugês
+		// Portugï¿½s
 		|| FindText(Text, "Frio") || FindText(Text, "frio") || FindText(Text, "Vergonha") || FindText(Text, "vergonha"))
 	{
 		SetActionClass(c, o, PLAYER_COLD1, AT_COLD1);
@@ -4598,7 +4633,7 @@ void CheckChatText(char* Text)
 	else if (FindText(Text, "Again") || FindText(Text, "again") || FindText(Text, "Yes") || FindText(Text, "yes")
 		// Spanish
 		|| FindText(Text, "Ahora") || FindText(Text, "ahora")
-		// Portugês
+		// Portugï¿½s
 		|| FindText(Text, "Agora") || FindText(Text, "agora"))
 	{
 		SetActionClass(c, o, PLAYER_AGAIN1, AT_AGAIN1);
@@ -4608,7 +4643,7 @@ void CheckChatText(char* Text)
 	else if (FindText(Text, "Respect") || FindText(Text, "respect")
 		// Spanish
 		|| FindText(Text, "Respeto") || FindText(Text, "respeto")
-		// Portugês
+		// Portugï¿½s
 		|| FindText(Text, "Respeito") || FindText(Text, "respeito"))
 	{
 		SetActionClass(c, o, PLAYER_RESPECT1, AT_RESPECT1);
@@ -4618,8 +4653,8 @@ void CheckChatText(char* Text)
 	else if (FindText(Text, "Salute") || FindText(Text, "salute") || FindText(Text, "Sr") || FindText(Text, "sr")
 		// Spanish
 		|| FindText(Text, "Saludo") || FindText(Text, "saludo")
-		// Portugês
-		|| FindText(Text, "Saudações") || FindText(Text, "saudações") || FindText(Text, "Senhor") || FindText(Text, "senhor"))
+		// Portugï¿½s
+		|| FindText(Text, "Saudaï¿½ï¿½es") || FindText(Text, "saudaï¿½ï¿½es") || FindText(Text, "Senhor") || FindText(Text, "senhor"))
 	{
 		SetActionClass(c, o, PLAYER_SALUTE1, AT_SALUTE1);
 		SendRequestAction(AT_SALUTE1, ((BYTE)((o->Angle[2] + 22.5f) / 360.f * 8.f + 1.f) % 8));
@@ -4628,7 +4663,7 @@ void CheckChatText(char* Text)
 	else if (FindText(Text, "Rush") || FindText(Text, "rush")
 		// Spanish
 		|| FindText(Text, "Vamonos") || FindText(Text, "vamonos")
-		// Portugês
+		// Portugï¿½s
 		|| FindText(Text, "Vamos") || FindText(Text, "vamos"))
 	{
 		SetActionClass(c, o, PLAYER_RUSH1, AT_RUSH1);
@@ -4638,7 +4673,7 @@ void CheckChatText(char* Text)
 	else if (FindText(Text, "Hustle") || FindText(Text, "hustle")
 		// Spanish
 		|| FindText(Text, "Ajetreo") || FindText(Text, "ajetreo")
-		// Portugês
+		// Portugï¿½s
 		|| FindText(Text, "Tome") || FindText(Text, "tome") || FindText(Text, "Toma") || FindText(Text, "toma") || FindText(Text, "Receba") || FindText(Text, "receba"))
 	{
 		SetActionClass(c, o, PLAYER_HUSTLE, AT_HUSTLE);
@@ -4647,18 +4682,18 @@ void CheckChatText(char* Text)
 	// English
 	else if (FindText(Text, "Provocation") || FindText(Text, "provocation")
 		// Spanish
-		|| FindText(Text, "Provocación") || FindText(Text, "provocación") || FindText(Text, "Provocacion") || FindText(Text, "provocacion") || FindText(Text, "provocacion") || FindText(Text, "provocacion")
-		// Portugês
-		|| FindText(Text, "Provocação") || FindText(Text, "provocação") || FindText(Text, "Provocacao") || FindText(Text, "provocacao") || FindText(Text, "Vem") || FindText(Text, "vem"))
+		|| FindText(Text, "Provocaciï¿½n") || FindText(Text, "provocaciï¿½n") || FindText(Text, "Provocacion") || FindText(Text, "provocacion") || FindText(Text, "provocacion") || FindText(Text, "provocacion")
+		// Portugï¿½s
+		|| FindText(Text, "Provocaï¿½ï¿½o") || FindText(Text, "provocaï¿½ï¿½o") || FindText(Text, "Provocacao") || FindText(Text, "provocacao") || FindText(Text, "Vem") || FindText(Text, "vem"))
 	{
 		SetActionClass(c, o, PLAYER_PROVOCATION, AT_PROVOCATION);
 		SendRequestAction(AT_PROVOCATION, ((BYTE)((o->Angle[2] + 22.5f) / 360.f * 8.f + 1.f) % 8));
 	}
 	else if (FindText(Text, "Cheers") || FindText(Text, "cheers")
 		// Spanish
-		|| FindText(Text, "Campeón") || FindText(Text, "campeón") || FindText(Text, "Campeon") || FindText(Text, "campeon")
-		// Portugês
-		|| FindText(Text, "Campeão") || FindText(Text, "campeão") || FindText(Text, "Campeao") || FindText(Text, "campeao"))
+		|| FindText(Text, "Campeï¿½n") || FindText(Text, "campeï¿½n") || FindText(Text, "Campeon") || FindText(Text, "campeon")
+		// Portugï¿½s
+		|| FindText(Text, "Campeï¿½o") || FindText(Text, "campeï¿½o") || FindText(Text, "Campeao") || FindText(Text, "campeao"))
 	{
 		SetActionClass(c, o, PLAYER_CHEERS, AT_CHEERS);
 		SendRequestAction(AT_CHEERS, ((BYTE)((o->Angle[2] + 22.5f) / 360.f * 8.f + 1.f) % 8));
@@ -4667,7 +4702,7 @@ void CheckChatText(char* Text)
 	else if (FindText(Text, "Around") || FindText(Text, "around")
 		// Spanish
 		|| FindText(Text, "Inquieto") || FindText(Text, "inquieto")
-		// Portugês
+		// Portugï¿½s
 		|| FindText(Text, "Impaciente") || FindText(Text, "impaciente"))
 	{
 		SetActionClass(c, o, PLAYER_LOOK_AROUND, AT_LOOK_AROUND);

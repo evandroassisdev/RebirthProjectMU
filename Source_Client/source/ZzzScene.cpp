@@ -562,7 +562,8 @@ void RenderInfomation3D()
 void RenderInfomation()
 {
 	RenderNotices();
-    
+	RenderQuickNotice();
+
 	CUIMng::Instance().Render();
 
 	if(SceneFlag == LOG_IN_SCENE || SceneFlag == CHARACTER_SCENE)
@@ -2355,6 +2356,13 @@ void MainScene(HDC hDC)
 		if (PressKey(VK_SNAPSHOT))
 		{
 			GrabEnable = !GrabEnable;
+		}
+		if(PressKey(VK_F9))
+		{
+			ToggleCtrlLock();
+			// Standalone 2s toast (not the shared Notice[] queue) so it doesn't
+			// linger for the usual ~12s or get pushed out early by other notices.
+			ShowQuickNotice((char*)(g_bCtrlLock ? "Auto CTRL Ativado" : "Auto CTRL Desativado"), 1, 2000);
 		}
 		if (ChatTime > 0) ChatTime--;
 		if (MacroTime > 0) MacroTime--;
