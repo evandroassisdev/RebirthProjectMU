@@ -69,6 +69,11 @@ void ClearNotice ( void );
 void CreateNotice(char *Text,int Color);
 void MoveNotices();
 void RenderNotices();
+// Standalone, self-timed toast (GetTickCount()-based, not tied to the shared
+// Notice[] queue/NoticeTime) - for one-off feedback that must vanish after a
+// fixed duration regardless of how many other notices are queued/aging.
+void ShowQuickNotice(const char *Text,int Color,int DurationMs);
+void RenderQuickNotice();
 void CreateWhisper(char *ID,const char* Text,int Type);
 void MoveWhispers();
 void RenderSwichState();

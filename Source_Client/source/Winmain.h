@@ -55,6 +55,12 @@
 #define WM_USER_MEMORYHACK	( WM_USER + 1)
 #define WM_NPROTECT_EXIT_TWO  (WM_USER + 10001)
 
+// Tray minimize (F12) - hides the window and shows a tray icon; double-click the icon
+// or press F12 again to restore.
+#define WM_TRAYICON_MESSAGE	( WM_USER + 20001)
+#define TRAYICON_ID				0x444
+#define TRAY_HOTKEY_TIMER		1004
+
 extern bool ashies;
 extern int weather;
 extern int Time_Effect;
@@ -68,6 +74,15 @@ extern HFONT     g_hFontBig;
 extern HFONT     g_hFixFont;
 extern bool      Destroy;
 extern int       RandomTable[];
+
+// CTRL Lock (F9) - keeps VK_CONTROL reporting as held even when it isn't physically pressed
+extern bool g_bCtrlLock;
+extern bool IsCtrlKeyDown();
+extern void ToggleCtrlLock();
+
+// Tray minimize (F12)
+extern bool g_bInTray;
+extern void ToggleTrayMode();
 
 extern char m_ID[];
 extern char m_Version[];

@@ -113,7 +113,7 @@ CErrorReport g_ErrorReport;
 BOOL g_bMinimizedEnabled = FALSE;
 int g_iScreenSaverOldValue = 60*15;
 
-extern float g_fScreenRate_x;	// ¡Ø
+extern float g_fScreenRate_x;	// ï¿½ï¿½
 extern float g_fScreenRate_y;
 
 #if defined USER_WINDOW_MODE || (defined WINDOWMODE)
@@ -384,12 +384,17 @@ BOOL GetFileVersion( char *lpszFileName, WORD *pwVersion)
 
 extern PATH     *path;
 
+static void ShowTrayIcon(bool bAdd); // Winmain.cpp, defined below (tray minimize / F12)
+
 void DestroyWindow()
 {
 	//. save volume level
 	leaf::CRegKey regkey;
 	regkey.SetKey(leaf::CRegKey::_HKEY_CURRENT_USER, "SOFTWARE\\Webzen\\Mu\\Config");
 	regkey.WriteDword("VolumeLevel", g_pOption->GetVolumeLevel());
+
+	if(g_bInTray)
+		ShowTrayIcon(false);
 
 	CUIMng::Instance().Release();
 
@@ -577,6 +582,30 @@ LONG FAR PASCAL WndProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam)
 					g_pSlideHelpMgr->CreateSlideText();
 			}
 			break;
+		case TRAY_HOTKEY_TIMER:
+			// Polled on a timer (not the per-frame render loop) so F12 still works
+			// while the window is hidden/unfocused. GetAsyncKeyState is
+			// system-wide (not per-window), so with 2 client instances running,
+			// F12 restoring here too would pop BOTH back out of the tray at
+			// once regardless of which one the player meant to touch. F12 only
+			// ever sends TO tray now; restoring is double-click-the-icon only
+			// (WM_TRAYICON_MESSAGE below), which is inherently per-instance.
+			{
+				static bool s_bF12Down = false;
+				bool bF12Down = (HIBYTE(GetAsyncKeyState(VK_F12)) & 0x80) != 0;
+				if(bF12Down && !s_bF12Down && !g_bInTray)
+				{
+					ToggleTrayMode();
+				}
+				s_bF12Down = bF12Down;
+			}
+			break;
+		}
+		break;
+	case WM_TRAYICON_MESSAGE:
+		if(lParam == WM_LBUTTONDBLCLK)
+		{
+			ToggleTrayMode();
 		}
 		break;
 	case WM_USER_MEMORYHACK:
@@ -964,6 +993,68 @@ HWND StartWindow(HINSTANCE hInstance, int nCmdShow)
 	return hWnd;
 }
 
+// CTRL Lock (F9) - see Winmain.h
+bool g_bCtrlLock = false;
+
+bool IsCtrlKeyDown()
+{
+	if (g_bCtrlLock)
+		return true;
+	return (HIBYTE(GetAsyncKeyState(VK_CONTROL)) == 128);
+}
+
+void ToggleCtrlLock()
+{
+	g_bCtrlLock = !g_bCtrlLock;
+
+	leaf::CRegKey regkey;
+	regkey.SetKey(leaf::CRegKey::_HKEY_CURRENT_USER, "SOFTWARE\\Webzen\\Mu\\Config");
+	regkey.WriteDword("CtrlLock", g_bCtrlLock ? 1 : 0);
+
+#ifdef CONSOLE_DEBUG
+	if (g_ConsoleDebug)
+		g_ConsoleDebug->Write(MCD_NORMAL, g_bCtrlLock ? "[CtrlLock] ON" : "[CtrlLock] OFF");
+#endif // CONSOLE_DEBUG
+}
+
+// Tray minimize (F12) - see Winmain.h
+bool g_bInTray = false;
+
+static void ShowTrayIcon(bool bAdd)
+{
+	NOTIFYICONDATA nid = {0};
+	nid.cbSize				= sizeof(NOTIFYICONDATA);
+	nid.uID					= TRAYICON_ID;
+	nid.hWnd				= g_hWnd;
+	nid.uFlags				= NIF_ICON | NIF_MESSAGE | NIF_TIP;
+	nid.hIcon				= (HICON)LoadImage(g_hInst, MAKEINTRESOURCE(IDI_ICON_TRAY), IMAGE_ICON, GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), LR_DEFAULTCOLOR);
+	nid.uCallbackMessage	= WM_TRAYICON_MESSAGE;
+	strcpy_s(nid.szTip, sizeof(nid.szTip), "MU Online");
+
+	Shell_NotifyIcon(bAdd ? NIM_ADD : NIM_DELETE, &nid);
+
+	if (nid.hIcon)
+		DestroyIcon(nid.hIcon);
+}
+
+void ToggleTrayMode()
+{
+	if (!g_bInTray)
+	{
+		ShowTrayIcon(true);
+		ShowWindow(g_hWnd, SW_HIDE);
+		g_bInTray = true;
+	}
+	else
+	{
+		ShowTrayIcon(false);
+		ShowWindow(g_hWnd, SW_SHOW);
+		SetForegroundWindow(g_hWnd);
+		SetFocus(g_hWnd);
+		g_bInTray = false;
+	}
+}
+
 char m_ID[11];
 char m_Version[11];
 char m_ExeVersion[11];
@@ -1070,9 +1161,17 @@ BOOL OpenInitFile()
 		dwSize = MAX_LANGUAGE_NAME_LENGTH;
 		if ( RegQueryValueEx (hKey, "LangSelection", 0, NULL, (LPBYTE)g_aszMLSelection, &dwSize) != ERROR_SUCCESS)
 		{
-			strcpy_s(g_aszMLSelection, "Portugês");
+			strcpy_s(g_aszMLSelection, "Portugï¿½s");
 		}
 		g_strSelectedML = g_aszMLSelection;
+
+		DWORD dwCtrlLock = 0;
+		dwSize = sizeof ( DWORD);
+		if ( RegQueryValueEx (hKey, "CtrlLock", 0, NULL, (LPBYTE) & dwCtrlLock, &dwSize) != ERROR_SUCCESS)
+		{
+			dwCtrlLock = 0;
+		}
+		g_bCtrlLock = (dwCtrlLock != 0);
 	}
 	RegCloseKey( hKey);
 
@@ -1149,7 +1248,7 @@ BOOL Util_CheckOption( char *lpszCommandLine, unsigned char cOption, char *lpszS
 	{
 		lpFound = ( unsigned char*)strchr( ( char*)( lpFound + 1), nFind);
 		if ( lpFound && ( *( lpFound + 1) == cComp[0] || *( lpFound + 1) == cComp[1]))
-		{	// ¹ß°ß
+		{	// ï¿½ß°ï¿½
 			if ( lpszString)
 			{
 				int nCount = 0;
@@ -1176,7 +1275,7 @@ BOOL UpdateFile( char *lpszOld, char *lpszNew)
 	DWORD dwStartTickCount = ::GetTickCount();
 	while(::GetTickCount() - dwStartTickCount < 5000) {
 		if ( CopyFile( lpszOld, lpszNew, FALSE))
-		{	// ¼º°ø
+		{	// ï¿½ï¿½ï¿½ï¿½
 			DeleteFile( lpszOld);
 			return ( TRUE);
 		}
@@ -1481,6 +1580,7 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance,
 	}
 
 	SetTimer(g_hWnd, HACK_TIMER, 20*1000, NULL);
+	SetTimer(g_hWnd, TRAY_HOTKEY_TIMER, 150, NULL);
 
 	srand((unsigned)time(NULL));
 	for(int i=0;i<100;i++)
@@ -1569,10 +1669,10 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance,
 	if (g_bUseWindowMode == FALSE)
 	{
 #endif	// ACTIVE_FOCUS_OUT
-		int nOldVal; // °ªÀÌ µé¾î°¥ ÇÊ¿ä°¡ ¾øÀ½
-		SystemParametersInfo(SPI_SCREENSAVERRUNNING, 1, &nOldVal, 0);  // ´ÜÃàÅ°¸¦ ¸ø¾²°Ô ÇÔ
-		SystemParametersInfo(SPI_GETSCREENSAVETIMEOUT, 0, &g_iScreenSaverOldValue, 0);  // ½ºÅ©¸°¼¼ÀÌ¹ö Â÷´Ü
-		SystemParametersInfo(SPI_SETSCREENSAVETIMEOUT, 300*60, NULL, 0);  // ½ºÅ©¸°¼¼ÀÌ¹ö Â÷´Ü
+		int nOldVal; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½î°¥ ï¿½Ê¿ä°¡ ï¿½ï¿½ï¿½ï¿½
+		SystemParametersInfo(SPI_SCREENSAVERRUNNING, 1, &nOldVal, 0);  // ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+		SystemParametersInfo(SPI_GETSCREENSAVETIMEOUT, 0, &g_iScreenSaverOldValue, 0);  // ï¿½ï¿½Å©ï¿½ï¿½ï¿½ï¿½ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½
+		SystemParametersInfo(SPI_SETSCREENSAVETIMEOUT, 300*60, NULL, 0);  // ï¿½ï¿½Å©ï¿½ï¿½ï¿½ï¿½ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½
 #ifdef ACTIVE_FOCUS_OUT
 	}
 #endif	// ACTIVE_FOCUS_OUT

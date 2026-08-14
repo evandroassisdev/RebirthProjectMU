@@ -9059,8 +9059,21 @@ extern int g_iLetterReadNextPos_x, g_iLetterReadNextPos_y;
 void ReceiveLetterText(BYTE* ReceiveBuffer)
 {
 	LPFS_LETTER_TEXT Data = (LPFS_LETTER_TEXT)ReceiveBuffer;
-	Data->Memo[Data->MemoSize] = '\0';
-	
+
+	// Data->Memo[Data->MemoSize] = '\0' used to write straight into the network
+	// receive buffer -- safe only if the server padded the packet with a spare
+	// byte after the text, which it doesn't when MemoSize exactly equals the
+	// letter's real length (the common case). The null terminator then lands
+	// exactly on CPacket's own guard byte one past the received data, tripping
+	// a MemBlock==0xFD debug-CRT assert. Never write into Data->Memo in place --
+	// clamp to what the packet actually declares and build the display copy in
+	// a local buffer instead (below).
+	WORD wPacketSize = (Data->Header.SizeH << 8) | Data->Header.SizeL;
+	int iMaxMemo = wPacketSize - offsetof(FS_LETTER_TEXT, Memo);
+	if (iMaxMemo < 0) iMaxMemo = 0;
+	if (iMaxMemo > MAX_LETTERTEXT_LENGTH) iMaxMemo = MAX_LETTERTEXT_LENGTH;
+	if (Data->MemoSize > iMaxMemo) Data->MemoSize = (WORD)iMaxMemo;
+
 	g_pLetterList->CacheLetterText(Data->Index, Data);
 	
 	LETTERLIST_TEXT * pLetter = g_pLetterList->GetLetter(Data->Index);
@@ -9083,8 +9096,9 @@ void ReceiveLetterText(BYTE* ReceiveBuffer)
 	
 	CUILetterReadWindow * pWindow = (CUILetterReadWindow *)g_pWindowMgr->GetWindow(dwUIID);
 	char szText[1000 + 1] = {0};
-	strncpy(szText, (const char *)Data->Memo, 1000);
-	szText[1000] = '\0';
+	int iCopyLen = (Data->MemoSize < 1000) ? Data->MemoSize : 1000;
+	memcpy(szText, Data->Memo, iCopyLen);
+	szText[iCopyLen] = '\0';
 	pWindow->SetLetter(pLetter, szText);
 	g_pWindowMgr->SetLetterReadWindow(pLetter->m_dwLetterID, dwUIID);
 	
