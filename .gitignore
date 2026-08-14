@@ -6,6 +6,10 @@
 # Deployed/runnable server (built binaries + live data, not source)
 MuServer/
 
+# SQL Server database files (data + transaction log)
+*.mdf
+*.ldf
+
 # Build intermediates only (kept Global Debug/Global Release themselves - runnable client + assets)
 Source_Client/tmp/
 Source_Client/source/Global Debug/
