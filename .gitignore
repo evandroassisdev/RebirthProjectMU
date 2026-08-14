@@ -15,6 +15,9 @@ Source_Client/tmp/
 Source_Client/source/Global Debug/
 Source_Client/source/Global Release/
 
+# Runtime debug log, rewritten every client launch - not source
+PacketList.txt
+
 # Build outputs (server, per-sub-project Debug/Release dirs)
 Source_Server/**/Debug/
 Source_Server/**/Release/
