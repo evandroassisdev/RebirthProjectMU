@@ -313,7 +313,12 @@ void PostMessage1(char* name,char* message,char* text) // OK
 
 	char buff[256] = {0};
 
-	wsprintf(buff,message,text);
+	// ANCHOR_POST_FIX_START: message ("%s: %s") expects name+text, but only
+	// text was ever passed to wsprintf here - the missing arg read
+	// uninitialized stack, producing garbled text (e.g. "ÁN"). name is
+	// already sent separately via pMsg.name below, so just copy text in.
+	strncpy(buff,text,sizeof(buff)-1);
+	// ANCHOR_POST_FIX_END
 
 	int size = strlen(buff);
 
@@ -360,7 +365,10 @@ void PostMessage2(char* name,char* message,char* text) // OK
 
 	char buff[256] = {'~'};
 
-	wsprintf(&buff[1],message,text);
+	// ANCHOR_POST_FIX2_START: see ANCHOR_POST_FIX_START in PostMessage1 - same
+	// missing-arg garbled-text bug, name is already in pMsg.name below.
+	strncpy(&buff[1],text,sizeof(buff)-2);
+	// ANCHOR_POST_FIX2_END
 
 	int size = strlen(buff);
 
@@ -407,7 +415,10 @@ void PostMessage3(char* name,char* message,char* text) // OK
 
 	char buff[256] = {'@'};
 
-	wsprintf(&buff[1],message,text);
+	// ANCHOR_POST_FIX3_START: see ANCHOR_POST_FIX_START in PostMessage1 - same
+	// missing-arg garbled-text bug, name is already in pMsg.name below.
+	strncpy(&buff[1],text,sizeof(buff)-2);
+	// ANCHOR_POST_FIX3_END
 
 	int size = strlen(buff);
 
@@ -454,7 +465,10 @@ void PostMessage4(char* name,char* message,char* text) // OK
 
 	char buff[256] = {'$'};
 
-	wsprintf(&buff[1],message,text);
+	// ANCHOR_POST_FIX4_START: see ANCHOR_POST_FIX_START in PostMessage1 - same
+	// missing-arg garbled-text bug, name is already in pMsg.name below.
+	strncpy(&buff[1],text,sizeof(buff)-2);
+	// ANCHOR_POST_FIX4_END
 
 	int size = strlen(buff);
 
