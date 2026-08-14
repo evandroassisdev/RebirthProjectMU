@@ -175,7 +175,7 @@ int CSocketItemMgr::CalcSocketOptionValue(int iOptionType, float fOptionValue)
 		}
 	case 4:
 		{
-			WORD wLifeMax;
+			DWORD wLifeMax; // widened WORD->DWORD, matches CharacterAttribute->LifeMax
 
 			if(gCharacterManager.IsMasterLevel( Hero->Class ) == true )
 				wLifeMax = Master_Level_Data.wMaxLife;
@@ -186,7 +186,7 @@ int CSocketItemMgr::CalcSocketOptionValue(int iOptionType, float fOptionValue)
 		}
 	case 5:
 		{
-			WORD wManaMax;
+			DWORD wManaMax; // widened WORD->DWORD, matches CharacterAttribute->ManaMax
 			if(gCharacterManager.IsMasterLevel( Hero->Class ) == true )
 				wManaMax = Master_Level_Data.wMaxMana;
 			else
@@ -266,7 +266,7 @@ int CSocketItemMgr::AttachToolTipForSocketItem(const ITEM* pItem, int iTextNum)
 		}
 		else
 		{
-			assert(!"¼ÒÄÏ ÀÎµ¦½º ¿¡·¯");
+			assert(!"ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
 		}
 
 		sprintf(TextList[iTextNum], GlobalText[2655], i + 1, szOptionText);

@@ -2133,6 +2133,56 @@ void CGCharacterInfoRecv(PMSG_CHARACTER_INFO_RECV* lpMsg,int aIndex) // OK
 	GDCharacterInfoSend(aIndex,name);
 }
 
+// Sends the same C1:F3:06 confirmation the native "+" stat button uses
+// (CGLevelUpPointRecv, below) so the client actually applies +1 to the
+// relevant stat/LevelUpPoint locally (see WSclient.cpp's ReceiveAddPoint).
+// Factored out so CommandManager.cpp's /v /a /s /e /c commands can reuse it
+// instead of the dead GCNewCharacterInfoSend (a no-op when GAMESERVER_EXTRA==0,
+// which this build is) -- that gap is why points only showed up after relog.
+void GCLevelUpPointSend(LPOBJ lpObj,int type,int amount) // OK
+{
+	PMSG_LEVEL_UP_POINT_SEND pMsg;
+
+	pMsg.header.set(0xF3,0x06,sizeof(pMsg));
+
+	pMsg.result = 16+type;
+
+	pMsg.Amount = (WORD)amount;
+
+	pMsg.MaxLifeAndManaWide = 0;
+
+	switch(type)
+	{
+		case 2: // Vitality -- Life no longer clamped/wrapped at 65000 (see MaxLifeAndManaWide)
+			pMsg.MaxLifeAndManaWide = (DWORD)(lpObj->MaxLife+lpObj->AddLife);
+			pMsg.MaxLifeAndMana = GET_MAX_WORD_VALUE(pMsg.MaxLifeAndManaWide);
+			break;
+		case 3: // Energy -- Mana no longer clamped/wrapped either
+			pMsg.MaxLifeAndManaWide = (DWORD)(lpObj->MaxMana+lpObj->AddMana);
+			pMsg.MaxLifeAndMana = GET_MAX_WORD_VALUE(pMsg.MaxLifeAndManaWide);
+			break;
+	}
+
+	pMsg.MaxBP = (DWORD)(lpObj->MaxBP+lpObj->AddBP); // no longer clamped
+
+	pMsg.MaxShield = (DWORD)(lpObj->MaxShield+lpObj->AddShield); // no longer clamped
+
+	#if(GAMESERVER_EXTRA==1)
+	pMsg.ViewPoint = (DWORD)(lpObj->LevelUpPoint);
+	pMsg.ViewMaxHP = (DWORD)(lpObj->MaxLife+lpObj->AddLife);
+	pMsg.ViewMaxMP = (DWORD)(lpObj->MaxMana+lpObj->AddMana);
+	pMsg.ViewMaxBP = (DWORD)(lpObj->MaxBP+lpObj->AddBP);
+	pMsg.ViewMaxSD = (DWORD)(lpObj->MaxShield+lpObj->AddShield);
+	pMsg.ViewStrength = lpObj->Strength;
+	pMsg.ViewDexterity = lpObj->Dexterity;
+	pMsg.ViewVitality = lpObj->Vitality;
+	pMsg.ViewEnergy = lpObj->Energy;
+	pMsg.ViewLeadership = lpObj->Leadership;
+	#endif
+
+	DataSend(lpObj->Index,(BYTE*)&pMsg,pMsg.header.size);
+}
+
 void CGLevelUpPointRecv(PMSG_LEVEL_UP_POINT_RECV* lpMsg,int aIndex) // OK
 {
 	LPOBJ lpObj = &gObj[aIndex];
@@ -2147,24 +2197,29 @@ void CGLevelUpPointRecv(PMSG_LEVEL_UP_POINT_RECV* lpMsg,int aIndex) // OK
 	pMsg.header.set(0xF3,0x06,sizeof(pMsg));
 
 	pMsg.result = 0;
-	
+	pMsg.Amount = 0;
+	pMsg.MaxLifeAndManaWide = 0;
+
 	if(gObjectManager.CharacterLevelUpPointAdd(lpObj,lpMsg->type,1) != 0)
 	{
 		pMsg.result = 16+lpMsg->type;
+		pMsg.Amount = 1;
 
 		switch(lpMsg->type)
 		{
-			case 2: // Vitality
-				pMsg.MaxLifeAndMana = GET_MAX_WORD_VALUE((lpObj->MaxLife+lpObj->AddLife));
+			case 2: // Vitality -- Life no longer clamped/wrapped at 65000 (see MaxLifeAndManaWide)
+				pMsg.MaxLifeAndManaWide = (DWORD)(lpObj->MaxLife+lpObj->AddLife);
+				pMsg.MaxLifeAndMana = GET_MAX_WORD_VALUE(pMsg.MaxLifeAndManaWide);
 				break;
-			case 3: // Energy
-				pMsg.MaxLifeAndMana = GET_MAX_WORD_VALUE((lpObj->MaxMana+lpObj->AddMana));
+			case 3: // Energy -- Mana no longer clamped/wrapped either
+				pMsg.MaxLifeAndManaWide = (DWORD)(lpObj->MaxMana+lpObj->AddMana);
+				pMsg.MaxLifeAndMana = GET_MAX_WORD_VALUE(pMsg.MaxLifeAndManaWide);
 				break;
 		}
 
-		pMsg.MaxBP = GET_MAX_WORD_VALUE((lpObj->MaxBP+lpObj->AddBP));
+		pMsg.MaxBP = (DWORD)(lpObj->MaxBP+lpObj->AddBP); // no longer clamped
 
-		pMsg.MaxShield = GET_MAX_WORD_VALUE((lpObj->MaxShield+lpObj->AddShield));
+		pMsg.MaxShield = (DWORD)(lpObj->MaxShield+lpObj->AddShield); // no longer clamped
 
 		#if(GAMESERVER_EXTRA==1)
 		pMsg.ViewPoint = (DWORD)(lpObj->LevelUpPoint);
@@ -2604,13 +2659,22 @@ void GCLifeSend(int aIndex,BYTE type,int life,int shield) // OK
 
 	pMsg.type = type;
 
-	pMsg.life[0] = SET_NUMBERHB(GET_MAX_WORD_VALUE(life));
-	pMsg.life[1] = SET_NUMBERLB(GET_MAX_WORD_VALUE(life));
+	// life is no longer clamped to 65000 -- packed as a full 4-byte DWORD now
+	// (see PMSG_LIFE_SEND). Big-endian: life[0] is the highest byte.
+	DWORD lifeWide = (DWORD)life;
+	pMsg.life[0] = (BYTE)(lifeWide>>24);
+	pMsg.life[1] = (BYTE)(lifeWide>>16);
+	pMsg.life[2] = SET_NUMBERHB(lifeWide);
+	pMsg.life[3] = SET_NUMBERLB(lifeWide);
 
 	pMsg.flag = 0;
 
-	pMsg.shield[0] = SET_NUMBERHB(GET_MAX_WORD_VALUE(shield));
-	pMsg.shield[1] = SET_NUMBERLB(GET_MAX_WORD_VALUE(shield));
+	// shield is no longer clamped either -- also packed as a full 4-byte DWORD now.
+	DWORD shieldWide = (DWORD)shield;
+	pMsg.shield[0] = (BYTE)(shieldWide>>24);
+	pMsg.shield[1] = (BYTE)(shieldWide>>16);
+	pMsg.shield[2] = SET_NUMBERHB(shieldWide);
+	pMsg.shield[3] = SET_NUMBERLB(shieldWide);
 
 	#if(GAMESERVER_EXTRA==1)
 	pMsg.ViewHP = life;
@@ -2628,11 +2692,18 @@ void GCManaSend(int aIndex,BYTE type,int mana,int bp) // OK
 
 	pMsg.type = type;
 
-	pMsg.mana[0] = SET_NUMBERHB(GET_MAX_WORD_VALUE(mana));
-	pMsg.mana[1] = SET_NUMBERLB(GET_MAX_WORD_VALUE(mana));
+	// mana/bp no longer clamped -- packed as full 4-byte DWORDs now (see PMSG_MANA_SEND).
+	DWORD manaWide = (DWORD)mana;
+	pMsg.mana[0] = (BYTE)(manaWide>>24);
+	pMsg.mana[1] = (BYTE)(manaWide>>16);
+	pMsg.mana[2] = SET_NUMBERHB(manaWide);
+	pMsg.mana[3] = SET_NUMBERLB(manaWide);
 
-	pMsg.bp[0] = SET_NUMBERHB(GET_MAX_WORD_VALUE(bp));
-	pMsg.bp[1] = SET_NUMBERLB(GET_MAX_WORD_VALUE(bp));
+	DWORD bpWide = (DWORD)bp;
+	pMsg.bp[0] = (BYTE)(bpWide>>24);
+	pMsg.bp[1] = (BYTE)(bpWide>>16);
+	pMsg.bp[2] = SET_NUMBERHB(bpWide);
+	pMsg.bp[3] = SET_NUMBERLB(bpWide);
 
 	#if(GAMESERVER_EXTRA==1)
 	pMsg.ViewMP = mana;
@@ -3162,13 +3233,13 @@ void GCCharacterRegenSend(LPOBJ lpObj) // OK
 
 	pMsg.Dir = lpObj->Dir;
 
-	pMsg.Life = GET_MAX_WORD_VALUE(lpObj->Life);
+	pMsg.Life = (DWORD)lpObj->Life; // no longer clamped, see PMSG_CHARACTER_REGEN_SEND
 
-	pMsg.Mana = GET_MAX_WORD_VALUE(lpObj->Mana);
+	pMsg.Mana = (DWORD)lpObj->Mana; // no longer clamped
 
-	pMsg.Shield = GET_MAX_WORD_VALUE(lpObj->Shield);
+	pMsg.Shield = (DWORD)lpObj->Shield; // no longer clamped, see PMSG_CHARACTER_REGEN_SEND
 
-	pMsg.BP = GET_MAX_WORD_VALUE(lpObj->BP);
+	pMsg.BP = (DWORD)lpObj->BP; // no longer clamped
 
 	if(gMasterSkillTree.CheckMasterLevel(lpObj) == 0)
 	{
@@ -3215,13 +3286,13 @@ void GCLevelUpSend(LPOBJ lpObj) // OK
 
 	pMsg.LevelUpPoint = lpObj->LevelUpPoint;
 
-	pMsg.MaxLife = GET_MAX_WORD_VALUE((lpObj->MaxLife+lpObj->AddLife));
+	pMsg.MaxLife = (DWORD)(lpObj->MaxLife+lpObj->AddLife); // no longer clamped, see PMSG_LEVEL_UP_SEND
 
-	pMsg.MaxMana = GET_MAX_WORD_VALUE((lpObj->MaxMana+lpObj->AddMana));
+	pMsg.MaxMana = (DWORD)(lpObj->MaxMana+lpObj->AddMana); // no longer clamped
 
-	pMsg.MaxShield = GET_MAX_WORD_VALUE((lpObj->MaxShield+lpObj->AddShield));
+	pMsg.MaxShield = (DWORD)(lpObj->MaxShield+lpObj->AddShield); // no longer clamped
 
-	pMsg.MaxBP = GET_MAX_WORD_VALUE((lpObj->MaxBP+lpObj->AddBP));
+	pMsg.MaxBP = (DWORD)(lpObj->MaxBP+lpObj->AddBP); // no longer clamped
 
 	pMsg.FruitAddPoint = lpObj->FruitAddPoint;
 

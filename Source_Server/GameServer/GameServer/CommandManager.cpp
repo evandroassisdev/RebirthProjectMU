@@ -829,7 +829,13 @@ bool CCommandManager::CommandAddPoint(LPOBJ lpObj,char* arg,int type) // OK
 		return 0;
 	}
 
-	GCNewCharacterInfoSend(lpObj);
+	// GCNewCharacterInfoSend is a no-op with GAMESERVER_EXTRA==0 (this build) --
+	// that's why points only used to show up after relogging. Send the same
+	// C1:F3:06 confirmation the native "+" stat button uses, but as ONE packet
+	// carrying the full amount (not one packet per point -- for large amounts
+	// like "/a 1000" that flooded the client with 1000 packets, each forcing a
+	// full CharacterMachine->CalculateAll() client-side, and froze it).
+	GCLevelUpPointSend(lpObj,type,amount);
 
 	gNotice.GCNoticeSend(lpObj->Index,1,0,0,0,0,0,gMessage.GetMessage(74),amount,lpObj->LevelUpPoint);
 

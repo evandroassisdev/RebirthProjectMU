@@ -29,7 +29,7 @@
 #include "Utilities\Log\DebugAngel.h"
 #endif // FOR_WORK
 
-//ui°³Æí ¿Ï·áÈÄ Á¦°Å
+//uiï¿½ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 #include "NewUISystem.h"
 
 //////////////////////////////////////////////////////////////////////
@@ -129,7 +129,7 @@ bool CGFxMainUi::OnCreateDevice(SInt bufw, SInt bufh, SInt left, SInt top, SInt 
 
 	m_pUIMovie->SetViewport(bufw, bufh, left, top, w, h, flags);
 
-	//ÇØ»óµµº° ¼³Á¤ÇÏ±â
+	//ï¿½Ø»óµµºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½
 	if(bufw == 800 && bufh == 600)
 	{
 		m_iViewType = 1;
@@ -151,7 +151,7 @@ bool CGFxMainUi::OnCreateDevice(SInt bufw, SInt bufh, SInt left, SInt top, SInt 
 
 bool CGFxMainUi::OnResetDevice()
 {
-	// openGL »ó¿¡¼­ resetDevice ÇÏ´Â ¹æ¹ý ¸ð¸£°ÚÀ½
+	// openGL ï¿½ó¿¡¼ï¿½ resetDevice ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ ï¿½ð¸£°ï¿½ï¿½ï¿½
 	//this->InitGFx();
 	return TRUE;
 }
@@ -244,14 +244,14 @@ bool CGFxMainUi::InitGFx(const char* _pfilename, UInt _loadConstants, UPInt _mem
 
 	m_pUIMovie->Invoke("_root.scene.SetClearSkillSlot", "");
 
-	//½ºÅ×¹Ì³Ê°ÔÀÌÁö
+	//ï¿½ï¿½ï¿½×¹Ì³Ê°ï¿½ï¿½ï¿½ï¿½ï¿½
 	m_pUIMovie->Invoke("_root.scene.SetStaminaVisible", "%b", m_bStaVisible);
 
 	return TRUE;
 }
 
 
-// Ä³¸¯ÅÍ ¼±ÅÃÃ¢¿¡¼­ ³Ñ¾î¿Ã¶§ È£Ãâ
+// Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¢ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¾ï¿½Ã¶ï¿½ È£ï¿½ï¿½
 bool CGFxMainUi::Init()
 {
 	m_iHpPercent = 0;
@@ -304,7 +304,7 @@ bool CGFxMainUi::Init()
 void CGFxMainUi::UpdateMenuBtns()
 {
 #ifdef ASG_ADD_UI_QUEST_PROGRESS_ETC
-	// ±âÅ¸ »óÈ²¿¡ ÀÇÇÑ (NPC Å¬¸¯ÀÌ ¾Æ´Ñ)Äù½ºÆ®°¡ ÀÖ´Ù¸é.
+	// ï¿½ï¿½Å¸ ï¿½ï¿½È²ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (NPC Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½)ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½.
 	if (!g_QuestMng.IsQuestIndexByEtcListEmpty())
 	{
 		//SetMainBtnBlink(_iIndex:Number, _bBlink:Boolean, _iInterval:Number)
@@ -315,7 +315,10 @@ void CGFxMainUi::UpdateMenuBtns()
 
 void CGFxMainUi::UpdateGaugeHpMp()
 {
-	WORD wLifeMax, wLife, wManaMax, wMana;
+	// widened WORD->DWORD (matches CharacterAttribute->Life/LifeMax/Mana/ManaMax) --
+	// these local copies were truncating the already-correct wide value.
+	DWORD wLifeMax, wLife;
+	DWORD wManaMax, wMana;
 
 	// HP/MP ----------------------------------------------------------
 	if(IsMasterLevel( Hero->Class ) == true )
@@ -333,7 +336,7 @@ void CGFxMainUi::UpdateGaugeHpMp()
 		wMana = min(max(0, CharacterAttribute->Mana), wManaMax);
 	}
 
-	// »ý¸í·Â ¼öÄ¡°¡ 20%º¸´Ù ³·À¸¸é ½ÉÀå¼Ò¸® ³»ÁÖ´Â ¼¾½º
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ 20%ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ò¸ï¿½ ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if(wLifeMax > 0)
 	{
 		if(wLife > 0 && (wLife / (float)wLifeMax) < 0.2f)
@@ -359,7 +362,7 @@ void CGFxMainUi::UpdateGaugeHpMp()
 			iMana = 0;
 	}
 
-	// Áßµ¶»óÅÂ º¯°æ
+	// ï¿½ßµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	bool _intoxication = g_isCharacterBuff((&Hero->Object), eDeBuff_Poison);
 	if(m_isIntoxication != _intoxication)
 	{
@@ -367,14 +370,14 @@ void CGFxMainUi::UpdateGaugeHpMp()
 		m_pUIMovie->Invoke("_root.scene.SetChangeIntoxication", "%b", m_isIntoxication);
 	}
 
-	//hpº¯°æ
+	//hpï¿½ï¿½ï¿½ï¿½
 	if(m_iHpPercent != iLife)
 	{
 		m_iHpPercent = iLife;
 		m_pUIMovie->Invoke("_root.scene.SetChangeHp", "%d %d %d", m_iHpPercent, (int)wLife, (int)wLifeMax);
 	}
 
-	//mpº¯°æ
+	//mpï¿½ï¿½ï¿½ï¿½
 	if(m_iMpPercent != iMana)
 	{
 		m_iMpPercent = iMana;
@@ -384,7 +387,8 @@ void CGFxMainUi::UpdateGaugeHpMp()
 
 void CGFxMainUi::UpdateGaugeSd()
 {
-	WORD wMaxShield,wShield;
+	// widened WORD->DWORD, matches CharacterAttribute->Shield/ShieldMax
+	DWORD wMaxShield,wShield;
 
 	// SG ----------------------------------------------------------
 	if(IsMasterLevel(Hero->Class) == true)
@@ -398,14 +402,14 @@ void CGFxMainUi::UpdateGaugeSd()
 		wShield = min (wMaxShield, CharacterAttribute->Shield);
 	}
 
-	// ³ª´°¼À ¿¹¿ÜÃ³¸®
-	int iShield;	// È®·ü
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½
+	int iShield;	// È®ï¿½ï¿½
 	if(wMaxShield > 0)
 	{
 		iShield = int( (float)wShield / (float)wMaxShield * 100.0f);
 	}
 
-	//sdº¯°æ
+	//sdï¿½ï¿½ï¿½ï¿½
 	if(m_iSDPercent != iShield)
 	{
 		m_iSDPercent = iShield;
@@ -415,7 +419,7 @@ void CGFxMainUi::UpdateGaugeSd()
 
 void CGFxMainUi::UpdateGaugeAg()
 {
-	WORD dwMaxSkillMana,dwSkillMana;
+	DWORD dwMaxSkillMana,dwSkillMana; // widened WORD->DWORD, matches CharacterAttribute->SkillMana/SkillManaMax (BP)
 
 	// AG ----------------------------------------------------------
 	if(IsMasterLevel(Hero->Class) == true)
@@ -430,8 +434,8 @@ void CGFxMainUi::UpdateGaugeAg()
 		dwSkillMana = min(dwMaxSkillMana, CharacterAttribute->SkillMana);
 	}
 
-	// ³ª´°¼À ¿¹¿ÜÃ³¸®
-	int iSkillMana;	// È®·ü
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½
+	int iSkillMana;	// È®ï¿½ï¿½
 	if(dwMaxSkillMana > 0)
 	{
 		iSkillMana = (int)( (float)dwSkillMana / (float)dwMaxSkillMana * 100.0f);
@@ -440,7 +444,7 @@ void CGFxMainUi::UpdateGaugeAg()
 			iSkillMana = 0;
 	}
 
-	//agº¯°æ
+	//agï¿½ï¿½ï¿½ï¿½
 	if(m_iAGPercent != iSkillMana)
 	{
 		m_iAGPercent = iSkillMana;
@@ -450,16 +454,16 @@ void CGFxMainUi::UpdateGaugeAg()
 
 void CGFxMainUi::UpdateGaugeExp()
 {
-	__int64 wLevel;				// ÇöÀç ·¹º§
-	__int64 dwNexExperience;	// ´ÙÀ½ ·¹º§¾÷ °æÇèÄ¡
-	__int64 dwExperience;		// ÇöÀç °æÇèÄ¡
+	__int64 wLevel;				// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	__int64 dwNexExperience;	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡
+	__int64 dwExperience;		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡
 
-	bool _bMasterLv = false;  //exp°ÔÀÌÁö Å¸ÀÔ ¼±ÅÃ
+	bool _bMasterLv = false;  //expï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	// EXP ----------------------------------------------------------
 	if(IsMasterLevel(CharacterAttribute->Class) == true)
 	{
 		_bMasterLv = true;
-		wLevel = (__int64)Master_Level_Data.nMLevel;	// ÇöÀç ¸¶½ºÅÍ ·¹º§
+		wLevel = (__int64)Master_Level_Data.nMLevel;	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		dwNexExperience = (__int64)Master_Level_Data.lNext_MasterLevel_Experince;
 		dwExperience = (__int64)Master_Level_Data.lMasterLevel_Experince;
 	}
@@ -475,9 +479,9 @@ void CGFxMainUi::UpdateGaugeExp()
 
 	if(IsMasterLevel(CharacterAttribute->Class) == true)
 	{
-		__int64 iTotalLevel = wLevel + 400;				// Á¾ÇÕ·¹º§ - 400·¾ÀÌ ¸¸·¾ÀÌ±â ¶§¹®¿¡ ´õÇØÁØ´Ù.
-		__int64 iTOverLevel = iTotalLevel - 255;		// 255·¹º§ ÀÌ»ó ±âÁØ ·¹º§
-		__int64 iBaseExperience = 0;					// ·¹º§ ÃÊ±â °æÇèÄ¡
+		__int64 iTotalLevel = wLevel + 400;				// ï¿½ï¿½ï¿½Õ·ï¿½ï¿½ï¿½ - 400ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
+		__int64 iTOverLevel = iTotalLevel - 255;		// 255ï¿½ï¿½ï¿½ï¿½ ï¿½Ì»ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		__int64 iBaseExperience = 0;					// ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡
 
 		__int64 iData_Master =	// A
 			(
@@ -499,25 +503,25 @@ void CGFxMainUi::UpdateGaugeExp()
 			);
 		iBaseExperience = (iData_Master - (__int64)3892250000) / (__int64)2;	// B
 
-		// ·¹º§¾÷ °æÇèÄ¡
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡
 		double fNeedExp = (double)dwNexExperience - (double)iBaseExperience;
 
-		// ÇöÀç È¹µæÇÑ °æÇèÄ¡
+		// ï¿½ï¿½ï¿½ï¿½ È¹ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡
 		double fExp = (double)dwExperience - (double)iBaseExperience;
 
-		if(dwExperience < iBaseExperience)	// ¿¡·¯
+		if(dwExperience < iBaseExperience)	// ï¿½ï¿½ï¿½ï¿½
 		{
 			fExp = 0.f;
 		}
 
-		//¸¶½ºÅÍ·¾ÀÌ¸é exp°ÔÀÌÁö º¯°æ
+		//ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½ï¿½Ì¸ï¿½ expï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		if(m_bMasterLv != _bMasterLv)
 		{
 			m_bMasterLv = _bMasterLv;
 			m_pUIMovie->Invoke("_root.scene.SetChangeMasterExp", "%b", m_bMasterLv);
 		}
 
-		int _iExpPercent = 0;	// È®·ü
+		int _iExpPercent = 0;	// È®ï¿½ï¿½
 		if(fNeedExp > 0)
 		{
 			_iExpPercent = int( (float)fExp / (float)fNeedExp * 100.0f );
@@ -526,7 +530,7 @@ void CGFxMainUi::UpdateGaugeExp()
 				_iExpPercent = 0;
 		}
 
-		//exp°ÔÀÌÁö º¯È­½Ã
+		//expï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­ï¿½ï¿½
 		if(m_iExpPercent != _iExpPercent || m_iExpMin != fExp || m_iExpMax != fNeedExp)
 		{
 			m_iExpPercent = _iExpPercent;
@@ -552,13 +556,13 @@ void CGFxMainUi::UpdateGaugeExp()
 			}
 		}
 
-		// ·¹º§¾÷ °æÇèÄ¡
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡
 		double fNeedExp = (double)dwNexExperience - (double)dwPriorExperience;
 
-		// ÇöÀç È¹µæÇÑ °æÇèÄ¡
+		// ï¿½ï¿½ï¿½ï¿½ È¹ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡
 		double fExp = (double)dwExperience - (double)dwPriorExperience;
 
-		//Æ¯Á¤»óÈ²¿¡¼­ -¼öÄ¡°ªµé¾î¿È
+		//Æ¯ï¿½ï¿½ï¿½ï¿½È²ï¿½ï¿½ï¿½ï¿½ -ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if(fNeedExp < 0 || fExp < 0) return;
 
 		if(dwExperience < dwPriorExperience)
@@ -566,7 +570,7 @@ void CGFxMainUi::UpdateGaugeExp()
 			fExp = 0.f;
 		}
 
-		int _iExpPercent;	// È®·ü
+		int _iExpPercent;	// È®ï¿½ï¿½
 		if(fNeedExp > 0)
 		{
 			_iExpPercent = int( (float)fExp / (float)fNeedExp * 100.0f );
@@ -654,20 +658,20 @@ void CGFxMainUi::UpdateSkillSlot()
 	}
 	if(Hero != NULL)
 	{
-		//ÅøÆÁ ½ºÅ³ ÃÊ±âÈ­¹× ¼³Á¤
+		//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ ï¿½Ê±ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		SetSkillSlot();
 	}
 
 	//---------------------------
 	for(int i=0; i<MAX_SKILL_HOT_KEY; i++)
 	{
-		//½ºÅ³ º¯°æÈ®ÀÎ(¸¶½ºÅÍ ½ºÅ³)
+		//ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½È®ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³)
 		if(m_iHotKeySkillIndex[i] != -1 && m_iHotKeySkillType[i] != CharacterAttribute->Skill[m_iHotKeySkillIndex[i]])
 		{
 			SetSkillHotKey(i, m_iHotKeySkillIndex[i], true);
 		}
 
-		// »ç¿ë, ºñ»ç¿ë È®ÀÎ
+		// ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
 		bool bCantSkill = GetSkillDisable(i, m_iHotKeySkillIndex);
 		if(bCantSkill != m_isHotKeySkillCantUse[i])
 		{
@@ -680,16 +684,16 @@ void CGFxMainUi::UpdateSkillSlot()
 	{
 		bool _skillChange = false;
 
-		//µî·ÏµÈ ¸ðµç ½ºÅ³ÀÇ »óÅÂ¸¦ È®ÀÎÇÑ´Ù
+		//ï¿½ï¿½Ïµï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ È®ï¿½ï¿½ï¿½Ñ´ï¿½
 		for(int i=0; i<(m_iSkillSlotCount+m_iPetSlotCount); i++)
 		{
-			//½ºÅ³ º¯°æÈ®ÀÎ(¸¶½ºÅÍ ½ºÅ³)
+			//ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½È®ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³)
 			if(m_iSkillSlotIndex[i] != -1 && m_iSkillSlotType[i] != CharacterAttribute->Skill[m_iSkillSlotIndex[i]])
 			{
 				_skillChange = true;
 			}
 
-			// »ç¿ë, ºñ»ç¿ë È®ÀÎ
+			// ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
 			bool bCantSkill = GetSkillDisable(i, m_iSkillSlotIndex);
 			if(bCantSkill != m_isSkillSlotCantUse[i])
 			{
@@ -698,7 +702,7 @@ void CGFxMainUi::UpdateSkillSlot()
 			}
 		}
 
-		//½ºÅ³ º¯°æÈ®ÀÎ(¸¶½ºÅÍ ½ºÅ³)
+		//ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½È®ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³)
 		if(_skillChange)
 		{
 			m_iSkillSlotCount = 0;
@@ -707,7 +711,7 @@ void CGFxMainUi::UpdateSkillSlot()
 		}
 	}
 
-	// ÆêÀÌ ¾ø´Âµ¥ ÇöÀç ½ºÅ³ÀÌ Æê ½ºÅ³ÀÏ °æ¿ì ¿¹¿Ü Ã³¸®
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Âµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
 	if(Hero->m_pPet == NULL)
 	{
 		if(Hero->CurrentSkill >= AT_PET_COMMAND_DEFAULT && Hero->CurrentSkill < AT_PET_COMMAND_END)
@@ -774,26 +778,26 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	else
 		VectorMA(MousePosition,0.1f,Direction,Position);
 
-	// ObjectSelect Ã³¸® ºÎºÐ 1. ÀÏ¹Ý ¾ÆÀÌÅÛ
+	// ObjectSelect Ã³ï¿½ï¿½ ï¿½Îºï¿½ 1. ï¿½Ï¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	// =====================================================================================
-	// °Ë·ù
-	if(Type == MODEL_SWORD+0)	// Å©¸®½º
+	// ï¿½Ë·ï¿½
+	if(Type == MODEL_SWORD+0)	// Å©ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[0] -= 0.02f;
 		Position[1] += 0.03f;
 		Vector(180.f,270.f,15.f,ObjectSelect.Angle);
 	}
-	// °©¿Ê·ù
+	// ï¿½ï¿½ï¿½Ê·ï¿½
 	else if(Type==MODEL_BOW+7 || Type==MODEL_BOW+15 )
 	{
 		Vector(0.f,270.f,15.f,ObjectSelect.Angle);
 	}
-	else if(Type == MODEL_SPEAR+0)	// ±¤¼±ºÀ
+	else if(Type == MODEL_SPEAR+0)	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[1] += 0.05f;
 		Vector(0.f,90.f,20.f,ObjectSelect.Angle);
 	}
-	else if( Type==MODEL_BOW+17)    //  ¹ÂÁîÈ°.
+	else if( Type==MODEL_BOW+17)    //  ï¿½ï¿½ï¿½ï¿½È°.
 	{
 		Vector(0.f,90.f,15.f,ObjectSelect.Angle);
 	}
@@ -830,7 +834,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 		Position[0] += 0.025f;
 		Vector(180.f,0.f,8.f,ObjectSelect.Angle);
 	}
-	else if (Type >= MODEL_STAFF+21 && Type <= MODEL_STAFF+29)	// »ç¾Æ¹«Æ®ÀÇ ¼­, ´ÒÀÇ ¼­
+	else if (Type >= MODEL_STAFF+21 && Type <= MODEL_STAFF+29)	// ï¿½ï¿½Æ¹ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 	{
 		Vector(0.f,0.f,0.f,ObjectSelect.Angle);
 	}
@@ -840,77 +844,77 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 		Position[0] -= 0.01;
 		Vector(180.f,90.f,13.f,ObjectSelect.Angle);
 	}	
-	//$ Å©¶óÀÌ¿ïÇÁ ¾ÆÀÌÅÛ
-	else if(Type == MODEL_ARMOR+34)	// Èæ±â»ç °©¿Ê
+	//$ Å©ï¿½ï¿½ï¿½Ì¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	else if(Type == MODEL_ARMOR+34)	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[1] += 0.03f;
 		Vector(-90.f,0.f,0.f,ObjectSelect.Angle);
 	}
-	else if(Type == MODEL_HELM+35)	// Èæ¸¶¹ý»ç Çï¸ä
+	else if(Type == MODEL_HELM+35)	// ï¿½æ¸¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	{
 		Position[0] -= 0.02f;
 		Position[1] += 0.05f;
 		Vector(-90.f,0.f,0.f,ObjectSelect.Angle);
 	}
-	else if(Type == MODEL_ARMOR+35)	// Èæ¸¶¹ý»ç °©¿Ê
+	else if(Type == MODEL_ARMOR+35)	// ï¿½æ¸¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[1] += 0.05f;
 		Vector(-90.f,0.f,0.f,ObjectSelect.Angle);
 	}
-	else if(Type == MODEL_ARMOR+36)	// ¿äÁ¤ °©¿Ê
+	else if(Type == MODEL_ARMOR+36)	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[1] -= 0.05f;
 		Vector(-90.f,0.f,0.f,ObjectSelect.Angle);
 	}
-	else if(Type == MODEL_ARMOR+37)	// ´ÙÅ©·Îµå °©¿Ê
+	else if(Type == MODEL_ARMOR+37)	// ï¿½ï¿½Å©ï¿½Îµï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[1] -= 0.05f;
 		Vector(-90.f,0.f,0.f,ObjectSelect.Angle);
 	}
-	// ¹ÙÀÌ¿Ã·»À©µå ~ ÀÌÅÍ³ÎÀ® Çï¸ä
+	// ï¿½ï¿½ï¿½Ì¿Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ ~ ï¿½ï¿½ï¿½Í³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	else if (MODEL_HELM+39 <= Type && MODEL_HELM+44 >= Type)
 	{
 		Position[1] -= 0.05f;
 		Vector(-90.f,25.f,0.f,ObjectSelect.Angle);
 	}
-	// ±Û·Î¸®¾î½º ~ ÀÌÅÍ³ÎÀ® °©¿Ê
+	// ï¿½Û·Î¸ï¿½ï¿½î½º ~ ï¿½ï¿½ï¿½Í³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	else if(MODEL_ARMOR+38 <= Type && MODEL_ARMOR+44 >= Type)
 	{
 		Position[1] -= 0.08f;
 		Vector(-90.f,0.f,0.f,ObjectSelect.Angle);
 	}
-	else if(Type == MODEL_SWORD+24)	// Èæ±â»ç °Ë
+	else if(Type == MODEL_SWORD+24)	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 	{
 		Position[0] -= 0.02f;
 		Position[1] += 0.03f;
 		Vector(180.f,90.f,15.f,ObjectSelect.Angle);
 	}
-	else if( Type == MODEL_MACE+15)	// ´ÙÅ©·Îµå ¼ÁÅÍ
+	else if( Type == MODEL_MACE+15)	// ï¿½ï¿½Å©ï¿½Îµï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[1] += 0.05f;
 		Vector(180.f,90.f,13.f,ObjectSelect.Angle);
 	}
 #ifdef ADD_SOCKET_ITEM
-	else if(Type == MODEL_BOW+22 || Type == MODEL_BOW+23)	// ¿äÁ¤ È°
+	else if(Type == MODEL_BOW+22 || Type == MODEL_BOW+23)	// ï¿½ï¿½ï¿½ï¿½ È°
 	{
 		Position[0] -= 0.10f;
 		Position[1] += 0.08f;
 		Vector(180.f,-90.f,15.f,ObjectSelect.Angle);
 	}
 #else // ADD_SOCKET_ITEM
-	else if( Type == MODEL_BOW+22)	// ¿äÁ¤ È°
+	else if( Type == MODEL_BOW+22)	// ï¿½ï¿½ï¿½ï¿½ È°
 	{
 		Position[1] += 0.12f;
 		Vector(180.f,90.f,15.f,ObjectSelect.Angle);
 	}
 #endif // ADD_SOCKET_ITEM
-	else if(Type == MODEL_STAFF+13)	// Èæ¸¶¹ý»ç ÁöÆÎÀÌ
+	else if(Type == MODEL_STAFF+13)	// ï¿½æ¸¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.02f;
 		Position[1] += 0.02f;
 		Vector(180.f,90.f,8.f,ObjectSelect.Angle);
 	}
-	else if(Type==MODEL_BOW+20)		//. ¿äÁ¤Ãß°¡È°
+	else if(Type==MODEL_BOW+20)		//. ï¿½ï¿½ï¿½ï¿½ï¿½ß°ï¿½È°
 	{
 		Vector(180.f,-90.f,15.f,ObjectSelect.Angle);
 	}
@@ -941,7 +945,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 		{
 			Vector(180.f,270.f,25.f,ObjectSelect.Angle);
 		}
-		// ¼ÒÄÏ¾ÆÀÌÅÛÃß°¡ [Season4]
+		// ï¿½ï¿½ï¿½Ï¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß°ï¿½ [Season4]
 	}									
 	else if(Type>=MODEL_SHIELD && Type<MODEL_SHIELD+MAX_ITEM_INDEX)
 	{
@@ -951,38 +955,38 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	{
 		Vector(-90.f,-90.f,0.f,ObjectSelect.Angle);
 	}
-	else if ( Type==MODEL_HELPER+4 )    //  ´ÙÅ©È£½º.
+	else if ( Type==MODEL_HELPER+4 )    //  ï¿½ï¿½Å©È£ï¿½ï¿½.
 	{
 		Vector(-90.f,-90.f,0.f,ObjectSelect.Angle);
 	}
-	else if ( Type==MODEL_HELPER+5 )    //  ´ÙÅ©½ºÇÇ¸´.
+	else if ( Type==MODEL_HELPER+5 )    //  ï¿½ï¿½Å©ï¿½ï¿½ï¿½Ç¸ï¿½.
 	{
 		Vector(-90.f,-35.f,0.f,ObjectSelect.Angle);
 	}
-	else if ( Type==MODEL_HELPER+31 )   //  ¿µÈ¥.
+	else if ( Type==MODEL_HELPER+31 )   //  ï¿½ï¿½È¥.
 	{
 		Vector(-90.f,-90.f,0.f,ObjectSelect.Angle);
 	}
-	else if ( Type==MODEL_HELPER+30 )   //  ¸ÁÅä.    
+	else if ( Type==MODEL_HELPER+30 )   //  ï¿½ï¿½ï¿½ï¿½.    
 	{
 		Vector ( -90.f, 0.f, 0.f, ObjectSelect.Angle );
 	}
-	else if ( Type==MODEL_EVENT+16 )    //  ±ºÁÖÀÇ ¼Ò¸Å
+	else if ( Type==MODEL_EVENT+16 )    //  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò¸ï¿½
 	{
 		Vector ( -90.f, 0.f, 0.f, ObjectSelect.Angle );
 	}
 	else if ( Type==MODEL_HELPER+16 || Type == MODEL_HELPER+17 )
-	{	//. ´ëÃµ»çÀÇ¼­, ºí·¯µåº»
+	{	//. ï¿½ï¿½Ãµï¿½ï¿½ï¿½Ç¼ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½åº»
 		Vector(270.f,-10.f,0.f,ObjectSelect.Angle);
 	}
-	else if ( Type==MODEL_HELPER+18 )	//. Åõ¸í¸Áµµ
+	else if ( Type==MODEL_HELPER+18 )	//. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
 		Vector(290.f,0.f,0.f,ObjectSelect.Angle);
 	}
-	else if ( Type==MODEL_EVENT+11 )	//. ½ºÅæ
+	else if ( Type==MODEL_EVENT+11 )	//. ï¿½ï¿½ï¿½ï¿½
 	{
 #ifdef FRIEND_EVENT
-		if ( Type==MODEL_EVENT+11 && Level==2 )    //  ¿ìÁ¤ÀÇ µ¹.
+		if ( Type==MODEL_EVENT+11 && Level==2 )    //  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½.
 		{
 			Vector(270.f,0.f,0.f,ObjectSelect.Angle);
 		}
@@ -992,15 +996,15 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 			Vector(-90.f, -20.f, -20.f, ObjectSelect.Angle);
 		}
 	}
-	else if ( Type==MODEL_EVENT+12)		//. ¿µ±¤ÀÇ ¹ÝÁö
+	else if ( Type==MODEL_EVENT+12)		//. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		Vector(250.f, 140.f, 0.f, ObjectSelect.Angle);
 	}
-	else if (Type==MODEL_EVENT+14)		//. Á¦¿ÕÀÇ ¹ÝÁö
+	else if (Type==MODEL_EVENT+14)		//. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		Vector(255.f, 160.f, 0.f, ObjectSelect.Angle);
 	}
-	else if (Type==MODEL_EVENT+15)		// ¸¶¹ý»çÀÇ ¹ÝÁö
+	else if (Type==MODEL_EVENT+15)		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
@@ -1008,41 +1012,41 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	{
 		Vector(270.f, 160.f, 20.f, ObjectSelect.Angle);
 	}
-	else if ( Type==MODEL_HELPER+29 )	//. Åõ¸í¸Áµµ
+	else if ( Type==MODEL_HELPER+29 )	//. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
 		Vector(290.f,0.f,0.f,ObjectSelect.Angle);
 	}
-	//^ Ææ¸± À§Ä¡, °¢µµ Á¶Àý
-	else if(Type == MODEL_HELPER+32)	// °©¿Ê ÆÄÆí
+	//^ ï¿½æ¸± ï¿½ï¿½Ä¡, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	else if(Type == MODEL_HELPER+32)	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.01f;
 		Position[1] -= 0.03f;
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
-	else if(Type == MODEL_HELPER+33)	// ¿©½ÅÀÇ °¡È£
+	else if(Type == MODEL_HELPER+33)	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£
 	{
 		Position[1] += 0.02f;
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
-	else if(Type == MODEL_HELPER+34)	// ¸Í¼öÀÇ ¹ßÅé
-	{
-		Position[0] += 0.01f;
-		Position[1] += 0.02f;
-		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
-	}
-	else if(Type == MODEL_HELPER+35)	// »ÔÇÇ¸® Á¶°¢
+	else if(Type == MODEL_HELPER+34)	// ï¿½Í¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.01f;
 		Position[1] += 0.02f;
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
-	else if(Type == MODEL_HELPER+36)	// ºÎ·¯Áø »ÔÇÇ¸®
+	else if(Type == MODEL_HELPER+35)	// ï¿½ï¿½ï¿½Ç¸ï¿½ ï¿½ï¿½ï¿½ï¿½
+	{
+		Position[0] += 0.01f;
+		Position[1] += 0.02f;
+		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
+	}
+	else if(Type == MODEL_HELPER+36)	// ï¿½Î·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ç¸ï¿½
 	{
 		Position[0] += 0.01f;
 		Position[1] += 0.05f;
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
-	else if(Type == MODEL_HELPER+37)	// Ææ¸±ÀÇ »ÔÇÇ¸®
+	else if(Type == MODEL_HELPER+37)	// ï¿½æ¸±ï¿½ï¿½ ï¿½ï¿½ï¿½Ç¸ï¿½
 	{
 		Position[0] += 0.01f;
 		Position[1] += 0.04f;
@@ -1085,64 +1089,64 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 		Position[1] += 0.04f;
 		Vector(270.f, 120.f, 0.f, ObjectSelect.Angle);
 	}
-	// 	else if(Type == MODEL_WING+36)	// ÆøÇ³ÀÇ³¯°³(Èæ±â»ç)
+	// 	else if(Type == MODEL_WING+36)	// ï¿½ï¿½Ç³ï¿½Ç³ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)
 	// 	{
 	// 		Position[1] -= 0.35f;
 	// 		Vector(270.f,-10.f,0.f,ObjectSelect.Angle);
 	// 	}
-	else if(Type == MODEL_WING+37)	// ½Ã°øÀÇ³¯°³(¹ý»ç)
+	else if(Type == MODEL_WING+37)	// ï¿½Ã°ï¿½ï¿½Ç³ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)
 	{
 		Position[1] += 0.05f;
 		Vector(270.f,-10.f,0.f,ObjectSelect.Angle);
 	}
-	else if(Type == MODEL_WING+38)	// È¯¿µÀÇ³¯°³(¿äÁ¤)
+	else if(Type == MODEL_WING+38)	// È¯ï¿½ï¿½ï¿½Ç³ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)
 	{
 		Position[1] += 0.05f;
 		Vector(270.f,-10.f,0.f,ObjectSelect.Angle);
 	}
-	else if(Type == MODEL_WING+39)	// ÆÄ¸êÀÇ³¯°³(¸¶°Ë)
+	else if(Type == MODEL_WING+39)	// ï¿½Ä¸ï¿½ï¿½Ç³ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)
 	{
 		Position[1] += 0.08f;
 		Vector(270.f,-10.f,0.f,ObjectSelect.Angle);
 	}
-	else if(Type == MODEL_WING+40)	// Á¦¿ÕÀÇ¸ÁÅä(´ÙÅ©·Îµå)
+	else if(Type == MODEL_WING+40)	// ï¿½ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½ï¿½ï¿½(ï¿½ï¿½Å©ï¿½Îµï¿½)
 	{
 		Position[1] += 0.05f;
 		Vector(270.f,-10.f,0.f,ObjectSelect.Angle);
 	}
-	else if(Type == MODEL_WING+42)	// Àý¸ÁÀÇ³¯°³(¼ÒÈ¯¼ú»ç)
+	else if(Type == MODEL_WING+42)	// ï¿½ï¿½ï¿½ï¿½ï¿½Ç³ï¿½ï¿½ï¿½(ï¿½ï¿½È¯ï¿½ï¿½ï¿½ï¿½)
 	{
 		Position[1] += 0.05f;
 		Vector(270.f,0.f,2.f,ObjectSelect.Angle);
 	}
 #ifdef CSK_FREE_TICKET
-	// ¾ÆÀÌÅÛ À§Ä¡¿Í °¢µµ ¼¼ÆÃ
-	else if(Type == MODEL_HELPER+46)	// µ¥ºô½ºÄù¾î ÀÚÀ¯ÀÔÀå±Ç
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	else if(Type == MODEL_HELPER+46)	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[1] -= 0.04f;
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
-	else if(Type == MODEL_HELPER+47)	// ºí·¯µåÄ³½½ ÀÚÀ¯ÀÔÀå±Ç
+	else if(Type == MODEL_HELPER+47)	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[1] -= 0.04f;
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
-	else if(Type == MODEL_HELPER+48)	// Ä®¸®¸¶ ÀÚÀ¯ÀÔÀå±Ç
+	else if(Type == MODEL_HELPER+48)	// Ä®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[1] -= 0.04f;
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);	
 	}
 #endif // CSK_FREE_TICKET
 #ifdef CSK_CHAOS_CARD
-	// ¾ÆÀÌÅÛ À§Ä¡¿Í °¢µµ ¼¼ÆÃ
-	else if(Type == MODEL_POTION+54)	// Ä«¿À½ºÄ«µå
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	else if(Type == MODEL_POTION+54)	// Ä«ï¿½ï¿½ï¿½ï¿½Ä«ï¿½ï¿½
 	{
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
 #endif // CSK_CHAOS_CARD
 #ifdef CSK_RARE_ITEM
-	// ¾ÆÀÌÅÛ À§Ä¡¿Í °¢µµ¼¼ÆÃ
-	else if(Type == MODEL_POTION+58)// Èñ±Í ¾ÆÀÌÅÛ Æ¼ÄÏ( ºÎºÐ 1Â÷ )
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	else if(Type == MODEL_POTION+58)// ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Æ¼ï¿½ï¿½( ï¿½Îºï¿½ 1ï¿½ï¿½ )
 	{
 		Position[1] += 0.07f;
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
@@ -1159,7 +1163,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif // CSK_RARE_ITEM
 #ifdef CSK_LUCKY_CHARM
-	else if( Type == MODEL_POTION+53 )// Çà¿îÀÇ ºÎÀû
+	else if( Type == MODEL_POTION+53 )// ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[1] += 0.042f;
 		Vector(180.f, 0.f, 0.f, ObjectSelect.Angle);
@@ -1186,7 +1190,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
 #else //PBG_FIX_ITEMANGLE
-	else if( Type == MODEL_HELPER+43 )// Çà¿îÀÇ ÀÎÀå
+	else if( Type == MODEL_HELPER+43 )// ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[1] += 0.082f;
 		Vector(90.f, 0.f, 0.f, ObjectSelect.Angle);
@@ -1203,21 +1207,21 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif //PBG_FIX_ITEMANGLE
 #endif //CSK_LUCKY_SEAL
-#ifdef PSW_ELITE_ITEM              // ¿¤¸®Æ® ¹°¾à
+#ifdef PSW_ELITE_ITEM              // ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
 	else if( Type >= MODEL_POTION+70 && Type <= MODEL_POTION+71 )
 	{
 		Position[0] += 0.01f;
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
 #endif //PSW_ELITE_ITEM
-#ifdef PSW_SCROLL_ITEM             // ¿¤¸®Æ® ½ºÅ©·Ñ
+#ifdef PSW_SCROLL_ITEM             // ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½Å©ï¿½ï¿½
 	else if( Type >= MODEL_POTION+72 && Type <= MODEL_POTION+77 )
 	{
 		Position[1] += 0.08f;
 		Vector(0.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
 #endif //PSW_SCROLL_ITEM
-#ifdef PSW_SEAL_ITEM               // ÀÌµ¿ ÀÎÀå
+#ifdef PSW_SEAL_ITEM               // ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½
 	else if( Type == MODEL_HELPER+59 )
 	{
 		Position[0] += 0.01f;
@@ -1225,21 +1229,21 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 		Vector(90.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
 #endif //PSW_SEAL_ITEM
-#ifdef PSW_FRUIT_ITEM              // ¸®¼Â ¿­¸Å
+#ifdef PSW_FRUIT_ITEM              // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	else if( Type >= MODEL_HELPER+54 && Type <= MODEL_HELPER+58 )
 	{
 		Position[1] -= 0.02f;
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
 #endif //PSW_FRUIT_ITEM
-#ifdef PSW_SECRET_ITEM             // °­È­ÀÇ ºñ¾à
+#ifdef PSW_SECRET_ITEM             // ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½
 	else if( Type >= MODEL_POTION+78 && Type <= MODEL_POTION+82 )
 	{
 		Position[1] += 0.01f;
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
 #endif //PSW_SECRET_ITEM
-#ifdef PSW_INDULGENCE_ITEM         // ¸éÁËºÎ
+#ifdef PSW_INDULGENCE_ITEM         // ï¿½ï¿½ï¿½Ëºï¿½
 	else if( Type == MODEL_HELPER+60 )
 	{
 		Position[1] -= 0.06f;
@@ -1247,41 +1251,41 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif //PSW_INDULGENCE_ITEM
 #ifdef PSW_CURSEDTEMPLE_FREE_TICKET
-	else if( Type == MODEL_HELPER+61 )// È¯¿µÀÇ »ç¿ø ÀÚÀ¯ ÀÔÀå±Ç
+	else if( Type == MODEL_HELPER+61 )// È¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[1] -= 0.04f;
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
 #endif //PSW_CURSEDTEMPLE_FREE_TICKET
 #ifdef PSW_RARE_ITEM
-	else if(Type == MODEL_POTION+83)// Èñ±Í ¾ÆÀÌÅÛ Æ¼ÄÏ( ºÎºÐ 2Â÷ )
+	else if(Type == MODEL_POTION+83)// ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Æ¼ï¿½ï¿½( ï¿½Îºï¿½ 2ï¿½ï¿½ )
 	{
 		Position[1] += 0.06f;
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
 #endif //PSW_RARE_ITEM
 #ifdef PSW_CHARACTER_CARD 
-	else if(Type == MODEL_POTION+91) // Ä³¸¯ÅÍ Ä«µå
+	else if(Type == MODEL_POTION+91) // Ä³ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½
 	{
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
 #endif // PSW_CHARACTER_CARD
 #ifdef PSW_NEW_CHAOS_CARD
-	else if(Type == MODEL_POTION+92) // Ä«¿À½ºÄ«µå °ñµå
+	else if(Type == MODEL_POTION+92) // Ä«ï¿½ï¿½ï¿½ï¿½Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½
 	{
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
-	else if(Type == MODEL_POTION+93) // Ä«¿À½ºÄ«µå ·¹¾î
+	else if(Type == MODEL_POTION+93) // Ä«ï¿½ï¿½ï¿½ï¿½Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
-	else if(Type == MODEL_POTION+95) // Ä«¿À½ºÄ«µå ¹Ì´Ï
+	else if(Type == MODEL_POTION+95) // Ä«ï¿½ï¿½ï¿½ï¿½Ä«ï¿½ï¿½ ï¿½Ì´ï¿½
 	{
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
 #endif // PSW_NEW_CHAOS_CARD
 #ifdef PSW_NEW_ELITE_ITEM
-	else if( Type == MODEL_POTION+94 ) // ¿¤¸®Æ® Áß°£ Ä¡·á ¹°¾à
+	else if( Type == MODEL_POTION+94 ) // ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ß°ï¿½ Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.01f;
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
@@ -1290,37 +1294,37 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 #ifdef CSK_EVENT_CHERRYBLOSSOM
 	else if( Type >= MODEL_POTION+84 && Type <= MODEL_POTION+90 )
 	{
-		if( Type == MODEL_POTION+84 )  // º¢²É»óÀÚ
+		if( Type == MODEL_POTION+84 )  // ï¿½ï¿½ï¿½É»ï¿½ï¿½ï¿½
 		{
 			Position[1] += 0.01f;
 			Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 		}
-		else if( Type == MODEL_POTION+85 )  // º¢²É¼ú
+		else if( Type == MODEL_POTION+85 )  // ï¿½ï¿½ï¿½É¼ï¿½
 		{
 			Position[1] -= 0.01f;
 			Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 		}
-		else if( Type == MODEL_POTION+86 )  // º¢²É°æ´Ü
+		else if( Type == MODEL_POTION+86 )  // ï¿½ï¿½ï¿½É°ï¿½ï¿½
 		{
 			Position[1] += 0.01f;
 			Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 		}
-		else if( Type == MODEL_POTION+87 )  // º¢²ÉÀÙ
+		else if( Type == MODEL_POTION+87 )  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		{
 			Position[1] += 0.01f;
 			Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 		}
-		else if( Type == MODEL_POTION+88 )  // Èò»ö º¢²É
+		else if( Type == MODEL_POTION+88 )  // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		{
 			Position[1] += 0.015f;
 			Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 		}
-		else if( Type == MODEL_POTION+89 )  // ºÓÀº»ö º¢²É
+		else if( Type == MODEL_POTION+89 )  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		{
 			Position[1] += 0.015f;
 			Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 		}
-		else if( Type == MODEL_POTION+90 )  // ³ë¶õ»ö º¢²É
+		else if( Type == MODEL_POTION+90 )  // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		{
 			Position[1] += 0.015f;
 			Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
@@ -1399,8 +1403,8 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 		Position[1] += 0.11f;
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
-	// ¿¤¸®Æ® ÇØ°ñÀü»ç º¯½Å¹ÝÁö °¢µµ Á¶Àý
-	else if(Type == MODEL_HELPER+39)	// ¿¤¸®Æ® ÇØ°ñÀü»ç º¯½Å¹ÝÁö
+	// ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ø°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Å¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	else if(Type == MODEL_HELPER+39)	// ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ø°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Å¹ï¿½ï¿½ï¿½
 	{
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
@@ -1422,7 +1426,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 		Vector(90.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
 #endif //CSK_LUCKY_SEAL
-	// ÇÒ·ÎÀ© ÀÌº¥Æ® º¯½Å¹ÝÁö °¢µµ Á¶Àý
+	// ï¿½Ò·ï¿½ï¿½ï¿½ ï¿½Ìºï¿½Æ® ï¿½ï¿½ï¿½Å¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	else if(Type == MODEL_HELPER+40)
 	{
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
@@ -1435,7 +1439,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	{
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
-	// GM º¯½Å¹ÝÁö °¢µµ Á¶Àý
+	// GM ï¿½ï¿½ï¿½Å¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	else if(Type == MODEL_HELPER+42)
 	{
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
@@ -1467,7 +1471,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	{
 		Vector(270.f+90.f,0.f,0.f,ObjectSelect.Angle);
 	}
-	else if(Type==MODEL_POTION+12)//ÀÌ¹êÆ® ¾ÆÀÌÅÛ
+	else if(Type==MODEL_POTION+12)//ï¿½Ì¹ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
 		switch(Level)
 		{
@@ -1512,40 +1516,40 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 		Vector(270.f,0.f,0.f,ObjectSelect.Angle);
 	}
 #endif// _PVP_MURDERER_HERO_ITEM
-	else if(Type >= MODEL_ETC+19 && Type <= MODEL_ETC+27)	// ¾çÇÇÁöµé
+	else if(Type >= MODEL_ETC+19 && Type <= MODEL_ETC+27)	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.03f;
 		Position[1] += 0.03f;
 		Vector(270.f,0.f,0.f,ObjectSelect.Angle);
 	}
-	else if(Type == MODEL_WING+7)	// È¸¿À¸®º£±â ±¸½½
+	else if(Type == MODEL_WING+7)	// È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.005f;
 		Position[1] -= 0.015f;
 		Vector(270.f,0.f,0.f,ObjectSelect.Angle);
 	}
-	else if(Type == MODEL_ARMOR+10)		// ³ÕÄð°©¿Ê
+	else if(Type == MODEL_ARMOR+10)		// ï¿½ï¿½ï¿½ð°©¿ï¿½
 	{
 		Position[1] -= 0.1f;
 		Vector(270.f,0.f,0.f,ObjectSelect.Angle);
 	}
-	else if(Type == MODEL_PANTS+10)		// ³ÕÄð¹ÙÁö
+	else if(Type == MODEL_PANTS+10)		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[1] -= 0.08f;
 		Vector(270.f,0.f,0.f,ObjectSelect.Angle);
 	}
-	else if(Type == MODEL_ARMOR+11)		// ½ÇÅ©°©¿Ê
+	else if(Type == MODEL_ARMOR+11)		// ï¿½ï¿½Å©ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[1] -= 0.1f;
 		Vector(270.f,0.f,0.f,ObjectSelect.Angle);
 	}
-	else if(Type == MODEL_PANTS+11)		// ½ÇÅ©¹ÙÁö
+	else if(Type == MODEL_PANTS+11)		// ï¿½ï¿½Å©ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[1] -= 0.08f;
 		Vector(270.f,0.f,0.f,ObjectSelect.Angle);
 	}
 #ifdef CSK_ADD_SKILL_BLOWOFDESTRUCTION
-	else if(Type == MODEL_WING+44)	// ÆÄ±«ÀÇÀÏ°Ý ±¸½½
+	else if(Type == MODEL_WING+44)	// ï¿½Ä±ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.005f;
 		Position[1] -= 0.015f;
@@ -1558,7 +1562,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 #ifdef PJH_SEASON4_SPRITE_NEW_SKILL_MULTI_SHOT
 		|| Type==MODEL_WING+45
 #endif //PJH_SEASON4_SPRITE_NEW_SKILL_MULTI_SHOT
-		)	// È¸º¹ ±¸½½
+		)	// È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.005f;
 		Position[1] -= 0.015f;
@@ -1571,22 +1575,22 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #ifdef ADD_SEED_SPHERE_ITEM
 
-	// if-else if°¡ 128°³ ³Ñ¾î°¡¸é ÄÄÆÄÀÏ ¿¡·¯³²! Ãß°¡ÇÒ¶§ ÀÌ ¾Æ·¡·Î Ãß°¡ÇÏ´øÁö ¾Æ´Ï¸é ±¸Á¶¸¦ °íÃÄ¾ß ÇÔ ¢»
-	if(Type >= MODEL_WING+60 && Type <= MODEL_WING+65)	// ½Ãµå
+	// if-else ifï¿½ï¿½ 128ï¿½ï¿½ ï¿½Ñ¾î°¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½! ï¿½ß°ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½Æ´Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ä¾ï¿½ ï¿½ï¿½ ï¿½ï¿½
+	if(Type >= MODEL_WING+60 && Type <= MODEL_WING+65)	// ï¿½Ãµï¿½
 	{
 		Vector(10.f,-10.f,10.f,ObjectSelect.Angle);
 	}
-	else if(Type >= MODEL_WING+70 && Type <= MODEL_WING+74)	// ½ºÇÇ¾î
+	else if(Type >= MODEL_WING+70 && Type <= MODEL_WING+74)	// ï¿½ï¿½ï¿½Ç¾ï¿½
 	{
 		Vector(0.f,0.f,0.f,ObjectSelect.Angle);
 	}
-	else if(Type >= MODEL_WING+100 && Type <= MODEL_WING+129)	// ½Ãµå½ºÇÇ¾î
+	else if(Type >= MODEL_WING+100 && Type <= MODEL_WING+129)	// ï¿½Ãµå½ºï¿½Ç¾ï¿½
 	{
 		Vector(0.f,0.f,0.f,ObjectSelect.Angle);
 	}
 #endif	// ADD_SEED_SPHERE_ITEM
 
-#ifdef LDK_ADD_RUDOLPH_PET //·çµ¹ÇÁ Æê ... limit °É¸².....
+#ifdef LDK_ADD_RUDOLPH_PET //ï¿½çµ¹ï¿½ï¿½ ï¿½ï¿½ ... limit ï¿½É¸ï¿½.....
 	else if( Type == MODEL_HELPER+67 )
 	{
 		Position[1] -= 0.05f;
@@ -1594,14 +1598,14 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif //LDK_ADD_RUDOLPH_PET
 #ifdef YDG_ADD_SKELETON_PET
-	else if( Type == MODEL_HELPER+123 )	// ½ºÄÌ·¹Åæ Æê
+	else if( Type == MODEL_HELPER+123 )	// ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½ï¿½
 	{
 		Position[1] -= 0.05f;
 		Vector(270.f, 40.f, 0.f, ObjectSelect.Angle);
 	}
 #endif	// YDG_ADD_SKELETON_PET
 #ifdef YDG_ADD_HEALING_SCROLL
-	else if(Type == MODEL_POTION+140)	// Ä¡À¯ÀÇ ½ºÅ©·Ñ
+	else if(Type == MODEL_POTION+140)	// Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½
 	{
 		Position[1] += 0.09f;
 		Vector(0.f, 0.f, 0.f, ObjectSelect.Angle);
@@ -1616,8 +1620,8 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif //LJH_ADD_RARE_ITEM_TICKET_FROM_7_TO_12
 #ifdef LJH_ADD_FREE_TICKET_FOR_DOPPELGANGGER_BARCA_BARCA_7TH
-	// ¾ÆÀÌÅÛ À§Ä¡¿Í °¢µµ ¼¼ÆÃ
-	else if(Type >= MODEL_HELPER+125 && Type <= MODEL_HELPER+127)	//µµÇÃ°»¾î, ¹Ù¸£Ä«, ¹Ù¸£Ä«Á¦7¸Ê ÀÚÀ¯ÀÔÀå±Ç
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	else if(Type >= MODEL_HELPER+125 && Type <= MODEL_HELPER+127)	//ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½, ï¿½Ù¸ï¿½Ä«, ï¿½Ù¸ï¿½Ä«ï¿½ï¿½7ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.007f;
 		Position[1] -= 0.035f;
@@ -1625,7 +1629,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif //LJH_ADD_FREE_TICKET_FOR_DOPPELGANGGER_BARCA_BARCA_7TH
 #ifdef ASG_ADD_CHARGED_CHANNEL_TICKET
-	else if (Type == MODEL_HELPER+124)	// À¯·áÃ¤³Î ÀÔÀå±Ç.
+	else if (Type == MODEL_HELPER+124)	// ï¿½ï¿½ï¿½ï¿½Ã¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.
 	{
 		Position[1] -= 0.04f;
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
@@ -1638,7 +1642,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 		Vector(270.f, 40.f, 0.f, ObjectSelect.Angle);
 	}
 #endif //PJH_ADD_PANDA_PET
-#ifdef LDK_ADD_CS7_UNICORN_PET	//À¯´ÏÄÜ
+#ifdef LDK_ADD_CS7_UNICORN_PET	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	else if( Type == MODEL_HELPER+106 )
 	{
 		Position[0] += 0.01f;
@@ -1663,7 +1667,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif //PJH_ADD_PANDA_CHANGERING
 #ifdef YDG_ADD_SKELETON_CHANGE_RING
-	else if( Type == MODEL_HELPER+122 )	// ½ºÄÌ·¹Åæ º¯½Å¹ÝÁö
+	else if( Type == MODEL_HELPER+122 )	// ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Å¹ï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.01f;
 		Position[1] -= 0.035f;
@@ -1671,19 +1675,19 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif	// YDG_ADD_SKELETON_CHANGE_RING
 #ifdef LJH_ADD_ITEMS_EQUIPPED_FROM_INVENTORY_SYSTEM	
-	else if( Type == MODEL_HELPER+128 )	// ¸ÅÁ¶°¢»ó
+	else if( Type == MODEL_HELPER+128 )	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.017f;
 		Position[1] -= 0.053f;
 		Vector(270.f, -20.f, 0.f, ObjectSelect.Angle);
 	}
-	else if( Type == MODEL_HELPER+129 )	// ¾çÁ¶°¢»ó
+	else if( Type == MODEL_HELPER+129 )	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.012f;
 		Position[1] -= 0.045f;
 		Vector(270.f, -20.f, 0.f, ObjectSelect.Angle);
 	}
-	else if( Type == MODEL_HELPER+134 )	// ÆíÀÚ
+	else if( Type == MODEL_HELPER+134 )	// ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.005f;
 		Position[1] -= 0.033f;
@@ -1691,25 +1695,25 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif	//LJH_ADD_ITEMS_EQUIPPED_FROM_INVENTORY_SYSTEM
 #ifdef LJH_ADD_ITEMS_EQUIPPED_FROM_INVENTORY_SYSTEM_PART_2
-	else if( Type == MODEL_HELPER+130 )	// ¿ÀÅ©Âü
+	else if( Type == MODEL_HELPER+130 )	// ï¿½ï¿½Å©ï¿½ï¿½
 	{
 		Position[0] += 0.007f;
 		Position[1] += 0.005f;
 		Vector(270.f, -20.f, 0.f, ObjectSelect.Angle);
 	}
-	else if( Type == MODEL_HELPER+131 )	// ¸ÞÀÌÇÃ
+	else if( Type == MODEL_HELPER+131 )	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.017f;
 		Position[1] -= 0.053f;
 		Vector(270.f, -20.f, 0.f, ObjectSelect.Angle);
 	}
-	else if( Type == MODEL_HELPER+132 )	// °ñµç¿ÀÅ©Âü
+	else if( Type == MODEL_HELPER+132 )	// ï¿½ï¿½ï¿½ï¿½Å©ï¿½ï¿½
 	{
 		Position[0] += 0.007f;
 		Position[1] += 0.045f;
 		Vector(270.f, -20.f, 0.f, ObjectSelect.Angle);
 	}
-	else if( Type == MODEL_HELPER+133 )	// °ñµç¸ÞÀÌÇÃ
+	else if( Type == MODEL_HELPER+133 )	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.017f;
 		Position[1] -= 0.053f;
@@ -1717,7 +1721,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif	//LJH_ADD_ITEMS_EQUIPPED_FROM_INVENTORY_SYSTEM_PART_2
 #ifdef YDG_ADD_CS5_REVIVAL_CHARM
-	else if( Type == MODEL_HELPER+69 )	// ºÎÈ°ÀÇ ºÎÀû
+	else if( Type == MODEL_HELPER+69 )	// ï¿½ï¿½È°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.005f;
 		Position[1] -= 0.05f;
@@ -1725,7 +1729,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif	// YDG_ADD_CS5_REVIVAL_CHARM
 #ifdef YDG_ADD_CS5_PORTAL_CHARM
-	else if( Type == MODEL_HELPER+70 )	// ÀÌµ¿ÀÇ ºÎÀû
+	else if( Type == MODEL_HELPER+70 )	// ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.040f;
 		Position[1] -= 0.000f;
@@ -1733,7 +1737,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif	// YDG_ADD_CS5_PORTAL_CHARM
 #ifdef ASG_ADD_CS6_GUARD_CHARM
-	else if (Type == MODEL_HELPER+81)	// ¼öÈ£ÀÇºÎÀû
+	else if (Type == MODEL_HELPER+81)	// ï¿½ï¿½È£ï¿½Çºï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.005f;
 		Position[1] += 0.035f;
@@ -1741,7 +1745,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif	// ASG_ADD_CS6_GUARD_CHARM
 #ifdef ASG_ADD_CS6_ITEM_GUARD_CHARM
-	else if (Type == MODEL_HELPER+82)	// ¾ÆÀÌÅÛº¸È£ºÎÀû
+	else if (Type == MODEL_HELPER+82)	// ï¿½ï¿½ï¿½ï¿½ï¿½Ûºï¿½È£ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.005f;
 		Position[1] += 0.035f;
@@ -1749,21 +1753,21 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif	// ASG_ADD_CS6_ITEM_GUARD_CHARM
 #ifdef ASG_ADD_CS6_ASCENSION_SEAL_MASTER
-	else if (Type == MODEL_HELPER+93)	// »ó½ÂÀÇÀÎÀå¸¶½ºÅÍ
+	else if (Type == MODEL_HELPER+93)	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½å¸¶ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.005f;
 		Vector(-90.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
 #endif	// ASG_ADD_CS6_ASCENSION_SEAL_MASTER
 #ifdef ASG_ADD_CS6_WEALTH_SEAL_MASTER
-	else if (Type == MODEL_HELPER+94)	// Ç³¿äÀÇÀÎÀå¸¶½ºÅÍ
+	else if (Type == MODEL_HELPER+94)	// Ç³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½å¸¶ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.005f;
 		Vector(-90.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
 #endif	// ASG_ADD_CS6_WEALTH_SEAL_MASTER
 #ifdef PBG_ADD_SANTAINVITATION
-	//»êÅ¸¸¶À»ÀÇ ÃÊ´ëÀå.
+	//ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ï¿½ï¿½.
 	else if( Type == MODEL_HELPER+66 )
 	{
 		Position[0] += 0.01f;
@@ -1772,7 +1776,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif //PBG_ADD_SANTAINVITATION
 #ifdef KJH_PBG_ADD_SEVEN_EVENT_2008
-	//Çà¿îÀÇ µ¿Àü
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	else if( Type == MODEL_POTION+100 )
 	{
 		Position[0] += 0.01f;
@@ -1781,7 +1785,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif //KJH_PBG_ADD_SEVEN_EVENT_2008
 #ifdef YDG_ADD_FIRECRACKER_ITEM
-	else if (Type == MODEL_POTION+99)	// Å©¸®½º¸¶½º ÆøÁ×
+	else if (Type == MODEL_POTION+99)	// Å©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.02f;
 		Position[1] -= 0.03f;
@@ -1790,18 +1794,18 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif	// YDG_ADD_FIRECRACKER_ITEM
 #ifdef LDK_ADD_GAMBLERS_WEAPONS
-	else if( Type == MODEL_STAFF+33 )	// °×ºí ·¹¾î ÁöÆÎÀÌ
+	else if( Type == MODEL_STAFF+33 )	// ï¿½×ºï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.02f;
 		Position[1] -= 0.06f;
 		Vector(180.f,90.f,10.f,ObjectSelect.Angle);
 	}
-	else if( Type == MODEL_STAFF+34 )	// °×ºí ·¹¾î ÁöÆÎÀÌ(¼ÒÈ¯¼ú»ç¿ë)
+	else if( Type == MODEL_STAFF+34 )	// ï¿½×ºï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½È¯ï¿½ï¿½ï¿½ï¿½ï¿½)
 	{
 		Position[1] -= 0.05f;
 		Vector(180.f,90.f,10.f,ObjectSelect.Angle);
 	}
-	else if( Type == MODEL_SPEAR+11 )	// °×ºí ·¹¾î ³´
+	else if( Type == MODEL_SPEAR+11 )	// ï¿½×ºï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 	{
 		Position[1] += 0.02f;
 		Vector(180.f,90.f,15.f,ObjectSelect.Angle);
@@ -1820,7 +1824,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif //LDK_ADD_GAMBLERS_WEAPONS
 #ifdef YDG_ADD_SKILL_FLAME_STRIKE
-	else if(Type == MODEL_WING+47)	// ÇÃ·¹ÀÓ½ºÆ®¶óÀÌÅ© ±¸½½
+	else if(Type == MODEL_WING+47)	// ï¿½Ã·ï¿½ï¿½Ó½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.005f;
 		Position[1] -= 0.015f;
@@ -1828,7 +1832,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif	// YDG_ADD_SKILL_FLAME_STRIKE
 #ifdef LDK_ADD_GAMBLE_RANDOM_ICON
-	//°×ºí »óÁ¡ ¾ÆÀÌÄÜ ¸ðµ¨ ¹øÈ£ ¼öÁ¤ ÇØ¾ßµÊ
+	//ï¿½×ºï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È£ ï¿½ï¿½ï¿½ï¿½ ï¿½Ø¾ßµï¿½
 	else if ( Type==MODEL_HELPER+71 || Type==MODEL_HELPER+72 || Type==MODEL_HELPER+73 || Type==MODEL_HELPER+74 || Type==MODEL_HELPER+75 )
 	{
 		Position[1] += 0.07f;
@@ -1839,7 +1843,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 		}
 	}
 #endif //LDK_ADD_GAMBLE_RANDOM_ICON
-#ifdef LDS_ADD_CS6_CHARM_MIX_ITEM_WING	// ³¯°³ Á¶ÇÕ 100% ¼º°ø ºÎÀû
+#ifdef LDS_ADD_CS6_CHARM_MIX_ITEM_WING	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 100% ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	else if( Type >= MODEL_TYPE_CHARM_MIXWING+EWS_BEGIN
 		&& Type <= MODEL_TYPE_CHARM_MIXWING+EWS_END )
 	{
@@ -1848,7 +1852,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif //LDS_ADD_CS6_CHARM_MIX_ITEM_WING
 #ifdef LDS_ADD_PCROOM_ITEM_JPN_6TH
-	else if(Type == MODEL_HELPER+96)		// °­ÇÔÀÇ ÀÎÀå (PC¹æ ¾ÆÀÌÅÛ, ÀÏº» 6Â÷ ÄÁÅÙÃ÷)
+	else if(Type == MODEL_HELPER+96)		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (PCï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½Ïºï¿½ 6ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
 	{
 		Position[0] -= 0.001f;
 		Position[1] += 0.028f;
@@ -1856,7 +1860,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif // LDS_ADD_PCROOM_ITEM_JPN_6TH
 #ifdef PBG_ADD_CHARACTERCARD
-	// ¸¶°Ë ´ÙÅ© ¼ÒÈ¯¼ú»ç Ä«µå
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å© ï¿½ï¿½È¯ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½
 	else if(Type == MODEL_HELPER+97 || Type == MODEL_HELPER+98 || Type == MODEL_POTION+91)
 	{
 		Position[1] -= 0.04f;
@@ -1873,7 +1877,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif //PBG_ADD_CHARACTERSLOT
 #ifdef PBG_ADD_SECRETITEM
-	//È°·ÂÀÇºñ¾à(ÃÖÇÏ±Þ/ÇÏ±Þ/Áß±Þ/»ó±Þ)
+	//È°ï¿½ï¿½ï¿½Çºï¿½ï¿½(ï¿½ï¿½ï¿½Ï±ï¿½/ï¿½Ï±ï¿½/ï¿½ß±ï¿½/ï¿½ï¿½ï¿½)
 	else if(Type >= MODEL_HELPER+117 && Type <= MODEL_HELPER+120)
 	{
 		Position[0] += 0.01f;
@@ -1882,12 +1886,12 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif //PBG_ADD_SECRETITEM
 #ifdef YDG_ADD_DOPPELGANGER_ITEM
-	else if ( Type==MODEL_POTION+110 )	// Â÷¿øÀÇÇ¥½Ä
+	else if ( Type==MODEL_POTION+110 )	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½
 	{
 		Position[0] += 0.005f;
 		Position[1] -= 0.02f;
 	}
-	else if ( Type==MODEL_POTION+111 )	// Â÷¿øÀÇ¸¶°æ
+	else if ( Type==MODEL_POTION+111 )	// ï¿½ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½ï¿½ï¿½
 	{
 		Position[0] += 0.01f;
 		Position[1] -= 0.02f;
@@ -1896,7 +1900,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 #ifdef YDG_ADD_CS7_CRITICAL_MAGIC_RING
 	else if(Type == MODEL_HELPER+107)
 	{
-		// Ä¡¸í¸¶¹ý¹ÝÁö
+		// Ä¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		Position[0] -= 0.0f;
 		Position[1] += 0.0f;
 		Vector(90.0f, 225.0f, 45.0f, ObjectSelect.Angle);
@@ -1905,7 +1909,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 #ifdef YDG_ADD_CS7_MAX_AG_AURA
 	else if(Type == MODEL_HELPER+104)
 	{
-		// AGÁõ°¡ ¿À¶ó
+		// AGï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		Position[0] += 0.01f;
 		Position[1] -= 0.03f;
 		Vector(270.0f, 0.0f, 0.0f, ObjectSelect.Angle);
@@ -1914,7 +1918,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 #ifdef YDG_ADD_CS7_MAX_SD_AURA
 	else if(Type == MODEL_HELPER+105)
 	{
-		// SDÁõ°¡ ¿À¶ó
+		// SDï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		Position[0] += 0.01f;
 		Position[1] -= 0.03f;
 		Vector(270.0f, 0.0f, 0.0f, ObjectSelect.Angle);
@@ -1923,7 +1927,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 #ifdef YDG_ADD_CS7_PARTY_EXP_BONUS_ITEM
 	else if(Type == MODEL_HELPER+103)
 	{
-		// ÆÄÆ¼ °æÇèÄ¡ Áõ°¡ ¾ÆÀÌÅÛ
+		// ï¿½ï¿½Æ¼ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		Position[0] += 0.01f;
 		Position[1] += 0.01f;
 		Vector(0.0f, 0.0f, 0.0f, ObjectSelect.Angle);
@@ -1932,7 +1936,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 #ifdef YDG_ADD_CS7_ELITE_SD_POTION
 	else if(Type == MODEL_POTION+133)
 	{
-		// ¿¤¸®Æ® SDÈ¸º¹ ¹°¾à
+		// ï¿½ï¿½ï¿½ï¿½Æ® SDÈ¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		Position[0] += 0.01f;
 		Position[1] -= 0.0f;
 		Vector(270.0f, 0.0f, 0.0f, ObjectSelect.Angle);
@@ -1943,18 +1947,18 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	{
 		switch(Type)
 		{
-		case MODEL_POTION+101: // ÀÇ¹®ÀÇÂÊÁö
+		case MODEL_POTION+101: // ï¿½Ç¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			{
 				Position[0] += 0.005f;
 				//Position[1] -= 0.02f;
 			}break;
-		case MODEL_POTION+102: // °¡ÀÌ¿ÂÀÇ ¸í·É¼­
+		case MODEL_POTION+102: // ï¿½ï¿½ï¿½Ì¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½É¼ï¿½
 			{
 				Position[0] += 0.005f;
 				Position[1] += 0.05f;
 				Vector(0.0f, 0.0f, 30.0f, ObjectSelect.Angle);
 			}break;
-		case MODEL_POTION+103: // ¼¼Å©·Î¹ÌÄÜ Á¶°¢
+		case MODEL_POTION+103: // ï¿½ï¿½Å©ï¿½Î¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		case MODEL_POTION+104: 
 		case MODEL_POTION+105: 
 		case MODEL_POTION+106: 
@@ -1965,7 +1969,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 				Position[1] += 0.05f;
 				Vector(0.0f, 0.0f, 30.0f, ObjectSelect.Angle);
 			}break;
-		case MODEL_POTION+109: // ¼¼Å©·Î¹ÌÄÜ
+		case MODEL_POTION+109: // ï¿½ï¿½Å©ï¿½Î¹ï¿½ï¿½ï¿½
 			{
 				Position[0] += 0.005f;
 				Position[1] += 0.05f;
@@ -1974,35 +1978,35 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 		}
 	}
 #endif //LDK_ADD_EMPIREGUARDIAN_ITEM
-#if defined(LDS_ADD_INGAMESHOP_ITEM_RINGSAPPHIRE) || defined(LDS_ADD_INGAMESHOP_ITEM_RINGRUBY) || defined(LDS_ADD_INGAMESHOP_ITEM_RINGTOPAZ) || defined(LDS_ADD_INGAMESHOP_ITEM_RINGAMETHYST)	// ½Å±Ô »çÆÄÀÌ¾î(Çª¸¥»ö)¸µ	// MODEL_HELPER+109
-	else if( Type >= MODEL_HELPER+109 && Type <= MODEL_HELPER+112 )	// »çÆÄÀÌ¾î(Çª¸¥»ö)¸µ, ·çºñ(ºÓÀº»ö)¸µ, ÅäÆÄÁî(ÁÖÈ²)¸µ, ÀÚ¼öÁ¤(º¸¶ó»ö)¸µ
+#if defined(LDS_ADD_INGAMESHOP_ITEM_RINGSAPPHIRE) || defined(LDS_ADD_INGAMESHOP_ITEM_RINGRUBY) || defined(LDS_ADD_INGAMESHOP_ITEM_RINGTOPAZ) || defined(LDS_ADD_INGAMESHOP_ITEM_RINGAMETHYST)	// ï¿½Å±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì¾ï¿½(Çªï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½	// MODEL_HELPER+109
+	else if( Type >= MODEL_HELPER+109 && Type <= MODEL_HELPER+112 )	// ï¿½ï¿½ï¿½ï¿½ï¿½Ì¾ï¿½(Çªï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½, ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½È²)ï¿½ï¿½, ï¿½Ú¼ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½
 	{
-		// ½Å±Ô »çÆÄÀÌ¾î(Çª¸¥»ö)¸µ
+		// ï¿½Å±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì¾ï¿½(Çªï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½
 		Position[0] += 0.025f;
 		Position[1] -= 0.035f;
 		Vector(270.0f, 25.0f, 25.0f, ObjectSelect.Angle);
 	}
-#endif // LDS_ADD_INGAMESHOP_ITEM_RINGAMETHYST		// ½Å±Ô ÀÚ¼öÁ¤(º¸¶ó»ö)¸µ		// MODEL_HELPER+112
+#endif // LDS_ADD_INGAMESHOP_ITEM_RINGAMETHYST		// ï¿½Å±ï¿½ ï¿½Ú¼ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½		// MODEL_HELPER+112
 #if defined(LDS_ADD_INGAMESHOP_ITEM_AMULETRUBY) || defined(LDS_ADD_INGAMESHOP_ITEM_AMULETEMERALD) || defined(LDS_ADD_INGAMESHOP_ITEM_AMULETSAPPHIRE)
-	else if( Type >= MODEL_HELPER+113 && Type <= MODEL_HELPER+115 )	// ·çºñ(ºÓÀº»ö), ¿¡¸Þ¶öµå(Çª¸¥), »çÆÄÀÌ¾î(³ì»ö) ¸ñ°ÉÀÌ
+	else if( Type >= MODEL_HELPER+113 && Type <= MODEL_HELPER+115 )	// ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½), ï¿½ï¿½ï¿½Þ¶ï¿½ï¿½ï¿½(Çªï¿½ï¿½), ï¿½ï¿½ï¿½ï¿½ï¿½Ì¾ï¿½(ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
-		// ·çºñ(ºÓÀº»ö), ¿¡¸Þ¶öµå(Çª¸¥), »çÆÄÀÌ¾î(³ì»ö) ¸ñ°ÉÀÌ
+		// ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½), ï¿½ï¿½ï¿½Þ¶ï¿½ï¿½ï¿½(Çªï¿½ï¿½), ï¿½ï¿½ï¿½ï¿½ï¿½Ì¾ï¿½(ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½
 		Position[0] += 0.005f;
 		Position[1] -= 0.00f;
 		Vector(270.0f, 0.0f, 0.0f, ObjectSelect.Angle);
 	}
-#endif // defined(LDS_ADD_INGAMESHOP_ITEM_AMULETRUBY) || defined(LDS_ADD_INGAMESHOP_ITEM_AMULETEMERALD) || defined(LDS_ADD_INGAMESHOP_ITEM_AMULETSAPPHIRE)	// ·çºñ(ºÓÀº»ö), ¿¡¸Þ¶öµå(Çª¸¥), »çÆÄÀÌ¾î(³ì»ö) ¸ñ°ÉÀÌ
+#endif // defined(LDS_ADD_INGAMESHOP_ITEM_AMULETRUBY) || defined(LDS_ADD_INGAMESHOP_ITEM_AMULETEMERALD) || defined(LDS_ADD_INGAMESHOP_ITEM_AMULETSAPPHIRE)	// ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½), ï¿½ï¿½ï¿½Þ¶ï¿½ï¿½ï¿½(Çªï¿½ï¿½), ï¿½ï¿½ï¿½ï¿½ï¿½Ì¾ï¿½(ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½
 #if defined(LDS_ADD_INGAMESHOP_ITEM_KEYSILVER) || defined(LDS_ADD_INGAMESHOP_ITEM_KEYGOLD)
-	else if( Type >= MODEL_POTION+112 && Type <= MODEL_POTION+113 )	// Å°(½Ç¹ö), Å°(°ñµå)
+	else if( Type >= MODEL_POTION+112 && Type <= MODEL_POTION+113 )	// Å°(ï¿½Ç¹ï¿½), Å°(ï¿½ï¿½ï¿½)
 	{
-		// Å°(½Ç¹ö), Å°(°ñµå)
+		// Å°(ï¿½Ç¹ï¿½), Å°(ï¿½ï¿½ï¿½)
 		Position[0] += 0.05f;
 		Position[1] += 0.009f;
 		Vector(270.0f, 180.0f, 45.0f, ObjectSelect.Angle);
 	}
 #endif // defined(LDS_ADD_INGAMESHOP_ITEM_KEYSILVER) || defined(LDS_ADD_INGAMESHOP_ITEM_KEYGOLD)
 #ifdef LDK_ADD_INGAMESHOP_GOBLIN_GOLD
-	// °íºí¸°±ÝÈ­
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È­
 	else if( Type == MODEL_POTION+120 )
 	{
 		Position[0] += 0.01f;
@@ -2011,7 +2015,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 
 	}
 #endif //LDK_ADD_INGAMESHOP_GOBLIN_GOLD
-#ifdef LDK_ADD_INGAMESHOP_PACKAGE_BOX				// ÆÐÅ°Áö »óÀÚA-F
+#ifdef LDK_ADD_INGAMESHOP_PACKAGE_BOX				// ï¿½ï¿½Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½A-F
 	else if( MODEL_POTION+134 <= Type && Type <= MODEL_POTION+139 )
 	{
 		Position[0] += 0.00f;
@@ -2032,37 +2036,37 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 #endif //PBG_FIX_ITEMANGLE
 	}
 #endif //LDK_ADD_INGAMESHOP_NEW_WEALTH_SEAL
-#ifdef LDS_ADD_INGAMESHOP_ITEM_PRIMIUMSERVICE6		// ÀÎ°ÔÀÓ˜Þ ¾ÆÀÌÅÛ // ÇÁ¸®¹Ì¾ö¼­ºñ½º6Á¾			// MODEL_POTION+114~119
+#ifdef LDS_ADD_INGAMESHOP_ITEM_PRIMIUMSERVICE6		// ï¿½Î°ï¿½ï¿½Ó˜ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ // ï¿½ï¿½ï¿½ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ï¿½ï¿½6ï¿½ï¿½			// MODEL_POTION+114~119
 	else if( Type >= MODEL_POTION+114 && Type <= MODEL_POTION+119 )
 	{
 		Position[0] += 0.00f;
 		Position[1] += 0.06f;
 		Vector(270.0f, 0.0f, 0.0f, ObjectSelect.Angle);
 	}
-#endif // LDS_ADD_INGAMESHOP_ITEM_PRIMIUMSERVICE6		// ÀÎ°ÔÀÓ˜Þ ¾ÆÀÌÅÛ // ÇÁ¸®¹Ì¾ö¼­ºñ½º6Á¾			// MODEL_POTION+114~119
-#ifdef LDS_ADD_INGAMESHOP_ITEM_COMMUTERTICKET4		// ÀÎ°ÔÀÓ˜Þ ¾ÆÀÌÅÛ // Á¤¾×±Ç4Á¾					// MODEL_POTION+126~129
+#endif // LDS_ADD_INGAMESHOP_ITEM_PRIMIUMSERVICE6		// ï¿½Î°ï¿½ï¿½Ó˜ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ // ï¿½ï¿½ï¿½ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ï¿½ï¿½6ï¿½ï¿½			// MODEL_POTION+114~119
+#ifdef LDS_ADD_INGAMESHOP_ITEM_COMMUTERTICKET4		// ï¿½Î°ï¿½ï¿½Ó˜ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ // ï¿½ï¿½ï¿½×±ï¿½4ï¿½ï¿½					// MODEL_POTION+126~129
 	else if( Type >= MODEL_POTION+126 && Type <= MODEL_POTION+129 )
 	{
 		Position[0] += 0.00f;
 		Position[1] += 0.06f;
 		Vector(270.0f, 0.0f, 0.0f, ObjectSelect.Angle);
 	}
-#endif // LDS_ADD_INGAMESHOP_ITEM_COMMUTERTICKET4		// ÀÎ°ÔÀÓ˜Þ ¾ÆÀÌÅÛ // Á¤¾×±Ç4Á¾					// MODEL_POTION+126~129
-#ifdef LDS_ADD_INGAMESHOP_ITEM_SIZECOMMUTERTICKET3	// ÀÎ°ÔÀÓ˜Þ ¾ÆÀÌÅÛ // Á¤·®±Ç3Á¾					// MODEL_POTION+130~132
+#endif // LDS_ADD_INGAMESHOP_ITEM_COMMUTERTICKET4		// ï¿½Î°ï¿½ï¿½Ó˜ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ // ï¿½ï¿½ï¿½×±ï¿½4ï¿½ï¿½					// MODEL_POTION+126~129
+#ifdef LDS_ADD_INGAMESHOP_ITEM_SIZECOMMUTERTICKET3	// ï¿½Î°ï¿½ï¿½Ó˜ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½3ï¿½ï¿½					// MODEL_POTION+130~132
 	else if( Type >= MODEL_POTION+130 && Type <= MODEL_POTION+132 )
 	{
 		Position[0] += 0.00f;
 		Position[1] += 0.06f;
 		Vector(270.0f, 0.0f, 0.0f, ObjectSelect.Angle);
 	}
-#endif // LDS_ADD_INGAMESHOP_ITEM_SIZECOMMUTERTICKET3	// ÀÎ°ÔÀÓ˜Þ ¾ÆÀÌÅÛ // Á¤·®±Ç3Á¾					// MODEL_POTION+130~132
-#ifdef LDS_ADD_INGAMESHOP_ITEM_PASSCHAOSCASTLE		// ÀÎ°ÔÀÓ˜Þ ¾ÆÀÌÅÛ // Ä«¿À½ºÄÉ½½ ÀÚÀ¯ÀÔÀå±Ç		// MODEL_HELPER+121
+#endif // LDS_ADD_INGAMESHOP_ITEM_SIZECOMMUTERTICKET3	// ï¿½Î°ï¿½ï¿½Ó˜ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½3ï¿½ï¿½					// MODEL_POTION+130~132
+#ifdef LDS_ADD_INGAMESHOP_ITEM_PASSCHAOSCASTLE		// ï¿½Î°ï¿½ï¿½Ó˜ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ // Ä«ï¿½ï¿½ï¿½ï¿½ï¿½É½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½		// MODEL_HELPER+121
 	else if( Type == MODEL_HELPER+121 )
 	{
 		Position[1] -= 0.04f;
 		Vector(270.f, 0.f, 0.f, ObjectSelect.Angle);
 	}
-#endif // LDS_ADD_INGAMESHOP_ITEM_PASSCHAOSCASTLE		// ÀÎ°ÔÀÓ˜Þ ¾ÆÀÌÅÛ // Ä«¿À½ºÄÉ½½ ÀÚÀ¯ÀÔÀå±Ç		// MODEL_HELPER+121
+#endif // LDS_ADD_INGAMESHOP_ITEM_PASSCHAOSCASTLE		// ï¿½Î°ï¿½ï¿½Ó˜ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ // Ä«ï¿½ï¿½ï¿½ï¿½ï¿½É½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½		// MODEL_HELPER+121
 #ifdef PBG_ADD_NEWCHAR_MONK_ITEM
 	else if(Type == MODEL_HELM+59 /*&& Type <= MODEL_HELM+59+5*/)
 	{
@@ -2082,70 +2086,70 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 
 
 	// =====================================================================================/
-	// ObjectSelect Ã³¸® ºÎºÐ 1. ÀÏ¹Ý ¾ÆÀÌÅÛ
+	// ObjectSelect Ã³ï¿½ï¿½ ï¿½Îºï¿½ 1. ï¿½Ï¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 
-	// ObjectSelect Ã³¸® ºÎºÐ 2. ¼ÒÄÏ ¾ÆÀÌÅÛ
+	// ObjectSelect Ã³ï¿½ï¿½ ï¿½Îºï¿½ 2. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	// =====================================================================================
 #ifdef ADD_SOCKET_ITEM			
-	// ÀÎº¥Åä¸® ¾ÈÀÇ ¾ÆÀÌÅÛ À§Ä¡¸¦ ¼öÁ¤(ÀåÂøµÈ ¾ÆÀÌÅÛµµ ¼öÁ¤µÊ)
+	// ï¿½Îºï¿½ï¿½ä¸® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ûµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
 	switch (Type)
 	{
-	case MODEL_SWORD+26:		// ÇÃ¶ûº£¸£ÁÖ
+	case MODEL_SWORD+26:		// ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		{
-			Position[0] -= 0.02f;				// °¡·Î
-			Position[1] += 0.04f;				// ³ôÀÌ
+			Position[0] -= 0.02f;				// ï¿½ï¿½ï¿½ï¿½
+			Position[1] += 0.04f;				// ï¿½ï¿½ï¿½ï¿½
 			Vector(180.f,270.f,10.f,ObjectSelect.Angle);
 		}break;
-	case MODEL_SWORD+27:		// ¼Òµåºê·¹ÀÌÄ¿
+	case MODEL_SWORD+27:		// ï¿½Òµï¿½ê·¹ï¿½ï¿½Ä¿
 		{
 			Vector(180.f,270.f,15.f,ObjectSelect.Angle);
 		}break;
-	case MODEL_SWORD+28:		// ·é¹Ù½ºÅ¸µå
+	case MODEL_SWORD+28:		// ï¿½ï¿½Ù½ï¿½Å¸ï¿½ï¿½
 		{
 			Position[1] += 0.02f;
 			Vector(180.f,270.f,10.f,ObjectSelect.Angle);
 		}break;
-	case MODEL_MACE+16:			// ÇÁ·Î½ºÆ®¸ÞÀÌ½º
+	case MODEL_MACE+16:			// ï¿½ï¿½ï¿½Î½ï¿½Æ®ï¿½ï¿½ï¿½Ì½ï¿½
 		{
 			Position[0] -= 0.02f;
 			Vector(180.f,270.f,15.f,ObjectSelect.Angle);
 		}
 		break;
-	case MODEL_MACE+17:			// ¾Û¼Ö·çÆ®¼ÁÅÍ
+	case MODEL_MACE+17:			// ï¿½Û¼Ö·ï¿½Æ®ï¿½ï¿½ï¿½ï¿½
 		{
 			Position[0] -= 0.02f;
 			Position[1] += 0.04f;
 			Vector(180.f,270.f,15.f,ObjectSelect.Angle);
 		}break;
-		// 	case MODEL_BOW+23:			// ´ÙÅ©½ºÆÃ°Å
+		// 	case MODEL_BOW+23:			// ï¿½ï¿½Å©ï¿½ï¿½ï¿½Ã°ï¿½
 		// 		{
 		// 			Position[0] -= 0.04f;
 		// 			Position[1] += 0.12f;
 		// 			Vector(180.f, -90.f, 15.f,ObjectSelect.Angle);
 		// 		}break;
-	case MODEL_STAFF+30:			// µ¥µé¸®½ºÅ×ÇÁ
+	case MODEL_STAFF+30:			// ï¿½ï¿½ï¿½é¸®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		{
 			Vector(180.f,90.f,10.f,ObjectSelect.Angle);
 		}break;
-	case MODEL_STAFF+31:			// ÀÎº£¸®¾Ë½ºÅ×ÇÁ
+	case MODEL_STAFF+31:			// ï¿½Îºï¿½ï¿½ï¿½ï¿½Ë½ï¿½ï¿½ï¿½ï¿½ï¿½
 		{
 			Vector(180.f,90.f,10.f,ObjectSelect.Angle);
 		}break;
-	case MODEL_STAFF+32:			// ¼Ò¿ïºê¸µ°Å
+	case MODEL_STAFF+32:			// ï¿½Ò¿ï¿½ê¸µï¿½ï¿½
 		{
 			Vector(180.f,90.f,10.f,ObjectSelect.Angle);
 		}break;
 	}
 #endif // ADD_SOCKET_ITEM
 	// =====================================================================================/
-	// ObjectSelect Ã³¸® ºÎºÐ 2. ¼ÒÄÏ ¾ÆÀÌÅÛ
+	// ObjectSelect Ã³ï¿½ï¿½ ï¿½Îºï¿½ 2. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 
-	// ObjectSelect Ã³¸® ºÎºÐ 3. ±âÅ¸ ¾ÆÀÌÅÛ
+	// ObjectSelect Ã³ï¿½ï¿½ ï¿½Îºï¿½ 3. ï¿½ï¿½Å¸ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	// =====================================================================================
 #ifdef LDK_FIX_CAOS_THUNDER_STAFF_ROTATION
-	//inventory Ä«¿À½º ¹ø°³ ÁöÆÎÀÌ È¸Àü°ª ÀÌ»ó(2008.08.12)
+	//inventory Ä«ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ ï¿½Ì»ï¿½(2008.08.12)
 	switch(Type)
 	{
 	case MODEL_STAFF+7:
@@ -2155,28 +2159,28 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif //LDK_FIX_CAOS_THUNDER_STAFF_ROTATION
 	// =====================================================================================/
-	// ObjectSelect Ã³¸® ºÎºÐ 3. ±âÅ¸ ¾ÆÀÌÅÛ
+	// ObjectSelect Ã³ï¿½ï¿½ ï¿½Îºï¿½ 3. ï¿½ï¿½Å¸ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 
 #ifdef KJH_FIX_20080904_INVENTORY_ITEM_RENDER
 	switch(Type)
 	{
-	case MODEL_WING+8:			// Ä¡·á±¸½½
-	case MODEL_WING+9:			// ¹æ¾î·ÂÇâ»ó±¸½½
-	case MODEL_WING+10:			// °ø°Ý·ÂÇâ»ó±¸½½
-	case MODEL_WING+11:			// ¼ÒÈ¯±¸½½
+	case MODEL_WING+8:			// Ä¡ï¿½á±¸ï¿½ï¿½
+	case MODEL_WING+9:			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó±¸½ï¿½
+	case MODEL_WING+10:			// ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ó±¸½ï¿½
+	case MODEL_WING+11:			// ï¿½ï¿½È¯ï¿½ï¿½ï¿½ï¿½
 		{
 			Position[0] += 0.005f;
 			Position[1] -= 0.02f;
 		}break;
-	case MODEL_POTION+21:		// ¼ºÁÖÀÇÇ¥½Ä
+	case MODEL_POTION+21:		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½
 		{
 			Position[0] += 0.005f;
 			Position[1] -= 0.005f;
 		}break;
-	case MODEL_POTION+13:		// Ãà¼®
-	case MODEL_POTION+14:		// ¿µ¼®
-	case MODEL_POTION+22:		// Ã¢¼®
+	case MODEL_POTION+13:		// ï¿½à¼®
+	case MODEL_POTION+14:		// ï¿½ï¿½ï¿½ï¿½
+	case MODEL_POTION+22:		// Ã¢ï¿½ï¿½
 		{			
 			Position[0] += 0.005f;
 			Position[1] += 0.015f;
@@ -2184,7 +2188,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	}
 #endif // KJH_FIX_20080904_INVENTORY_ITEM_RENDER
 
-	//¼±ÅÃ µÇ¾úÀ»¶§...--;;
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½ï¿½...--;;
 	if(1==Select)
 	{
 		ObjectSelect.Angle[1] = WorldTime*0.45f;
@@ -2193,7 +2197,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 	ObjectSelect.Type = Type;
 	if(ObjectSelect.Type>=MODEL_HELM && ObjectSelect.Type<MODEL_BOOTS+MAX_ITEM_INDEX)
 		ObjectSelect.Type = MODEL_PLAYER;
-	else if(ObjectSelect.Type==MODEL_POTION+12)//ÀÌ¹êÆ® ¾ÆÀÌÅÛ
+	else if(ObjectSelect.Type==MODEL_POTION+12)//ï¿½Ì¹ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
 		if(Level==0)
 		{
@@ -2229,8 +2233,8 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 		if(Type>=MODEL_HELM && Type<MODEL_HELM+MAX_ITEM_INDEX)			
 		{
 			Scale = MODEL_HELM+39 <= Type && MODEL_HELM+44 >= Type ? 0.007f : 0.0039f;
-#ifdef LDS_FIX_ELFHELM_CILPIDREI_RESIZE			// ½ÇÇÇµå·¹ÀÌ Çï¸ä SIZE Á¦´ë·Î Àû¿ë ÇÏ±â À§ÇÔ.
-			if( Type == MODEL_HELM+31)			// ½ÇÇÇµå·¹ÀÌ Çï¸äÀÎ°æ¿ì scale °ª Á¶Á¤
+#ifdef LDS_FIX_ELFHELM_CILPIDREI_RESIZE			// ï¿½ï¿½ï¿½Çµå·¹ï¿½ï¿½ ï¿½ï¿½ï¿½ SIZE ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½.
+			if( Type == MODEL_HELM+31)			// ï¿½ï¿½ï¿½Çµå·¹ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Î°ï¿½ï¿½ scale ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 				Scale = 0.007f;
 #endif // LDS_FIX_ELFHELM_CILPIDREI_RESIZE
 		}
@@ -2242,10 +2246,10 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 			Scale = 0.0033f;
 		else if(Type>=MODEL_BOOTS && Type<MODEL_BOOTS+MAX_ITEM_INDEX)
 			Scale = 0.0032f;
-#ifndef LDS_FIX_ELFHELM_CILPIDREI_RESIZE	// Á¤¸®ÇÒ ¶§ Áö¿ö¾ß ÇÏ´Â ¼Ò½º	
-		else if( Type == MODEL_HELM+31)				// ½ÇÇÇµå·¹ÀÌ Çï¸ä SIZE Á¶Á¤ °ª
+#ifndef LDS_FIX_ELFHELM_CILPIDREI_RESIZE	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½Ò½ï¿½	
+		else if( Type == MODEL_HELM+31)				// ï¿½ï¿½ï¿½Çµå·¹ï¿½ï¿½ ï¿½ï¿½ï¿½ SIZE ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 			Scale = 0.007f;
-#endif // LDS_FIX_ELFHELM_CILPIDREI_RESIZE // Á¤¸®ÇÒ ¶§ Áö¿ö¾ß ÇÏ´Â ¼Ò½º
+#endif // LDS_FIX_ELFHELM_CILPIDREI_RESIZE // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½Ò½ï¿½
 		else if (Type == MODEL_ARMOR+30)
 			Scale = 0.0035f;
 		else if (Type == MODEL_ARMOR+32)
@@ -2253,17 +2257,17 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 		else if (Type == MODEL_ARMOR+29)
 			Scale = 0.0033f;
 
-		//$ Å©¶óÀÌ¿ïÇÁ ¾ÆÀÌÅÛ(Àåºñ)
-		if(Type == MODEL_ARMOR+34)	// Èæ±â»ç °©¿Ê
+		//$ Å©ï¿½ï¿½ï¿½Ì¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½)
+		if(Type == MODEL_ARMOR+34)	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			Scale = 0.0032f;
-		else if(Type == MODEL_ARMOR+35)	// Èæ¸¶¹ý»ç °©¿Ê
+		else if(Type == MODEL_ARMOR+35)	// ï¿½æ¸¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			Scale = 0.0032f;
-		else if(Type == MODEL_GLOVES+38)	// ¸¶°Ë»ç Àå°©
+		else if(Type == MODEL_GLOVES+38)	// ï¿½ï¿½ï¿½Ë»ï¿½ ï¿½å°©
 			Scale = 0.0032f;
 	}
 	else
 	{
-		if(Type==MODEL_WING+6)     //  ¸¶°Ë»ç ³¯°³.
+		if(Type==MODEL_WING+6)     //  ï¿½ï¿½ï¿½Ë»ï¿½ ï¿½ï¿½ï¿½ï¿½.
 			Scale = 0.0015f;
 		else if(Type==MODEL_COMPILED_CELE || Type==MODEL_COMPILED_SOUL)
 			Scale = 0.004f;
@@ -2273,18 +2277,18 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 			Position[1] -= 0.05f;
 		}
 #ifdef ADD_SEED_SPHERE_ITEM
-		else if(Type >= MODEL_WING+60 && Type <= MODEL_WING+65)	// ½Ãµå
+		else if(Type >= MODEL_WING+60 && Type <= MODEL_WING+65)	// ï¿½Ãµï¿½
 			Scale = 0.0022f; 
-		else if(Type >= MODEL_WING+70 && Type <= MODEL_WING+74)	// ½ºÇÇ¾î
+		else if(Type >= MODEL_WING+70 && Type <= MODEL_WING+74)	// ï¿½ï¿½ï¿½Ç¾ï¿½
 			Scale = 0.0017f; 
-		else if(Type >= MODEL_WING+100 && Type <= MODEL_WING+129)	// ½Ãµå½ºÇÇ¾î
+		else if(Type >= MODEL_WING+100 && Type <= MODEL_WING+129)	// ï¿½Ãµå½ºï¿½Ç¾ï¿½
 			Scale = 0.0017f; 
 #endif	// ADD_SEED_SPHERE_ITEM
 		else if(Type>=MODEL_WING && Type<MODEL_WING+MAX_ITEM_INDEX)
 		{
 			Scale = 0.002f;
 		}
-		//ÇÒ·ÎÀ©°¢µµ
+		//ï¿½Ò·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		else
 			if ( Type==MODEL_POTION+45 || Type==MODEL_POTION+49)
 			{
@@ -2322,54 +2326,54 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 								Vector(0.f,ObjectSelect.Angle[1],0.f,ObjectSelect.Angle);
 							}
 #endif
-							else if(Type==MODEL_POTION+21)	// ·¹³ª
+							else if(Type==MODEL_POTION+21)	// ï¿½ï¿½ï¿½ï¿½
 								Scale = 0.002f;
 							else if(Type == MODEL_BOW+19)
 								Scale = 0.002f;
-							else if(Type==MODEL_EVENT+11)	// ½ºÅæ
+							else if(Type==MODEL_EVENT+11)	// ï¿½ï¿½ï¿½ï¿½
 								Scale = 0.0015f;
-							else if ( Type==MODEL_HELPER+4 )    //  ´ÙÅ©È£½º
+							else if ( Type==MODEL_HELPER+4 )    //  ï¿½ï¿½Å©È£ï¿½ï¿½
 								Scale = 0.0015f;
-							else if ( Type==MODEL_HELPER+5 )    //  ´ÙÅ©½ºÇÇ¸´.
+							else if ( Type==MODEL_HELPER+5 )    //  ï¿½ï¿½Å©ï¿½ï¿½ï¿½Ç¸ï¿½.
 								Scale = 0.005f;
-							else if ( Type==MODEL_HELPER+30 )   //  ¸ÁÅä.    
+							else if ( Type==MODEL_HELPER+30 )   //  ï¿½ï¿½ï¿½ï¿½.    
 								Scale = 0.002f;
-							else if ( Type==MODEL_EVENT+16 )    //  ±ºÁÖÀÇ ¹®Àå.
+							else if ( Type==MODEL_EVENT+16 )    //  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 								Scale = 0.002f;
 #ifdef MYSTERY_BEAD
-							else if ( Type==MODEL_EVENT+19 )	//. ½ÅºñÀÇ±¸½½
+							else if ( Type==MODEL_EVENT+19 )	//. ï¿½Åºï¿½ï¿½Ç±ï¿½ï¿½ï¿½
 								Scale = 0.0025f;
 #endif // MYSTERY_BEAD
-							else if(Type==MODEL_HELPER+16)	//. ´ëÃµ»çÀÇ ¼­
+							else if(Type==MODEL_HELPER+16)	//. ï¿½ï¿½Ãµï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 								Scale = 0.002f;
-							else if(Type==MODEL_HELPER+17)	//. ºí·¯µåº»
+							else if(Type==MODEL_HELPER+17)	//. ï¿½ï¿½ï¿½ï¿½ï¿½åº»
 								Scale = 0.0018f;
-							else if(Type==MODEL_HELPER+18)	//. Åõ¸í¸ÁÅä
+							else if(Type==MODEL_HELPER+18)	//. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 								Scale = 0.0018f;
 #ifdef CSK_FREE_TICKET
-							// ¾ÆÀÌÅÛ ½ºÄÉÀÏ Á¤ÇÏ´Â °÷
-							else if(Type == MODEL_HELPER+46)	// µ¥ºô½ºÄù¾î ÀÚÀ¯ÀÔÀå±Ç
+							// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½
+							else if(Type == MODEL_HELPER+46)	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0018f;
 							}
-							else if(Type == MODEL_HELPER+47)	// ºí·¯µåÄ³½½ ÀÚÀ¯ÀÔÀå±Ç
+							else if(Type == MODEL_HELPER+47)	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0018f;
 							}
-							else if(Type == MODEL_HELPER+48)	// Ä®¸®¸¶ ÀÚÀ¯ÀÔÀå±Ç
+							else if(Type == MODEL_HELPER+48)	// Ä®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0018f;
 							}
 #endif // CSK_FREE_TICKET
 #ifdef CSK_CHAOS_CARD
-							// ¾ÆÀÌÅÛ ½ºÄÉÀÏ Á¤ÇÏ´Â °÷
-							else if(Type == MODEL_POTION+54)	// Ä«¿À½ºÄ«µå
+							// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½
+							else if(Type == MODEL_POTION+54)	// Ä«ï¿½ï¿½ï¿½ï¿½Ä«ï¿½ï¿½
 							{
 								Scale = 0.0024f;
 							}
 #endif // CSK_CHAOS_CARD
 #ifdef CSK_RARE_ITEM
-							// ¾ÆÀÌÅÛ ½ºÄÉÀÏ Á¤ÇÏ´Â °÷
+							// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½
 							else if(Type == MODEL_POTION+58)
 							{
 								Scale = 0.0012f;
@@ -2384,7 +2388,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 							}
 #endif // CSK_RARE_ITEM
 #ifdef CSK_LUCKY_CHARM
-							else if( Type == MODEL_POTION+53 )// Çà¿îÀÇ ºÎÀû
+							else if( Type == MODEL_POTION+53 )// ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.00078f;
 							}
@@ -2395,37 +2399,37 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 								Scale = 0.0021f;
 							}
 #endif //CSK_LUCKY_SEAL
-#ifdef PSW_ELITE_ITEM              // ¿¤¸®Æ® ¹°¾à
+#ifdef PSW_ELITE_ITEM              // ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
 							else if( Type >= MODEL_POTION+70 && Type <= MODEL_POTION+71 )
 							{
 								Scale = 0.0028f;
 							}
 #endif //PSW_ELITE_ITEM
-#ifdef PSW_SCROLL_ITEM             // ¿¤¸®Æ® ½ºÅ©·Ñ
+#ifdef PSW_SCROLL_ITEM             // ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½Å©ï¿½ï¿½
 							else if( Type >= MODEL_POTION+72 && Type <= MODEL_POTION+77 )
 							{
 								Scale = 0.0025f;
 							}
 #endif //PSW_SCROLL_ITEM
-#ifdef PSW_SEAL_ITEM               // ÀÌµ¿ ÀÎÀå
+#ifdef PSW_SEAL_ITEM               // ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½
 							else if( Type == MODEL_HELPER+59 )
 							{
 								Scale = 0.0008f;
 							}
 #endif //PSW_SEAL_ITEM
-#ifdef PSW_FRUIT_ITEM              // ¸®¼Â ¿­¸Å
+#ifdef PSW_FRUIT_ITEM              // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 							else if( Type >= MODEL_HELPER+54 && Type <= MODEL_HELPER+58 )
 							{
 								Scale = 0.004f;
 							}
 #endif //PSW_FRUIT_ITEM
-#ifdef PSW_SECRET_ITEM             // °­È­ÀÇ ºñ¾à
+#ifdef PSW_SECRET_ITEM             // ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½
 							else if( Type >= MODEL_POTION+78 && Type <= MODEL_POTION+82 )
 							{
 								Scale = 0.0025f;
 							}
 #endif //PSW_SECRET_ITEM
-#ifdef PSW_INDULGENCE_ITEM         // ¸éÁËºÎ
+#ifdef PSW_INDULGENCE_ITEM         // ï¿½ï¿½ï¿½Ëºï¿½
 							else if( Type == MODEL_HELPER+60 )
 							{
 								Scale = 0.005f;
@@ -2450,57 +2454,57 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 							}
 #endif //CSK_LUCKY_SEAL
 #ifdef PSW_CHARACTER_CARD 
-							else if(Type == MODEL_POTION+91) // Ä³¸¯ÅÍ Ä«µå
+							else if(Type == MODEL_POTION+91) // Ä³ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½
 							{
 								Scale = 0.0034f;
 							}
 #endif // PSW_CHARACTER_CARD
 #ifdef PSW_NEW_CHAOS_CARD
-							else if(Type == MODEL_POTION+92) // Ä«¿À½ºÄ«µå °ñµå
+							else if(Type == MODEL_POTION+92) // Ä«ï¿½ï¿½ï¿½ï¿½Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0024f;
 							}
-							else if(Type == MODEL_POTION+93) // Ä«¿À½ºÄ«µå ·¹¾î
+							else if(Type == MODEL_POTION+93) // Ä«ï¿½ï¿½ï¿½ï¿½Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0024f;
 							}
-							else if(Type == MODEL_POTION+95) // Ä«¿À½ºÄ«µå ¹Ì´Ï
+							else if(Type == MODEL_POTION+95) // Ä«ï¿½ï¿½ï¿½ï¿½Ä«ï¿½ï¿½ ï¿½Ì´ï¿½
 							{
 								Scale = 0.0024f;
 							}
 #endif // PSW_NEW_CHAOS_CARD
 #ifdef PSW_NEW_ELITE_ITEM
-							else if( Type == MODEL_POTION+94 ) // ¿¤¸®Æ® Áß°£ Ä¡·á ¹°¾à
+							else if( Type == MODEL_POTION+94 ) // ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ß°ï¿½ Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0022f;
 							}
 #endif //PSW_NEW_ELITE_ITEM
 #ifdef CSK_EVENT_CHERRYBLOSSOM
-							else if( Type == MODEL_POTION+84 )  // º¢²É»óÀÚ
+							else if( Type == MODEL_POTION+84 )  // ï¿½ï¿½ï¿½É»ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0031f;
 							}
-							else if( Type == MODEL_POTION+85 )  // º¢²É¼ú
+							else if( Type == MODEL_POTION+85 )  // ï¿½ï¿½ï¿½É¼ï¿½
 							{
 								Scale = 0.0044f;
 							}
-							else if( Type == MODEL_POTION+86 )  // º¢²É°æ´Ü
+							else if( Type == MODEL_POTION+86 )  // ï¿½ï¿½ï¿½É°ï¿½ï¿½
 							{
 								Scale = 0.0031f;
 							}
-							else if( Type == MODEL_POTION+87 )  // º¢²ÉÀÙ
+							else if( Type == MODEL_POTION+87 )  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0061f;
 							}
-							else if( Type == MODEL_POTION+88 )  // Èò»ö º¢²É
+							else if( Type == MODEL_POTION+88 )  // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0035f;
 							}
-							else if( Type == MODEL_POTION+89 )  // ºÓÀº»ö º¢²É
+							else if( Type == MODEL_POTION+89 )  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0035f;
 							}
-							else if( Type == MODEL_POTION+90 )  // ³ë¶õ»ö º¢²É
+							else if( Type == MODEL_POTION+90 )  // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0035f;
 							}
@@ -2558,64 +2562,64 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 							}
 #endif //PJH_ADD_PANDA_CHANGERING
 #ifdef YDG_ADD_CS5_REVIVAL_CHARM
-							else if( Type == MODEL_HELPER+69 )	// ºÎÈ°ÀÇ ºÎÀû
+							else if( Type == MODEL_HELPER+69 )	// ï¿½ï¿½È°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0023f;
 							}
 #endif	// YDG_ADD_CS5_REVIVAL_CHARM
 #ifdef YDG_ADD_CS5_PORTAL_CHARM
-							else if( Type == MODEL_HELPER+70 )	// ÀÌµ¿ÀÇ ºÎÀû
+							else if( Type == MODEL_HELPER+70 )	// ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0018f;
 							}
 #endif	// YDG_ADD_CS5_PORTAL_CHARM
 #ifdef ASG_ADD_CS6_GUARD_CHARM
-							else if (Type == MODEL_HELPER+81)	// ¼öÈ£ÀÇºÎÀû
+							else if (Type == MODEL_HELPER+81)	// ï¿½ï¿½È£ï¿½Çºï¿½ï¿½ï¿½
 								Scale = 0.0012f;
 #endif	// ASG_ADD_CS6_GUARD_CHARM
 #ifdef ASG_ADD_CS6_ITEM_GUARD_CHARM 
-							else if (Type == MODEL_HELPER+82)	// ¾ÆÀÌÅÛº¸È£ºÎÀû
+							else if (Type == MODEL_HELPER+82)	// ï¿½ï¿½ï¿½ï¿½ï¿½Ûºï¿½È£ï¿½ï¿½ï¿½ï¿½
 								Scale = 0.0012f;
 #endif	// ASG_ADD_CS6_ITEM_GUARD_CHARM 
 #ifdef ASG_ADD_CS6_ASCENSION_SEAL_MASTER
-							else if (Type == MODEL_HELPER+93)	// »ó½ÂÀÇÀÎÀå¸¶½ºÅÍ
+							else if (Type == MODEL_HELPER+93)	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½å¸¶ï¿½ï¿½ï¿½ï¿½
 								Scale = 0.0021f;
 #endif	// ASG_ADD_CS6_ASCENSION_SEAL_MASTER
 #ifdef ASG_ADD_CS6_WEALTH_SEAL_MASTER
-							else if (Type == MODEL_HELPER+94)	// Ç³¿äÀÇÀÎÀå¸¶½ºÅÍ
+							else if (Type == MODEL_HELPER+94)	// Ç³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½å¸¶ï¿½ï¿½ï¿½ï¿½
 								Scale = 0.0021f;
 #endif	// ASG_ADD_CS6_WEALTH_SEAL_MASTER
-							else if(Type==MODEL_SWORD+19)   //  ´ëÃµ»çÀÇ Àý´ë°Ë.
+							else if(Type==MODEL_SWORD+19)   //  ï¿½ï¿½Ãµï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.
 							{
 								if ( ItemLevel>=0 )
 								{
 									Scale = 0.0025f;
 								}
-								else    //  Äù½ºÆ® ¾ÆÀÌÅÛ.
+								else    //  ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 								{
 									Scale = 0.001f;
 									ItemLevel = 0;
 								}
 							}
-							else if(Type==MODEL_STAFF+10)   //  ´ëÃµ»çÀÇ Àý´ë ÁöÆÎÀÌ.
+							else if(Type==MODEL_STAFF+10)   //  ï¿½ï¿½Ãµï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 							{
 								if ( ItemLevel>=0 )
 								{
 									Scale = 0.0019f;
 								}
-								else    //  Äù½ºÆ® ¾ÆÀÌÅÛ.
+								else    //  ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 								{
 									Scale = 0.001f;
 									ItemLevel = 0;
 								}
 							}
-							else if(Type==MODEL_BOW+18)     //  ´ëÃµ»çÀÇ Àý´ë¼®±Ã.
+							else if(Type==MODEL_BOW+18)     //  ï¿½ï¿½Ãµï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ë¼®ï¿½ï¿½.
 							{
 								if ( ItemLevel>=0 )
 								{
 									Scale = 0.0025f;
 								}
-								else    //  Äù½ºÆ® ¾ÆÀÌÅÛ.
+								else    //  ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 								{
 									Scale = 0.0015f;
 									ItemLevel = 0;
@@ -2635,19 +2639,19 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 								Scale = 0.0024f;
 							}
 #endif //LDK_ADD_GAMBLERS_WEAPONS
-							else if(Type == MODEL_EVENT+12)		//. ¿µ±¤ÀÇ ¹ÝÁö
+							else if(Type == MODEL_EVENT+12)		//. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0012f;
 							}
-							else if(Type == MODEL_EVENT+13)		//. ´ÙÅ©½ºÅæ
+							else if(Type == MODEL_EVENT+13)		//. ï¿½ï¿½Å©ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0025f;
 							}
-							else if ( Type == MODEL_EVENT+14)	//. Á¦¿ÕÀÇ ¹ÝÁö
+							else if ( Type == MODEL_EVENT+14)	//. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0028f;
 							}
-							else if ( Type == MODEL_EVENT+15)	// ¸¶¹ý»çÀÇ ¹ÝÁö
+							else if ( Type == MODEL_EVENT+15)	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0023f;
 							}
@@ -2659,18 +2663,18 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 							{
 								Scale = 0.0028f;
 							}
-							else if ( Type == MODEL_POTION+63)	// ÆøÁ×
+							else if ( Type == MODEL_POTION+63)	// ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.007f;
 							}
 #ifdef YDG_ADD_FIRECRACKER_ITEM
-							else if ( Type == MODEL_POTION+99)	// Å©¸®½º¸¶½º ÆøÁ×
+							else if ( Type == MODEL_POTION+99)	// Å©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0025f;
 							}
 #endif	// YDG_ADD_FIRECRACKER_ITEM
 
-							else if ( Type == MODEL_POTION+52)	// GM ¼±¹°»óÀÚ
+							else if ( Type == MODEL_POTION+52)	// GM ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0014f;
 							}
@@ -2720,28 +2724,28 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 							{
 								Scale = 0.0025f;
 							}
-							//^ Ææ¸± ½ºÄÉÀÏ Á¶Àý
-							else if(Type == MODEL_HELPER+32)	// °©¿Ê ÆÄÆí
+							//^ ï¿½æ¸± ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+							else if(Type == MODEL_HELPER+32)	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0019f;
 							}
-							else if(Type == MODEL_HELPER+33)	// ¿©½ÅÀÇ °¡È£
+							else if(Type == MODEL_HELPER+33)	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£
 							{
 								Scale = 0.004f;
 							}
-							else if(Type == MODEL_HELPER+34)	// ¸Í¼öÀÇ ¹ßÅé
+							else if(Type == MODEL_HELPER+34)	// ï¿½Í¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.004f;
 							}
-							else if(Type == MODEL_HELPER+35)	// »ÔÇÇ¸® Á¶°¢
+							else if(Type == MODEL_HELPER+35)	// ï¿½ï¿½ï¿½Ç¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.004f;
 							}
-							else if(Type == MODEL_HELPER+36)	// ºÎ·¯Áø »ÔÇÇ¸®
+							else if(Type == MODEL_HELPER+36)	// ï¿½Î·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ç¸ï¿½
 							{
 								Scale = 0.007f;
 							}
-							else if(Type == MODEL_HELPER+37)	// Ææ¸±ÀÇ »ÔÇÇ¸®
+							else if(Type == MODEL_HELPER+37)	// ï¿½æ¸±ï¿½ï¿½ ï¿½ï¿½ï¿½Ç¸ï¿½
 							{
 								Scale = 0.005f;
 							}
@@ -2783,17 +2787,17 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 								Scale = 0.005f;
 							else if (Type == MODEL_HELPER+53)
 								Scale = 0.005f; 
-							//$ Å©¶óÀÌ¿ïÇÁ ¾ÆÀÌÅÛ(¹«±â)
-							else if(Type == MODEL_SWORD+24)	// Èæ±â»ç °Ë
+							//$ Å©ï¿½ï¿½ï¿½Ì¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)
+							else if(Type == MODEL_SWORD+24)	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 							{
 								Scale = 0.0028f;
 							}
-							else if(Type == MODEL_BOW+22)	// ¿äÁ¤È°
+							else if(Type == MODEL_BOW+22)	// ï¿½ï¿½ï¿½ï¿½È°
 							{
 								Scale = 0.0020f;
 							}
 #ifdef ADD_SOCKET_ITEM
-							else if( Type == MODEL_BOW+23 )		// ´ÙÅ©½ºÆÃ°Å
+							else if( Type == MODEL_BOW+23 )		// ï¿½ï¿½Å©ï¿½ï¿½ï¿½Ã°ï¿½
 							{
 								Scale = 0.0032f;
 							}
@@ -2803,7 +2807,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 								Scale = 0.003f;
 							}
 #ifdef KJH_PBG_ADD_SEVEN_EVENT_2008
-							//Çà¿îÀÇ µ¿Àü
+							//ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 							else if(Type == MODEL_POTION+100)
 							{
 								Scale = 0.0040f;
@@ -2816,17 +2820,17 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 							else if(Type>=MODEL_SPEAR && Type<MODEL_SPEAR+MAX_ITEM_INDEX)
 							{
 #ifdef LDK_FIX_INVENTORY_SPEAR_SCALE
-								// if¹® ¼öÁ¤
-								if(Type == MODEL_SPEAR+10)	//. ±â»ç Ã¢
+								// ifï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+								if(Type == MODEL_SPEAR+10)	//. ï¿½ï¿½ï¿½ Ã¢
 									Scale = 0.0018f;
 #ifdef LDK_ADD_GAMBLERS_WEAPONS
-								else if( Type == MODEL_SPEAR+11 )	// °×ºí ·¹¾î ³´
+								else if( Type == MODEL_SPEAR+11 )	// ï¿½×ºï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 									Scale = 0.0025f;
 #endif //LDK_ADD_GAMBLERS_WEAPONS
 								else
 									Scale = 0.0021f;
 #else //LDK_FIX_INVENTORY_SPEAR_SCALE
-								if(MODEL_SPEAR+10)	//. ±â»ç Ã¢
+								if(MODEL_SPEAR+10)	//. ï¿½ï¿½ï¿½ Ã¢
 									Scale = 0.0018f;
 								else
 									Scale = 0.0021f;
@@ -2834,14 +2838,14 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 							}
 							else if(Type>=MODEL_STAFF && Type<MODEL_STAFF+MAX_ITEM_INDEX)
 							{
-								if (Type >= MODEL_STAFF+14 && Type <= MODEL_STAFF+20)	// ¼ÒÈ¯¼ú»ç ½ºÆ½.
+								if (Type >= MODEL_STAFF+14 && Type <= MODEL_STAFF+20)	// ï¿½ï¿½È¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ½.
 									Scale = 0.0028f;
-								else if (Type >= MODEL_STAFF+21 && Type <= MODEL_STAFF+29)	// »ç¾Æ¹«Æ®ÀÇ ¼­, ´ÒÀÇ ¼­
+								else if (Type >= MODEL_STAFF+21 && Type <= MODEL_STAFF+29)	// ï¿½ï¿½Æ¹ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 									Scale = 0.004f;
 #ifdef LDK_ADD_GAMBLERS_WEAPONS
-								else if( Type == MODEL_STAFF+33 )	// °×ºí ·¹¾î ÁöÆÎÀÌ
+								else if( Type == MODEL_STAFF+33 )	// ï¿½×ºï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 									Scale = 0.0028f;
-								else if( Type == MODEL_STAFF+34 )	// °×ºí ·¹¾î ÁöÆÎÀÌ(¼ÒÈ¯¼ú»ç¿ë)
+								else if( Type == MODEL_STAFF+34 )	// ï¿½×ºï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½È¯ï¿½ï¿½ï¿½ï¿½ï¿½)
 									Scale = 0.0028f;
 #endif //LDK_ADD_GAMBLERS_WEAPONS
 								else
@@ -2853,16 +2857,16 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 								Scale = 0.0012f;
 							else if(Type==MODEL_EVENT+6)
 								Scale = 0.0039f;
-							else if(Type==MODEL_EVENT+8)	//  Àº ÈÆÀå
+							else if(Type==MODEL_EVENT+8)	//  ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 								Scale = 0.0015f;
-							else if(Type==MODEL_EVENT+9)	//  ±Ý ÈÆÀå
+							else if(Type==MODEL_EVENT+9)	//  ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 								Scale = 0.0019f;
 							else
 							{
 								Scale = 0.0025f;
 							}
 
-#ifdef LDS_ADD_CS6_CHARM_MIX_ITEM_WING	// ³¯°³ Á¶ÇÕ 100% ¼º°ø ºÎÀû
+#ifdef LDS_ADD_CS6_CHARM_MIX_ITEM_WING	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 100% ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 							if( Type >= MODEL_TYPE_CHARM_MIXWING+EWS_BEGIN
 								&& Type <= MODEL_TYPE_CHARM_MIXWING+EWS_END )
 							{
@@ -2871,18 +2875,18 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 #endif //LDS_ADD_CS6_CHARM_MIX_ITEM_WING
 
 #ifdef USE_EVENT_ELDORADO
-							if(Type==MODEL_EVENT+10)	//  ¿¤µµ¶óµµ
+							if(Type==MODEL_EVENT+10)	//  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.001f;
 							}
 #endif // USE_EVENT_ELDORADO
-#ifdef LDS_ADD_PCROOM_ITEM_JPN_6TH	// °­ÇÔÀÇ ÀÎÀå (PC¹æ ¾ÆÀÌÅÛ, ÀÏº» 6Â÷ ÄÁÅÙÃ÷)
+#ifdef LDS_ADD_PCROOM_ITEM_JPN_6TH	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (PCï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½Ïºï¿½ 6ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
 							else if(Type == MODEL_HELPER+96)
 							{
 								Scale = 0.0031f;
 							}	
 #endif // LDS_ADD_PCROOM_ITEM_JPN_6TH	
-							else if(Type >= MODEL_ETC+19 && Type <= MODEL_ETC+27)	// ¾çÇÇÁö
+							else if(Type >= MODEL_ETC+19 && Type <= MODEL_ETC+27)	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0023f;
 							}
@@ -2893,19 +2897,19 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 							}
 #endif //PBG_ADD_SANTAINVITATION
 #ifdef YDG_ADD_HEALING_SCROLL
-							else if(Type == MODEL_POTION+140)	// Ä¡À¯ÀÇ ½ºÅ©·Ñ
+							else if(Type == MODEL_POTION+140)	// Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½
 							{
 								Scale = 0.0026f;
 							}
 #endif	// YDG_ADD_HEALING_SCROLL
 #ifdef YDG_ADD_SKELETON_CHANGE_RING
-							else if( Type == MODEL_HELPER+122 )	// ½ºÄÌ·¹Åæ º¯½Å¹ÝÁö
+							else if( Type == MODEL_HELPER+122 )	// ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Å¹ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0033f;
 							}
 #endif	// YDG_ADD_SKELETON_CHANGE_RING
 #ifdef YDG_ADD_SKELETON_PET
-							else if( Type == MODEL_HELPER+123 )	// ½ºÄÌ·¹Åæ Æê
+							else if( Type == MODEL_HELPER+123 )	// ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½ï¿½
 							{
 								Scale = 0.0009f;
 							}
@@ -2917,47 +2921,47 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 							}
 #endif //LJH_ADD_RARE_ITEM_TICKET_FROM_7_TO_12
 #ifdef LJH_ADD_FREE_TICKET_FOR_DOPPELGANGGER_BARCA_BARCA_7TH
-							// ¾ÆÀÌÅÛ ½ºÄÉÀÏ Á¤ÇÏ´Â °÷
-							//µµÇÃ°»¾î, ¹Ù¸£Ä«, ¹Ù¸£Ä«Á¦7¸Ê ÀÚÀ¯ÀÔÀå±Ç
-							else if(Type >= MODEL_HELPER+125 && Type <= MODEL_HELPER+127)	//µµÇÃ°»¾î, ¹Ù¸£Ä«, ¹Ù¸£Ä«Á¦7¸Ê ÀÚÀ¯ÀÔÀå±Ç
+							// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½
+							//ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½, ï¿½Ù¸ï¿½Ä«, ï¿½Ù¸ï¿½Ä«ï¿½ï¿½7ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+							else if(Type >= MODEL_HELPER+125 && Type <= MODEL_HELPER+127)	//ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½, ï¿½Ù¸ï¿½Ä«, ï¿½Ù¸ï¿½Ä«ï¿½ï¿½7ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0013f;
 							}
 #endif //LJH_ADD_FREE_TICKET_FOR_DOPPELGANGGER_BARCA_BARCA_7TH
 #ifdef LJH_ADD_ITEMS_EQUIPPED_FROM_INVENTORY_SYSTEM	
-							else if( Type == MODEL_HELPER+128 )		// ¸ÅÁ¶°¢»ó
+							else if( Type == MODEL_HELPER+128 )		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0035f;
 							}
-							else if( Type == MODEL_HELPER+129 )		// ¾çÁ¶°¢»ó
+							else if( Type == MODEL_HELPER+129 )		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0035f;
 							}
-							else if( Type == MODEL_HELPER+134 )		// ÆíÀÚ
+							else if( Type == MODEL_HELPER+134 )		// ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0033f;
 							}
 #endif	//LJH_ADD_ITEMS_EQUIPPED_FROM_INVENTORY_SYSTEM
 #ifdef LJH_ADD_ITEMS_EQUIPPED_FROM_INVENTORY_SYSTEM_PART_2
-							else if( Type == MODEL_HELPER+130 )		// ¿ÀÅ©Âü
+							else if( Type == MODEL_HELPER+130 )		// ï¿½ï¿½Å©ï¿½ï¿½
 							{
 								Scale = 0.0032f;
 							}
-							else if( Type == MODEL_HELPER+131 )		// ¸ÞÀÌÇÃÂü
+							else if( Type == MODEL_HELPER+131 )		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0033f;
 							}
-							else if( Type == MODEL_HELPER+132 )		// °ñµç¿ÀÅ©Âü
+							else if( Type == MODEL_HELPER+132 )		// ï¿½ï¿½ï¿½ï¿½Å©ï¿½ï¿½
 							{
 								Scale = 0.0025f;
 							}
-							else if( Type == MODEL_HELPER+133 )		// °ñµç¸ÞÀÌÇÃÂü
+							else if( Type == MODEL_HELPER+133 )		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0033f;
 							}
 #endif	//LJH_ADD_ITEMS_EQUIPPED_FROM_INVENTORY_SYSTEM_PART_2
 #ifdef LDK_ADD_GAMBLE_RANDOM_ICON
-							//°×ºí »óÁ¡ ¾ÆÀÌÄÜ ¸ðµ¨ ¹øÈ£ ¼öÁ¤ ÇØ¾ßµÊ
+							//ï¿½×ºï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È£ ï¿½ï¿½ï¿½ï¿½ ï¿½Ø¾ßµï¿½
 							else if ( Type==MODEL_HELPER+71 || Type==MODEL_HELPER+72 || Type==MODEL_HELPER+73 || Type==MODEL_HELPER+74 || Type==MODEL_HELPER+75 )
 							{
 								Scale = 0.0019f;
@@ -2970,7 +2974,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 							}
 #endif //LDK_ADD_GAMBLERS_WEAPONS
 #ifdef PBG_ADD_CHARACTERCARD
-							//¸¶°Ë ´ÙÅ© ¼ÒÈ¯¼ú»ç Ä«µå
+							//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å© ï¿½ï¿½È¯ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½
 							else if(Type == MODEL_HELPER+97 || Type == MODEL_HELPER+98 || Type == MODEL_POTION+91)
 							{
 								Scale = 0.0028f;
@@ -2983,10 +2987,10 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 							}
 #endif //PBG_ADD_CHARACTERSLOT
 #ifdef PBG_ADD_SECRETITEM
-							//È°·ÂÀÇºñ¾à(ÃÖÇÏ±Þ/ÇÏ±Þ/Áß±Þ/»ó±Þ)
+							//È°ï¿½ï¿½ï¿½Çºï¿½ï¿½(ï¿½ï¿½ï¿½Ï±ï¿½/ï¿½Ï±ï¿½/ï¿½ß±ï¿½/ï¿½ï¿½ï¿½)
 							else if(Type >= MODEL_HELPER+117 && Type <= MODEL_HELPER+120)
 							{
-								// ÀÎº¥¿¡ ¾Èµé¾î°¡¼­ 1x2»çÀÌÁî·Î ¼³Á¤
+								// ï¿½Îºï¿½ï¿½ï¿½ ï¿½Èµï¿½î°¡ï¿½ï¿½ 1x2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 #ifdef PBG_MOD_SECRETITEM
 								Scale = 0.0022f;
 #else //PBG_MOD_SECRETITEM
@@ -2995,7 +2999,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 							}
 #endif //PBG_ADD_SECRETITEM
 #ifdef YDG_ADD_DOPPELGANGER_ITEM
-							else if (Type == MODEL_POTION+110)	// Â÷¿øÀÇÇ¥½Ä
+							else if (Type == MODEL_POTION+110)	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½
 							{
 								Scale = 0.004f;
 							}
@@ -3003,18 +3007,18 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 #ifdef YDG_ADD_CS7_CRITICAL_MAGIC_RING
 							else if(Type == MODEL_HELPER+107)
 							{
-								// Ä¡¸í¸¶¹ý¹ÝÁö
+								// Ä¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 								Scale = 0.0034f;
 							}
 #endif	// YDG_ADD_CS7_CRITICAL_MAGIC_RING
 #ifdef YDG_ADD_CS7_ELITE_SD_POTION
-							else if(Type == MODEL_POTION+133)		// ¿¤¸®Æ® SDÈ¸º¹ ¹°¾à
+							else if(Type == MODEL_POTION+133)		// ï¿½ï¿½ï¿½ï¿½Æ® SDÈ¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0030f;
 							}
 #endif	// YDG_ADD_CS7_ELITE_SD_POTION
 #ifdef YDG_ADD_CS7_MAX_SD_AURA
-							else if(Type == MODEL_HELPER+105)		// SDÁõ°¡ ¿À¶ó
+							else if(Type == MODEL_HELPER+105)		// SDï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.002f;
 							}
@@ -3024,15 +3028,15 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 							{
 								switch(Type)
 								{
-								case MODEL_POTION+101: // ÀÇ¹®ÀÇÂÊÁö
+								case MODEL_POTION+101: // ï¿½Ç¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 									{
 										Scale = 0.004f;
 									}break;
-								case MODEL_POTION+102: // °¡ÀÌ¿ÂÀÇ ¸í·É¼­
+								case MODEL_POTION+102: // ï¿½ï¿½ï¿½Ì¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½É¼ï¿½
 									{
 										Scale = 0.005f;
 									}break;
-								case MODEL_POTION+103: // ¼¼Å©·Î¹ÌÄÜ Á¶°¢
+								case MODEL_POTION+103: // ï¿½ï¿½Å©ï¿½Î¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 								case MODEL_POTION+104: 
 								case MODEL_POTION+105: 
 								case MODEL_POTION+106: 
@@ -3041,14 +3045,14 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 									{
 										Scale = 0.004f;
 									}break;
-								case MODEL_POTION+109: // ¼¼Å©·Î¹ÌÄÜ
+								case MODEL_POTION+109: // ï¿½ï¿½Å©ï¿½Î¹ï¿½ï¿½ï¿½
 									{
 										Scale = 0.003f;
 									}break;
 								}
 							}
 #endif //LDK_ADD_EMPIREGUARDIAN_ITEM
-#ifdef LDK_ADD_CS7_UNICORN_PET	//À¯´ÏÄÜ
+#ifdef LDK_ADD_CS7_UNICORN_PET	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							else if( Type == MODEL_HELPER+106 )
 							{
 								Scale = 0.0015f;
@@ -3060,61 +3064,61 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 								Scale = 0.0012f;
 							}
 #endif //LDK_ADD_INGAMESHOP_SMALL_WING
-#ifdef LDK_ADD_INGAMESHOP_PACKAGE_BOX // ÀÎ°ÔÀÓ˜Þ ¾ÆÀÌÅÛ // ÆÐÅ°Áö»óÀÚ6Á¾			// MODEL_POTION+134~139
+#ifdef LDK_ADD_INGAMESHOP_PACKAGE_BOX // ï¿½Î°ï¿½ï¿½Ó˜ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ // ï¿½ï¿½Å°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½6ï¿½ï¿½			// MODEL_POTION+134~139
 							else if( Type >= MODEL_POTION+134 && Type <= MODEL_POTION+139 )
 							{
 								Scale = 0.0050f;
 							}
-#endif // LDK_ADD_INGAMESHOP_PACKAGE_BOX // ÀÎ°ÔÀÓ˜Þ ¾ÆÀÌÅÛ // ÆÐÅ°Áö»óÀÚ6Á¾			// MODEL_POTION+134~139
+#endif // LDK_ADD_INGAMESHOP_PACKAGE_BOX // ï¿½Î°ï¿½ï¿½Ó˜ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ // ï¿½ï¿½Å°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½6ï¿½ï¿½			// MODEL_POTION+134~139
 #if defined(LDS_ADD_INGAMESHOP_ITEM_RINGSAPPHIRE)||defined(LDS_ADD_INGAMESHOP_ITEM_RINGRUBY)||defined(LDS_ADD_INGAMESHOP_ITEM_RINGTOPAZ)||defined(LDS_ADD_INGAMESHOP_ITEM_RINGAMETHYST)	
-							else if( Type >= MODEL_HELPER+109 && Type <= MODEL_HELPER+112  )	// »çÆÄÀÌ¾î(Çª¸¥»ö)¸µ,·çºñ(ºÓÀº»ö)¸µ,ÅäÆÄÁî(ÁÖÈ²)¸µ,ÀÚ¼öÁ¤(º¸¶ó»ö)¸µ
+							else if( Type >= MODEL_HELPER+109 && Type <= MODEL_HELPER+112  )	// ï¿½ï¿½ï¿½ï¿½ï¿½Ì¾ï¿½(Çªï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½,ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½È²)ï¿½ï¿½,ï¿½Ú¼ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½
 							{
 								Scale = 0.0045f;
 							}
-#endif // LDS_ADD_INGAMESHOP_ITEM_RINGSAPPHIRE	// »çÆÄÀÌ¾î(Çª¸¥»ö)¸µ,·çºñ(ºÓÀº»ö)¸µ,ÅäÆÄÁî(ÁÖÈ²)¸µ,ÀÚ¼öÁ¤(º¸¶ó»ö)¸µ
+#endif // LDS_ADD_INGAMESHOP_ITEM_RINGSAPPHIRE	// ï¿½ï¿½ï¿½ï¿½ï¿½Ì¾ï¿½(Çªï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½,ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½È²)ï¿½ï¿½,ï¿½Ú¼ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½
 #if defined(LDS_ADD_INGAMESHOP_ITEM_AMULETRUBY)||defined(LDS_ADD_INGAMESHOP_ITEM_AMULETEMERALD)||defined(LDS_ADD_INGAMESHOP_ITEM_AMULETSAPPHIRE)		
-							else if( Type >= MODEL_HELPER+113 && Type <= MODEL_HELPER+115 )		// ·çºñ(ºÓÀº»ö)¸ñ°ÉÀÌ, ¿¡¸Þ¶öµå(Çª¸¥), »çÆÄÀÌ¾î(³ì»ö) ¸ñ°ÉÀÌ
+							else if( Type >= MODEL_HELPER+113 && Type <= MODEL_HELPER+115 )		// ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½Þ¶ï¿½ï¿½ï¿½(Çªï¿½ï¿½), ï¿½ï¿½ï¿½ï¿½ï¿½Ì¾ï¿½(ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½
 							{
 								Scale = 0.0018f;
 							}
-#endif // defined(LDS_ADD_INGAMESHOP_ITEM_AMULETRUBY)||defined(LDS_ADD_INGAMESHOP_ITEM_AMULETEMERALD)||defined(LDS_ADD_INGAMESHOP_ITEM_AMULETSAPPHIRE) // ·çºñ(ºÓÀº»ö)¸ñ°ÉÀÌ, ¿¡¸Þ¶öµå(Çª¸¥), »çÆÄÀÌ¾î(³ì»ö) ¸ñ°ÉÀÌ
-#if defined(LDS_ADD_INGAMESHOP_ITEM_KEYSILVER) || defined(LDS_ADD_INGAMESHOP_ITEM_KEYGOLD)	// Å°(½Ç¹ö), Å°(°ñµå)
+#endif // defined(LDS_ADD_INGAMESHOP_ITEM_AMULETRUBY)||defined(LDS_ADD_INGAMESHOP_ITEM_AMULETEMERALD)||defined(LDS_ADD_INGAMESHOP_ITEM_AMULETSAPPHIRE) // ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½Þ¶ï¿½ï¿½ï¿½(Çªï¿½ï¿½), ï¿½ï¿½ï¿½ï¿½ï¿½Ì¾ï¿½(ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½
+#if defined(LDS_ADD_INGAMESHOP_ITEM_KEYSILVER) || defined(LDS_ADD_INGAMESHOP_ITEM_KEYGOLD)	// Å°(ï¿½Ç¹ï¿½), Å°(ï¿½ï¿½ï¿½)
 							else if( Type >= MODEL_POTION+112 && Type <= MODEL_POTION+113 )
 							{
 								Scale = 0.0032f;
 							}
-#endif // defined(LDS_ADD_INGAMESHOP_ITEM_KEYSILVER) || defined(LDS_ADD_INGAMESHOP_ITEM_KEYGOLD)	// Å°(½Ç¹ö), Å°(°ñµå)
+#endif // defined(LDS_ADD_INGAMESHOP_ITEM_KEYSILVER) || defined(LDS_ADD_INGAMESHOP_ITEM_KEYGOLD)	// Å°(ï¿½Ç¹ï¿½), Å°(ï¿½ï¿½ï¿½)
 #ifdef LDK_ADD_INGAMESHOP_NEW_WEALTH_SEAL
 							else if( Type == MODEL_HELPER+116 )
 							{
 								Scale = 0.0021f;
 							}
 #endif //LDK_ADD_INGAMESHOP_NEW_WEALTH_SEAL
-#ifdef LDS_ADD_INGAMESHOP_ITEM_PRIMIUMSERVICE6		// ÀÎ°ÔÀÓ˜Þ ¾ÆÀÌÅÛ // ÇÁ¸®¹Ì¾ö¼­ºñ½º6Á¾			// MODEL_POTION+114~119
+#ifdef LDS_ADD_INGAMESHOP_ITEM_PRIMIUMSERVICE6		// ï¿½Î°ï¿½ï¿½Ó˜ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ // ï¿½ï¿½ï¿½ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ï¿½ï¿½6ï¿½ï¿½			// MODEL_POTION+114~119
 							else if( Type >= MODEL_POTION+114 && Type <= MODEL_POTION+119 )
 							{
 								Scale = 0.0038f;
 							}
-#endif // LDS_ADD_INGAMESHOP_ITEM_PRIMIUMSERVICE6		// ÀÎ°ÔÀÓ˜Þ ¾ÆÀÌÅÛ // ÇÁ¸®¹Ì¾ö¼­ºñ½º6Á¾			// MODEL_POTION+114~119
-#ifdef LDS_ADD_INGAMESHOP_ITEM_COMMUTERTICKET4		// ÀÎ°ÔÀÓ˜Þ ¾ÆÀÌÅÛ // Á¤¾×±Ç4Á¾					// MODEL_POTION+126~129
+#endif // LDS_ADD_INGAMESHOP_ITEM_PRIMIUMSERVICE6		// ï¿½Î°ï¿½ï¿½Ó˜ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ // ï¿½ï¿½ï¿½ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ï¿½ï¿½6ï¿½ï¿½			// MODEL_POTION+114~119
+#ifdef LDS_ADD_INGAMESHOP_ITEM_COMMUTERTICKET4		// ï¿½Î°ï¿½ï¿½Ó˜ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ // ï¿½ï¿½ï¿½×±ï¿½4ï¿½ï¿½					// MODEL_POTION+126~129
 							else if( Type >= MODEL_POTION+126 && Type <= MODEL_POTION+129 )
 							{
 								Scale = 0.0038f;
 							}
-#endif // LDS_ADD_INGAMESHOP_ITEM_COMMUTERTICKET4		// ÀÎ°ÔÀÓ˜Þ ¾ÆÀÌÅÛ // Á¤¾×±Ç4Á¾					// MODEL_POTION+126~129
-#ifdef LDS_ADD_INGAMESHOP_ITEM_SIZECOMMUTERTICKET3	// ÀÎ°ÔÀÓ˜Þ ¾ÆÀÌÅÛ // Á¤·®±Ç3Á¾					// MODEL_POTION+130~132
+#endif // LDS_ADD_INGAMESHOP_ITEM_COMMUTERTICKET4		// ï¿½Î°ï¿½ï¿½Ó˜ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ // ï¿½ï¿½ï¿½×±ï¿½4ï¿½ï¿½					// MODEL_POTION+126~129
+#ifdef LDS_ADD_INGAMESHOP_ITEM_SIZECOMMUTERTICKET3	// ï¿½Î°ï¿½ï¿½Ó˜ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½3ï¿½ï¿½					// MODEL_POTION+130~132
 							else if( Type >= MODEL_POTION+130 && Type <= MODEL_POTION+132 )
 							{
 								Scale = 0.0038f;
 							}
-#endif // LDS_ADD_INGAMESHOP_ITEM_SIZECOMMUTERTICKET3	// ÀÎ°ÔÀÓ˜Þ ¾ÆÀÌÅÛ // Á¤·®±Ç3Á¾					// MODEL_POTION+130~132
-#ifdef LDS_ADD_INGAMESHOP_ITEM_PASSCHAOSCASTLE		// ÀÎ°ÔÀÓ˜Þ ¾ÆÀÌÅÛ // Ä«¿À½ºÄÉ½½ ÀÚÀ¯ÀÔÀå±Ç		// MODEL_HELPER+121
+#endif // LDS_ADD_INGAMESHOP_ITEM_SIZECOMMUTERTICKET3	// ï¿½Î°ï¿½ï¿½Ó˜ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½3ï¿½ï¿½					// MODEL_POTION+130~132
+#ifdef LDS_ADD_INGAMESHOP_ITEM_PASSCHAOSCASTLE		// ï¿½Î°ï¿½ï¿½Ó˜ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ // Ä«ï¿½ï¿½ï¿½ï¿½ï¿½É½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½		// MODEL_HELPER+121
 							else if( Type == MODEL_HELPER+121 )
 							{
 								Scale = 0.0018f;
 								//Scale = 1.f;
 							}
-#endif // LDS_ADD_INGAMESHOP_ITEM_PASSCHAOSCASTLE		// ÀÎ°ÔÀÓ˜Þ ¾ÆÀÌÅÛ // Ä«¿À½ºÄÉ½½ ÀÚÀ¯ÀÔÀå±Ç		// MODEL_HELPER+121
+#endif // LDS_ADD_INGAMESHOP_ITEM_PASSCHAOSCASTLE		// ï¿½Î°ï¿½ï¿½Ó˜ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ // Ä«ï¿½ï¿½ï¿½ï¿½ï¿½É½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½		// MODEL_HELPER+121
 #ifdef ASG_ADD_CHARGED_CHANNEL_TICKET
 							else if(Type == MODEL_HELPER+124)
 								Scale = 0.0018f;
@@ -3154,7 +3158,7 @@ void CGFxMainUi::RenderObjectScreen(int Type,int ItemLevel,int Option1,int ExtOp
 #endif // NEW_USER_INTERFACE
 		{
 #ifdef MOD_RESOLUTION_BY_UI_RENDER_ITEM_RESIZING
-			//ÀÓ½Ã·Î ÇØ»óµµº° »çÀÌÁî ¼öÁ¤
+			//ï¿½Ó½Ã·ï¿½ ï¿½Ø»óµµºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			switch(m_iViewType)
 			{
 			case 1://800 600
@@ -3305,7 +3309,7 @@ void CGFxMainUi::SetSkillHotKey(int iHotKey, int _skillType, bool _invoke)
 
 	//-------------------------------------------
 
-	// 0¹øÀº »ç¿ëÁßÀÎ ½ºÅ³
+	// 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³
 	if(iHotKey != 0)
 	{
 		for(int i=1; i<MAX_SKILL_HOT_KEY; ++i)
@@ -3345,9 +3349,9 @@ void CGFxMainUi::SetSkillHotKey(int iHotKey, int _skillType, bool _invoke)
 		m_iHotKeySkillType[iHotKey] = CharacterAttribute->Skill[_skillType];
 		bool _bDisable = m_isHotKeySkillCantUse[iHotKey];
 
-		// iHotKey : 0 »ç¿ëÁßÀÎ½ºÅ³ , 1 ~ 10 ´ÜÃà½ºÅ³
+		// iHotKey : 0 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î½ï¿½Å³ , 1 ~ 10 ï¿½ï¿½ï¿½à½ºÅ³
 		// outTextureNum : 0 ~ 2
-		// outSkillNum : 0 ÃÊ±âÈ­, 1 ~ ½ºÅ³ ¾ÆÀÌÄÜ ¹øÈ£
+		// outSkillNum : 0 ï¿½Ê±ï¿½È­, 1 ~ ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£
 		m_pUIMovie->Invoke("_root.scene.SetChangeSkillSlot", "%d %d %d %b %d", iHotKey, outTextureNum, outSkillNum, _bDisable, _skillType);
 	}
 }
@@ -3364,10 +3368,10 @@ void  CGFxMainUi::SetSkillSlot()
 {
 	BYTE bySkillNumber = CharacterAttribute->SkillNumber;
 
-	// ½ºÅ³ °¹¼ö°¡ 1°³ ÀÌ»óÀÌ¸é
+	// ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 1ï¿½ï¿½ ï¿½Ì»ï¿½ï¿½Ì¸ï¿½
 	if(bySkillNumber > 0)
 	{
-		// ½ºÅ³ ¸®½ºÆ® ·»´õ¸µ
+		// ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		WORD iSkillType  = 0;
 		int _iIndex[MAX_MAGIC];
 		int _iType[MAX_MAGIC];
@@ -3402,10 +3406,10 @@ void  CGFxMainUi::SetSkillSlot()
 			m_iSkillSlotCount = 0;
 			memset(m_iSkillSlotIndex, -1, sizeof(m_iSkillSlotIndex));
  
- 			//ÃÊ±âÈ­
+ 			//ï¿½Ê±ï¿½È­
  			m_pUIMovie->Invoke("_root.scene.SetTooltipSkillClear", "");
 
-			//Àç¼³Á¤
+			//ï¿½ç¼³ï¿½ï¿½
 			for(int i=0; i<_iCount; i++)
 			{
 				int outSkillNum, outTextureNum;
@@ -3444,7 +3448,7 @@ void  CGFxMainUi::SetSkillSlot()
 }
 
 //////////////////////////////////////////////////////////////////////////
-//	°ø°Ý·ÂÀ» °è»êÇÑ´Ù.
+//	ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 //////////////////////////////////////////////////////////////////////////
 bool CGFxMainUi::GetAttackDamage ( int* iMinDamage, int* iMaxDamage )
 {
@@ -3456,7 +3460,7 @@ bool CGFxMainUi::GetAttackDamage ( int* iMinDamage, int* iMaxDamage )
 	ITEM *l = &CharacterMachine->Equipment[EQUIPMENT_WEAPON_LEFT];
 	if ( PickItem.Number>0 && SrcInventory==Inventory )
 	{	
-		// ¾ÆÀÌÅÛÀ» µç °æ¿ì
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½
 		switch ( SrcInventoryIndex)
 		{
 		case EQUIPMENT_WEAPON_RIGHT:
@@ -3469,26 +3473,26 @@ bool CGFxMainUi::GetAttackDamage ( int* iMinDamage, int* iMaxDamage )
 	}
 #ifdef ADD_SOCKET_ITEM
 	if( GetEquipedBowType( ) == BOWTYPE_CROSSBOW )
-#else // ADD_SOCKET_ITEM				// Á¤¸®ÇÒ ¶§ Áö¿ö¾ß ÇÏ´Â ¼Ò½º
+#else // ADD_SOCKET_ITEM				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½Ò½ï¿½
 	if( (r->Type>=ITEM_BOW+8  && r->Type<ITEM_BOW+15)	||
 		(r->Type>=ITEM_BOW+16 && r->Type<ITEM_BOW+17)	||
 		(r->Type>=ITEM_BOW+18 && r->Type<ITEM_BOW+MAX_ITEM_INDEX)
 		)
-#endif // ADD_SOCKET_ITEM				// Á¤¸®ÇÒ ¶§ Áö¿ö¾ß ÇÏ´Â ¼Ò½º
+#endif // ADD_SOCKET_ITEM				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½Ò½ï¿½
 	{
 		AttackDamageMin = CharacterAttribute->AttackDamageMinRight;
 		AttackDamageMax = CharacterAttribute->AttackDamageMaxRight;
 	}
 #ifdef ADD_SOCKET_ITEM
 	else if( GetEquipedBowType( ) == BOWTYPE_BOW )
-#else // ADD_SOCKET_ITEM				// Á¤¸®ÇÒ ¶§ Áö¿ö¾ß ÇÏ´Â ¼Ò½º
+#else // ADD_SOCKET_ITEM				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½Ò½ï¿½
 	else if((l->Type>=ITEM_BOW && l->Type<ITEM_BOW+7) 
 		|| l->Type==ITEM_BOW+17 
 		|| l->Type==ITEM_BOW+20
 		|| l->Type == ITEM_BOW+21
 		|| l->Type == ITEM_BOW+22
 		)
-#endif // ADD_SOCKET_ITEM				// Á¤¸®ÇÒ ¶§ Áö¿ö¾ß ÇÏ´Â ¼Ò½º
+#endif // ADD_SOCKET_ITEM				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½Ò½ï¿½
 	{
 		AttackDamageMin = CharacterAttribute->AttackDamageMinLeft;
 		AttackDamageMax = CharacterAttribute->AttackDamageMaxLeft;
@@ -3498,7 +3502,7 @@ bool CGFxMainUi::GetAttackDamage ( int* iMinDamage, int* iMaxDamage )
 		AttackDamageMin = CharacterAttribute->AttackDamageMinLeft;
 		AttackDamageMax = CharacterAttribute->AttackDamageMaxLeft;
 	}
-	else if(r->Type >= ITEM_STAFF && r->Type < ITEM_SHIELD)	//ÀÌÇõÀç - µ¥¹ÌÁö °è»ê Àû¿ë ºüÁø°Å ¼öÁ¤ ÁöÆÎÀÌ·ù´Â ¿ÞÂÊ(AttackDamageMinLeft)¿¡ µ¥¹ÌÁö Àû¿ëµÇ¾îÀÖÀ½
+	else if(r->Type >= ITEM_STAFF && r->Type < ITEM_SHIELD)	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ - ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(AttackDamageMinLeft)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
 		AttackDamageMin = CharacterAttribute->AttackDamageMinLeft;
 		AttackDamageMax = CharacterAttribute->AttackDamageMaxLeft;
@@ -3524,7 +3528,7 @@ bool CGFxMainUi::GetAttackDamage ( int* iMinDamage, int* iMaxDamage )
 		if ( ( r->Type>=ITEM_BOW && r->Type<ITEM_BOW+MAX_ITEM_INDEX ) &&
 			( l->Type>=ITEM_BOW && l->Type<ITEM_BOW+MAX_ITEM_INDEX ) )
 		{
-			//  ARROWÀÇ LEVELÀÌ 1ÀÌ»ó ÀÌ¸éÀº °ø°Ý·Â Áõ°¡. 
+			//  ARROWï¿½ï¿½ LEVELï¿½ï¿½ 1ï¿½Ì»ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ý·ï¿½ ï¿½ï¿½ï¿½ï¿½. 
 			if ( ( l->Type==ITEM_BOW+7 && ((l->Level>>3)&15)>=1 ) || ( r->Type==ITEM_BOW+15 && ((r->Level>>3)&15)>=1 ) )
 			{
 				Alpha = true;
@@ -3569,7 +3573,7 @@ void CGFxMainUi::SetSkillInfo(int Type)
 	GString _caution = "";
 
 #ifdef PET_SYSTEM
-	//  ÆÖ ¸í·É¾î ¼³¸íÀ» ÇÑ´Ù.
+	//  ï¿½ï¿½ ï¿½ï¿½ï¿½É¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.
 	if ( AT_PET_COMMAND_DEFAULT <= Type && Type < AT_PET_COMMAND_END )
 	{
 		if ( GetBaseClass(Hero->Class)==CLASS_DARK_LORD )
@@ -3616,7 +3620,7 @@ void CGFxMainUi::SetSkillInfo(int Type)
 		CharacterMachine->GetMagicSkillDamage( CharacterAttribute->Skill[Type], &iMinDamage, &iMaxDamage);
 		CharacterMachine->GetSkillDamage( CharacterAttribute->Skill[Type], &iSkillMinDamage, &iSkillMaxDamage );
 
-		//	Ä³¸¯ÅÍÀÇ °ø°Ý·ÂÀ» ±¸ÇÑ´Ù.
+		//	Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.
 		GetAttackDamage ( &AttackDamageMin, &AttackDamageMax );	
 
 		iSkillMinDamage += AttackDamageMin;
@@ -3636,18 +3640,18 @@ void CGFxMainUi::SetSkillInfo(int Type)
 		}
 		_title = lpszName;
 
-		WORD Dexterity;		// ¹ÎÃ¸
-		WORD Energy;		// ¿¡³ÊÁö
+		WORD Dexterity;		// ï¿½ï¿½Ã¸
+		WORD Energy;		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-		//^ Ææ¸± ½ºÅ³ °ø°Ý·Â
-		WORD Strength;		// Èû
-		WORD Vitality;		// Ã¼·Â
-		WORD Charisma;		// Åë¼Ö
+		//^ ï¿½æ¸± ï¿½ï¿½Å³ ï¿½ï¿½ï¿½Ý·ï¿½
+		WORD Strength;		// ï¿½ï¿½
+		WORD Vitality;		// Ã¼ï¿½ï¿½
+		WORD Charisma;		// ï¿½ï¿½ï¿½
 
 		Dexterity= CharacterAttribute->Dexterity+ CharacterAttribute->AddDexterity;
 		Energy	 = CharacterAttribute->Energy   + CharacterAttribute->AddEnergy;  
 
-		//^ Ææ¸± ½ºÅ³ °ø°Ý·Â
+		//^ ï¿½æ¸± ï¿½ï¿½Å³ ï¿½ï¿½ï¿½Ý·ï¿½
 		Strength	=	CharacterAttribute->Strength+ CharacterAttribute->AddStrength;
 		Vitality	=	CharacterAttribute->Vitality+ CharacterAttribute->AddVitality;
 		Charisma	=	CharacterAttribute->Charisma+ CharacterAttribute->AddCharisma;
@@ -3676,7 +3680,7 @@ void CGFxMainUi::SetSkillInfo(int Type)
 		if( rightinfo.SI_isSP )
 		{
 			skillattackpowerRate += rightinfo.SI_SP.SI_skillattackpower;
-			skillattackpowerRate += rightinfo.SI_SP.SI_magicalpower;	// ¸¶·Â »ó½Â (¿À¸¥¼Õ¿¡¸¸ ÁöÆÎÀÌ µé ¼ö ÀÖ´Ù)
+			skillattackpowerRate += rightinfo.SI_SP.SI_magicalpower;	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½Õ¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½)
 		}
 		if( leftinfo.SI_isSP )
 		{
@@ -3685,11 +3689,11 @@ void CGFxMainUi::SetSkillInfo(int Type)
 
 		if (HeroClass==CLASS_WIZARD || HeroClass==CLASS_SUMMONER)
 		{
-			if ( CharacterAttribute->Skill[Type]==AT_SKILL_WIZARDDEFENSE || (AT_SKILL_SOUL_UP <= CharacterAttribute->Skill[Type] && CharacterAttribute->Skill[Type] <= AT_SKILL_SOUL_UP+4))	// ¼Ò¿ï¹Ù¸®¾î
+			if ( CharacterAttribute->Skill[Type]==AT_SKILL_WIZARDDEFENSE || (AT_SKILL_SOUL_UP <= CharacterAttribute->Skill[Type] && CharacterAttribute->Skill[Type] <= AT_SKILL_SOUL_UP+4))	// ï¿½Ò¿ï¿½Ù¸ï¿½ï¿½ï¿½
 			{
 	#ifdef KJH_FIX_WOPS_K29544_SOULBARRIER_UPGRADE_TOOLTIP
 				int iDamageShield;
-				// ¼Ò¿ï¹Ù¸®¾îÀÇ µ¥¹ÌÁöÈí¼ö ¼öÄ¡´Â ÅõÀÚÇÑ ¸¶½ºÅÍ½ºÅ³ ·¹º§¿¡ µû¶ó +5%¾¿ ´Ã¾î³­´Ù.
+				// ï¿½Ò¿ï¿½Ù¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ +5%ï¿½ï¿½ ï¿½Ã¾î³­ï¿½ï¿½.
 				if( CharacterAttribute->Skill[Type]==AT_SKILL_WIZARDDEFENSE )
 				{
 					iDamageShield = (int)(10+(Dexterity/50.f)+(Energy/200.f));
@@ -3719,8 +3723,8 @@ void CGFxMainUi::SetSkillInfo(int Type)
 				_info += "\n\n";
 			}
 	#ifdef KJH_ADD_SKILL_SWELL_OF_MAGICPOWER
-			// ¿¹¿ÜÃ³¸® ( ¸¶·Â : %d ~ %d )
-			// ¸¶·ÂÁõ°¡ ½ºÅ³Àº ¸¶·ÂÀ» ·»´õÇÏÁö ¾Ê´Â´Ù.
+			// ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ ( ï¿½ï¿½ï¿½ï¿½ : %d ~ %d )
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.
 			else if( SkillType != AT_SKILL_SWELL_OF_MAGICPOWER )
 	#else // KJH_ADD_SKILL_SWELL_OF_MAGICPOWER
 			else
@@ -3805,40 +3809,40 @@ void CGFxMainUi::SetSkillInfo(int Type)
 			case AT_SKILL_ATT_POWER_UP+4:
 	#endif //PJH_SEASON4_MASTER_RANK4
 			case AT_SKILL_ATTACK :
-			case AT_SKILL_SUMMON :      // °íºí¸°.
-			case AT_SKILL_SUMMON+1 :    // µ¹±«¹°.
-			case AT_SKILL_SUMMON+2 :    // ¾Ï»ìÀÚ.
-			case AT_SKILL_SUMMON+3 :    // ¼³ÀÎ´ëÀå.
-			case AT_SKILL_SUMMON+4 :    // ´ÙÅ©³ªÀÌÆ®.
-			case AT_SKILL_SUMMON+5 :    // ¹ß¸®.
-			case AT_SKILL_SUMMON+6 :    // ¼ÖÁ®.
+			case AT_SKILL_SUMMON :      // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+			case AT_SKILL_SUMMON+1 :    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+			case AT_SKILL_SUMMON+2 :    // ï¿½Ï»ï¿½ï¿½ï¿½.
+			case AT_SKILL_SUMMON+3 :    // ï¿½ï¿½ï¿½Î´ï¿½ï¿½ï¿½.
+			case AT_SKILL_SUMMON+4 :    // ï¿½ï¿½Å©ï¿½ï¿½ï¿½ï¿½Æ®.
+			case AT_SKILL_SUMMON+5 :    // ï¿½ß¸ï¿½.
+			case AT_SKILL_SUMMON+6 :    // ï¿½ï¿½ï¿½ï¿½.
 	#ifdef ADD_ELF_SUMMON
-			case AT_SKILL_SUMMON+7:		// ½¦µµ¿ì³ªÀÌÆ®
+			case AT_SKILL_SUMMON+7:		// ï¿½ï¿½ï¿½ï¿½ï¿½ì³ªï¿½ï¿½Æ®
 	#endif // ADD_ELF_SUMMON
 			case AT_SKILL_IMPROVE_AG:
-			case AT_SKILL_STUN:			//  ¹èÆ²¸¶½ºÅÍ ½ºÅ³.
+			case AT_SKILL_STUN:			//  ï¿½ï¿½Æ²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³.
 			case AT_SKILL_REMOVAL_STUN:
 			case AT_SKILL_MANA:
 			case AT_SKILL_INVISIBLE:
 			case AT_SKILL_REMOVAL_INVISIBLE:
 			case AT_SKILL_REMOVAL_BUFF:
 				break;
-			case AT_SKILL_PARTY_TELEPORT:   //  ÆÄÆ¼¿ø ¼ÒÈ¯.
-			case AT_SKILL_ADD_CRITICAL:     //  Å©¸®Æ¼ÄÃ µ¥¹ÌÁö È®·ü Áõ°¡.
+			case AT_SKILL_PARTY_TELEPORT:   //  ï¿½ï¿½Æ¼ï¿½ï¿½ ï¿½ï¿½È¯.
+			case AT_SKILL_ADD_CRITICAL:     //  Å©ï¿½ï¿½Æ¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 				break;
 			case AT_SKILL_ASHAKE_UP:
 			case AT_SKILL_ASHAKE_UP+1:
 			case AT_SKILL_ASHAKE_UP+2:
 			case AT_SKILL_ASHAKE_UP+3:
 			case AT_SKILL_ASHAKE_UP+4:
-			case AT_SKILL_DARK_HORSE:   //  ´ÙÅ©È£½º.
+			case AT_SKILL_DARK_HORSE:   //  ï¿½ï¿½Å©È£ï¿½ï¿½.
 				_caution += GlobalText[1237];
 				break;
 			case AT_SKILL_BRAND_OF_SKILL:
 				break;
-			case AT_SKILL_PLASMA_STORM_FENRIR:	//^ Ææ¸± ½ºÅ³ °ø°Ý·Â
+			case AT_SKILL_PLASMA_STORM_FENRIR:	//^ ï¿½æ¸± ï¿½ï¿½Å³ ï¿½ï¿½ï¿½Ý·ï¿½
 	#ifdef PBG_FIX_SKILL_RECOVER_TOOLTIP
-			case AT_SKILL_RECOVER:				// È¸º¹½ºÅ³
+			case AT_SKILL_RECOVER:				// È¸ï¿½ï¿½ï¿½ï¿½Å³
 	#endif //PBG_FIX_SKILL_RECOVER_TOOLTIP
 	#ifdef PBG_ADD_NEWCHAR_MONK_SKILL
 			case AT_SKILL_ATT_UP_OURFORCES:
@@ -3856,30 +3860,30 @@ void CGFxMainUi::SetSkillInfo(int Type)
 			}
 		}
 
-		//^ Ææ¸± ½ºÅ³ °ø°Ý·Â
+		//^ ï¿½æ¸± ï¿½ï¿½Å³ ï¿½ï¿½ï¿½Ý·ï¿½
 		if(CharacterAttribute->Skill[Type] == AT_SKILL_PLASMA_STORM_FENRIR)
 		{
 			int iSkillDamage;
 			GetSkillInformation_Damage(AT_SKILL_PLASMA_STORM_FENRIR, &iSkillDamage);
 
-			if(HeroClass == CLASS_KNIGHT || HeroClass == CLASS_DARK)	// ±â»ç, ¸¶°Ë
+			if(HeroClass == CLASS_KNIGHT || HeroClass == CLASS_DARK)	// ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½
 			{
 				iSkillMinDamage = (Strength/3)+(Dexterity/5)+(Vitality/5)+(Energy/7)+iSkillDamage;
 			}
-			else if(HeroClass == CLASS_WIZARD || HeroClass == CLASS_SUMMONER)	// ¹ý»ç, ¼ÒÈ¯¼ú»ç
+			else if(HeroClass == CLASS_WIZARD || HeroClass == CLASS_SUMMONER)	// ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½È¯ï¿½ï¿½ï¿½ï¿½
 			{
 				iSkillMinDamage = (Strength/5)+(Dexterity/5)+(Vitality/7)+(Energy/3)+iSkillDamage;
 			}
-			else if(HeroClass == CLASS_ELF)	// ¿äÁ¤
+			else if(HeroClass == CLASS_ELF)	// ï¿½ï¿½ï¿½ï¿½
 			{
 				iSkillMinDamage = (Strength/5)+(Dexterity/3)+(Vitality/7)+(Energy/5)+iSkillDamage;
 			}
-			else if(HeroClass == CLASS_DARK_LORD)	// ´ÙÅ©·Îµå
+			else if(HeroClass == CLASS_DARK_LORD)	// ï¿½ï¿½Å©ï¿½Îµï¿½
 			{
 				iSkillMinDamage = (Strength/5)+(Dexterity/5)+(Vitality/7)+(Energy/3)+(Charisma/3)+iSkillDamage;
 			}
 	#ifdef PBG_ADD_NEWCHAR_MONK
-			else if(HeroClass == CLASS_RAGEFIGHTER)	//·¹ÀÌÁöÆÄÀÌÅÍ
+			else if(HeroClass == CLASS_RAGEFIGHTER)	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			{
 				iSkillMinDamage = (Strength/5)+(Dexterity/5)+(Vitality/3)+(Energy/7)+iSkillDamage;
 			}
@@ -3996,8 +4000,8 @@ void CGFxMainUi::SetSkillInfo(int Type)
 		}
 
 	#ifdef KJH_ADD_SKILL_SWELL_OF_MAGICPOWER
-		// ¿¹¿ÜÃ³¸® ( »ç¿ë °¡´É °Å¸®: %d )
-		// ¸¶·ÂÁõ°¡½ºÅ³Àº »ç¿ë°¡´É°Å¸®¸¦ ·»´õÇÏÁö ¾Ê´Â´Ù.
+		// ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ ( ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½: %d )
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½ë°¡ï¿½É°Å¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.
 		if( SkillType != AT_SKILL_SWELL_OF_MAGICPOWER )
 		{
 			if(iDistance)
@@ -4040,7 +4044,7 @@ void CGFxMainUi::SetSkillInfo(int Type)
 				_caution += GlobalText[96];
 			}
 
-			// ÄÞº¸½ºÅ³À» ½ÀµæÇß°í ·¹º§ÀÌ 220ÀÌ»óÀÌ¸é
+			// ï¿½Þºï¿½ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 220ï¿½Ì»ï¿½ï¿½Ì¸ï¿½
 			if ( Hero->byExtensionSkill == 1 && CharacterAttribute->Level >= 220 )
 			{
 				if ( ( CharacterAttribute->Skill[Type] >= AT_SKILL_SWORD1 && CharacterAttribute->Skill[Type] <= AT_SKILL_SWORD5 ) 
@@ -4054,13 +4058,13 @@ void CGFxMainUi::SetSkillInfo(int Type)
 					|| (AT_SKILL_TORNADO_SWORDB_UP <= CharacterAttribute->Skill[Type] && CharacterAttribute->Skill[Type] <= AT_SKILL_TORNADO_SWORDB_UP+4)
 					)
 				{
-					// 99 "ÄÞº¸ °¡´É"
+					// 99 "ï¿½Þºï¿½ ï¿½ï¿½ï¿½ï¿½"
 					_caution += GlobalText[99];
 				}
 	#ifdef CSK_FIX_SKILL_BLOWOFDESTRUCTION_COMBO
-				else if(CharacterAttribute->Skill[Type] == AT_SKILL_BLOW_OF_DESTRUCTION)	// ÆÄ±«ÀÇ ÀÏ°Ý
+				else if(CharacterAttribute->Skill[Type] == AT_SKILL_BLOW_OF_DESTRUCTION)	// ï¿½Ä±ï¿½ï¿½ï¿½ ï¿½Ï°ï¿½
 				{
-					// 2115 "ÄÞº¸ °¡´É(2´Ü°è¸¸)"
+					// 2115 "ï¿½Þºï¿½ ï¿½ï¿½ï¿½ï¿½(2ï¿½Ü°è¸¸)"
 					_caution += GlobalText[2115];
 				}
 	#endif // CSK_FIX_SKILL_BLOWOFDESTRUCTION_COMBO)
@@ -4079,13 +4083,13 @@ void CGFxMainUi::SetSkillInfo(int Type)
 		SkillUseType = SkillAttribute[SkillType].SkillUseType;
 		if ( SkillUseType==SKILL_USE_TYPE_BRAND )
 		{
-			// 1480 "%sÀÇ ½ºÅ³À» ¹ÞÀºÈÄ"
+			// 1480 "%sï¿½ï¿½ ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"
 			char temp[256];
 			ZeroMemory(temp, sizeof(temp));
 			sprintf ( temp, GlobalText[1480], SkillAttribute[BrandType].Name );
 			_caution += temp;
 
-			// 1481 "%dÃÊµ¿¾È »ç¿ë°¡´ÉÇÕ´Ï´Ù"
+			// 1481 "%dï¿½Êµï¿½ï¿½ï¿½ ï¿½ï¿½ë°¡ï¿½ï¿½ï¿½Õ´Ï´ï¿½"
 			ZeroMemory(temp, sizeof(temp));
 			sprintf ( temp, GlobalText[1481], SkillAttribute[BrandType].Damage );
 			_caution += temp;
@@ -4108,13 +4112,13 @@ void CGFxMainUi::SetSkillInfo(int Type)
 			}
 		}
 
-		if(CharacterAttribute->Skill[Type] == AT_SKILL_PLASMA_STORM_FENRIR)	//^ Ææ¸± ½ºÅ³ °ü·Ã
+		if(CharacterAttribute->Skill[Type] == AT_SKILL_PLASMA_STORM_FENRIR)	//^ ï¿½æ¸± ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½
 		{
 			_caution += GlobalText[1926];
 			_caution += GlobalText[1927];
 		}
 
-		//¿¹¿ÜÀûÀÎ ·ÎÁ÷Àº ¿©±â·Î
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
 		if(CharacterAttribute->Skill[Type] == AT_SKILL_INFINITY_ARROW)
 		{
 			_title = lpszName;
@@ -4162,19 +4166,19 @@ void CGFxMainUi::SetSkillInfo(int Type)
 	}
 
 	int strSize = 0;
-	//Å¸ÀÌÆ²
+	//Å¸ï¿½ï¿½Æ²
 	char cTitle[256];
 	EncodeUtf8(cTitle, _title.ToCStr());
 
-	//Á¤º¸
+	//ï¿½ï¿½ï¿½ï¿½
 	char cInfo[1024];
 	EncodeUtf8(cInfo, _info.ToCStr());
 
-	//¼Ó¼º
+	//ï¿½Ó¼ï¿½
 	char cAttr[256];
 	EncodeUtf8(cAttr, _attrib.ToCStr());
 
-	//°æ°í
+	//ï¿½ï¿½ï¿½
 	char cCaut[256];
 	EncodeUtf8(cCaut, _caution.ToCStr());
 
@@ -4242,13 +4246,13 @@ bool CGFxMainUi::GetSkillNumber(int skillType, int *outSkillNum, int *outTexture
 		return false;
 	}
 
-	if(skillType >= AT_PET_COMMAND_DEFAULT)    //  ÆÖ ¸í·É.
+	if(skillType >= AT_PET_COMMAND_DEFAULT)    //  ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	{
 		bySkillType = skillType;
 	}
 
 	//////////////////////////////////////////////////////////////////////////
-	// ½ºÅ³ ¾ÆÀÌÄÜ »¡°²°Ô Ã³¸®ÇÏ´Â ºÎºÐ - ½ºÅ³ ¸®´º¾ó ÀÛ¾÷À¸·Î ÀÌ¹ÌÁö¸¦ ¹Ù²Ù´Â ÇüÅÂ·Î º¯°æ
+	// ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Îºï¿½ - ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²Ù´ï¿½ ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 	BYTE bySkillUseType = SkillAttribute[bySkillType].SkillUseType;
 	int Skill_Icon = SkillAttribute[bySkillType].Magic_Icon;
@@ -4258,13 +4262,13 @@ bool CGFxMainUi::GetSkillNumber(int skillType, int *outSkillNum, int *outTexture
 
 	float fU,fV;
 
-	// %8Àº Ä³¸¯ÅÍÀÇ Å¸ÀÔº° ÃÑ ½ºÅ³ °Ù¼ö??
-	if(AT_PET_COMMAND_DEFAULT <= bySkillType && bySkillType <= AT_PET_COMMAND_END)    //  ÆÖ ¸í·É.
+	// %8ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½Ôºï¿½ ï¿½ï¿½ ï¿½ï¿½Å³ ï¿½Ù¼ï¿½??
+	if(AT_PET_COMMAND_DEFAULT <= bySkillType && bySkillType <= AT_PET_COMMAND_END)    //  ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	{
 		iKindofSkill = SKILL_TYPE_COMMAND;
 		iSkillNum = ((bySkillType - AT_PET_COMMAND_DEFAULT) % 8 )+ 1;
 	}
-	else if(bySkillType == AT_SKILL_PLASMA_STORM_FENRIR)	// ÇÃ¶óÁî¸¶ ½ºÅè
+	else if(bySkillType == AT_SKILL_PLASMA_STORM_FENRIR)	// ï¿½Ã¶ï¿½ï¿½î¸¶ ï¿½ï¿½ï¿½ï¿½
 	{
 		iKindofSkill = SKILL_TYPE_COMMAND;
 		iSkillNum = 5;
@@ -4424,18 +4428,18 @@ bool CGFxMainUi::GetSkillDisable(int slotNum, int* _array)
 
 	if(bySkillType == 0 || _array[slotNum] == -1) return false;
 
-	if(_array[slotNum] >= AT_PET_COMMAND_DEFAULT)    //  ÆÖ ¸í·É.
+	if(_array[slotNum] >= AT_PET_COMMAND_DEFAULT)    //  ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	{
 		bySkillType = _array[slotNum];
 	}
 
 #ifdef KJH_ADD_SKILLICON_RENEWAL
 	//////////////////////////////////////////////////////////////////////////
-	// »ç¿ëÇÒ¼ö ¾ø´Â ½ºÅ³ÀÏ¶§ Ã³¸®ÇÏ´Â ºÎºÐ - »ç¿ëÇÒ¼ö ¾ø´Â ½ºÅ³ : true
+	// ï¿½ï¿½ï¿½ï¿½Ò¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ï¿½Ï¶ï¿½ Ã³ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Îºï¿½ - ï¿½ï¿½ï¿½ï¿½Ò¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ : true
 	bool bCantSkill = false;
 #endif // KJH_ADD_SKILLICON_RENEWAL
 	//////////////////////////////////////////////////////////////////////////
-	// ½ºÅ³ ¾ÆÀÌÄÜ »¡°²°Ô Ã³¸®ÇÏ´Â ºÎºÐ - ½ºÅ³ ¸®´º¾ó ÀÛ¾÷À¸·Î ÀÌ¹ÌÁö¸¦ ¹Ù²Ù´Â ÇüÅÂ·Î º¯°æ
+	// ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Îºï¿½ - ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²Ù´ï¿½ ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 	BYTE bySkillUseType = SkillAttribute[bySkillType].SkillUseType;
 	int Skill_Icon = SkillAttribute[bySkillType].Magic_Icon;
@@ -4496,7 +4500,7 @@ bool CGFxMainUi::GetSkillDisable(int slotNum, int* _array)
 	// 	{
 	// 	if(Hero->Weapon[j].Type==MODEL_SWORD+21||Hero->Weapon[j].Type==MODEL_SWORD+23||Hero->Weapon[j].Type==MODEL_SWORD+28||
 	// 	Hero->Weapon[j].Type==MODEL_SWORD+25||Hero->Weapon[j].Type==MODEL_SWORD+31
-	// 	)	//21 = µ¥½ººí·¹ÀÌµå,23 = ÀÍ½ºÇÃ·ÎÀüºí·¹ÀÌµå,25 = ¼Òµå´í¼­,28 = ·é¹Ù½ºÅ¸µå,31 = µ¥¾²ºê·Îµå
+	// 	)	//21 = ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½,23 = ï¿½Í½ï¿½ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½,25 = ï¿½Òµï¿½ï¿½ï¿½ï¿½,28 = ï¿½ï¿½Ù½ï¿½Å¸ï¿½ï¿½,31 = ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îµï¿½
 	// 	{
 	// 	glColor3f(1.f, 1.f, 1.f);
 	// 	break;
@@ -4507,7 +4511,7 @@ bool CGFxMainUi::GetSkillDisable(int slotNum, int* _array)
 
 	int iEnergy = CharacterAttribute->Energy+CharacterAttribute->AddEnergy;
 
-	// ½ºÅ³»ç¿ë½Ã ½ºÅÝ°Ë»ç (¿¡³ÊÁö¸¸)
+	// ï¿½ï¿½Å³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ý°Ë»ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
 	if(g_csItemOption.IsDisableSkill(bySkillType, iEnergy))
 	{
 		bCantSkill = true;
@@ -4529,16 +4533,16 @@ bool CGFxMainUi::GetSkillDisable(int slotNum, int* _array)
 	{
 		BYTE byDarkHorseLife = 0;
 		byDarkHorseLife = CharacterMachine->Equipment[EQUIPMENT_HELPER].Durability;
-		if(byDarkHorseLife == 0 || Hero->Helper.Type != MODEL_HELPER+4)		// ´ÙÅ©È£½ºÀÇ HP°¡ 0 ÀÌ°Å³ª, ´ÙÅ©È£½º°¡ ¾øÀ»¶§
+		if(byDarkHorseLife == 0 || Hero->Helper.Type != MODEL_HELPER+4)		// ï¿½ï¿½Å©È£ï¿½ï¿½ï¿½ï¿½ HPï¿½ï¿½ 0 ï¿½Ì°Å³ï¿½, ï¿½ï¿½Å©È£ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		{
 			bCantSkill = true;
 		}
 	}
 #ifdef PJH_FIX_SPRIT
-	//¹ÚÁ¾ÈÆ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if( bySkillType>=AT_PET_COMMAND_DEFAULT && bySkillType<AT_PET_COMMAND_END )
 	{
-		int iCharisma = CharacterAttribute->Charisma+CharacterAttribute->AddCharisma;	// ¸¶ÀÌ³Ê½º ¿­¸Å ÀÛ¾÷
+		int iCharisma = CharacterAttribute->Charisma+CharacterAttribute->AddCharisma;	// ï¿½ï¿½ï¿½Ì³Ê½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½
 		PET_INFO PetInfo;
 		giPetManager::GetPetInfo(PetInfo, 421-PET_TYPE_DARK_SPIRIT);
 		int RequireCharisma = (185+(PetInfo.m_wLevel*15));
@@ -4571,8 +4575,8 @@ bool CGFxMainUi::GetSkillDisable(int slotNum, int* _array)
 		}
 	}
 #ifdef KJH_FIX_WOPS_K20674_CHECK_STAT_USE_SKILL
-	// ºí·¯µå¾îÅÃ (¸¶°Ë»ç) ÀÏ¶§ ½ºÅÝÀ» °Ë»çÇÏ¿© ¿ä±¸½ºÅÝÀÌ ÃæºÐÄ¡ ¾Æ´ÏÇÏ¸é ½ºÅ³¾ÆÀÌÄÜ »¡°²°Ô Ã³¸®
-	// ´Ù¸¥½ºÅ³µµ ÀÌ¿Í°°ÀÌ Ã³¸® ÇØÁÖ¾î¾ß ÇÑ´Ù. (Season4 º»¼· Àû¿ë ÈÄ¿¡ ²ÀÇÏÀÚ!!)
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½Ë»ï¿½) ï¿½Ï¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Ï¿ï¿½ ï¿½ä±¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ä¡ ï¿½Æ´ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½Å³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
+	// ï¿½Ù¸ï¿½ï¿½ï¿½Å³ï¿½ï¿½ ï¿½Ì¿Í°ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½Ö¾ï¿½ï¿½ ï¿½Ñ´ï¿½. (Season4 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ä¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!!)
 	if( bySkillType == AT_SKILL_REDUCEDEFENSE
 #ifdef YDG_FIX_BLOCK_STAFF_WHEEL
 		|| (AT_SKILL_BLOOD_ATT_UP <= bySkillType && bySkillType <= AT_SKILL_BLOOD_ATT_UP+4)
@@ -4602,8 +4606,8 @@ bool CGFxMainUi::GetSkillDisable(int slotNum, int* _array)
 #endif //KJH_FIX_WOPS_K20674_CHECK_STAT_USE_SKILL
 
 #ifdef LDK_FIX_CHECK_STAT_USE_SKILL_PIERCING
-	// ¾ÆÀÌ½º¿¡·Î¿ì (¿äÁ¤) ÀÏ¶§ ½ºÅÝÀ» °Ë»çÇÏ¿© ¿ä±¸½ºÅÝÀÌ ÃæºÐÄ¡ ¾Æ´ÏÇÏ¸é ½ºÅ³¾ÆÀÌÄÜ »¡°²°Ô Ã³¸®
-	// ´Ù¸¥½ºÅ³µµ ÀÌ¿Í°°ÀÌ Ã³¸® ÇØÁÖ¾î¾ß ÇÑ´Ù. (Season4 º»¼· Àû¿ë ÈÄ¿¡ ²ÀÇÏÀÚ!!)
+	// ï¿½ï¿½ï¿½Ì½ï¿½ï¿½ï¿½ï¿½Î¿ï¿½ (ï¿½ï¿½ï¿½ï¿½) ï¿½Ï¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Ï¿ï¿½ ï¿½ä±¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ä¡ ï¿½Æ´ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½Å³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
+	// ï¿½Ù¸ï¿½ï¿½ï¿½Å³ï¿½ï¿½ ï¿½Ì¿Í°ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½Ö¾ï¿½ï¿½ ï¿½Ñ´ï¿½. (Season4 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ä¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!!)
 	switch( bySkillType )
 	{
 		//case AT_SKILL_PIERCING:
@@ -4638,7 +4642,7 @@ bool CGFxMainUi::GetSkillDisable(int slotNum, int* _array)
 
 	if(InChaosCastle() == true)
 	{
-		//Ä«¿À½º Ä³½½¿¡¼­´Â ´ÙÅ©½ºÇÇ¸´, ´ÙÅ©È£½º, µð³ë¶õÆ® ½ºÅ³ µîÀÌ »ç¿ë ºÒ°¡´É
+		//Ä«ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ï¿½Ç¸ï¿½, ï¿½ï¿½Å©È£ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ò°ï¿½ï¿½ï¿½
 		if( bySkillType == AT_SKILL_DARK_HORSE || bySkillType == AT_SKILL_RIDER
 			|| (bySkillType >= AT_PET_COMMAND_DEFAULT && bySkillType <= AT_PET_COMMAND_TARGET)
 			||(AT_SKILL_ASHAKE_UP <= bySkillType && bySkillType <= AT_SKILL_ASHAKE_UP+4))
@@ -4648,7 +4652,7 @@ bool CGFxMainUi::GetSkillDisable(int slotNum, int* _array)
 	}
 	else
 	{
-		//Ä«¿À½º Ä³½½ÀÌ ¾Æ´Ï´õ¶óµµ Á×¾úÀ¸¸é ½ºÅ³ »ç¿ë ºÒ°¡´É
+		//Ä«ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ï´ï¿½ï¿½ï¿½ ï¿½×¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ ï¿½Ò°ï¿½ï¿½ï¿½
 		if(bySkillType == AT_SKILL_DARK_HORSE || (AT_SKILL_ASHAKE_UP <= bySkillType && bySkillType <= AT_SKILL_ASHAKE_UP+4))
 		{
 			BYTE byDarkHorseLife = 0;
@@ -4660,9 +4664,9 @@ bool CGFxMainUi::GetSkillDisable(int slotNum, int* _array)
 		}
 	}
 
-	int iCharisma = CharacterAttribute->Charisma+CharacterAttribute->AddCharisma;	// ¸¶ÀÌ³Ê½º ¿­¸Å ÀÛ¾÷
+	int iCharisma = CharacterAttribute->Charisma+CharacterAttribute->AddCharisma;	// ï¿½ï¿½ï¿½Ì³Ê½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½
 
-	if(g_csItemOption.IsDisableSkill(bySkillType, iEnergy, iCharisma))	// Åë¼ÖÆ÷ÀÎÆ® ºñ±³ÇØ¼­ »ç¿ë ¸øÇÏ´Â ½ºÅ³ÀÌ¸é »¡°²°Ô Ã³¸®
+	if(g_csItemOption.IsDisableSkill(bySkillType, iEnergy, iCharisma))	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Å³ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
 	{
 		bCantSkill = true;
 	}
@@ -4681,13 +4685,13 @@ bool CGFxMainUi::GetSkillDisable(int slotNum, int* _array)
 
 	if(true == false)
 	{
-		//Àý´ë·Î ¾Èµé¾î¿È
-		//Çü½Ä¸ÂÃç ÁÖ±â À§ÇÑ ÄÚµå
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Èµï¿½ï¿½ï¿½
+		//ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ ï¿½Ö±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½
 	}
 #ifdef PJH_SEASON4_SPRITE_NEW_SKILL_MULTI_SHOT
 	else if (bySkillType == AT_SKILL_MULTI_SHOT)
 	{
-		if (GetEquipedBowType_Skill() == BOWTYPE_NONE)	// È°À» µé¾î¾ß È°¼ºÈ­
+		if (GetEquipedBowType_Skill() == BOWTYPE_NONE)	// È°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È°ï¿½ï¿½È­
 		{
 			bCantSkill = true;
 		}
@@ -4736,7 +4740,7 @@ void CGFxMainUi::GetSkillDelay(int skillType, int* _array)
 	WORD bySkillType = CharacterAttribute->Skill[skillType];
 	bool bCantSkill = false;
 
-	//µô·¹ÀÌ ¹«½Ã ÄÚµå ÃßÈÄ µô·¹ÀÌÃß°¡½Ã ÀÛ¾÷ÇÒ°Í
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß°ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½Ò°ï¿½
 #ifdef PBG_ADD_NEWCHAR_MONK_SKILL
 	if((bySkillType == AT_SKILL_GIANTSWING || bySkillType == AT_SKILL_DRAGON_KICK
 		|| bySkillType == AT_SKILL_DRAGON_LOWER) && (bCantSkill))
@@ -4754,7 +4758,7 @@ int CGFxMainUi::GetHotKeyItemIndex(int iType, bool bItemCount)
 	case 0:
 		if(GetHotKeyCommonItem(iType, iStartItemType, iEndItemType) == false)
 		{
-			// ¸¶³ª¹°¾à(WÅ°)
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(WÅ°)
 			if(m_iItemType[iType] >= ITEM_POTION+4 && m_iItemType[iType] <= ITEM_POTION+6)
 			{
 				iStartItemType = ITEM_POTION+6; iEndItemType = ITEM_POTION+4;
@@ -4768,7 +4772,7 @@ int CGFxMainUi::GetHotKeyItemIndex(int iType, bool bItemCount)
 	case 1:
 		if(GetHotKeyCommonItem(iType, iStartItemType, iEndItemType) == false)
 		{
-			// Ä¡·á¹°¾à(QÅ°)
+			// Ä¡ï¿½á¹°ï¿½ï¿½(QÅ°)
 			if(m_iItemType[iType] >= ITEM_POTION+0 && m_iItemType[iType] <= ITEM_POTION+3)
 			{
 				iStartItemType = ITEM_POTION+3; iEndItemType = ITEM_POTION+0;
@@ -4782,12 +4786,12 @@ int CGFxMainUi::GetHotKeyItemIndex(int iType, bool bItemCount)
 	case 2:
 		if(GetHotKeyCommonItem(iType, iStartItemType, iEndItemType) == false)
 		{
-			// Ä¡·á¹°¾à(QÅ°)
+			// Ä¡ï¿½á¹°ï¿½ï¿½(QÅ°)
 			if(m_iItemType[iType] >= ITEM_POTION+0 && m_iItemType[iType] <= ITEM_POTION+3)
 			{
 				iStartItemType = ITEM_POTION+3; iEndItemType = ITEM_POTION+0;
 			}
-			// ¸¶³ª¹°¾à(WÅ°)
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(WÅ°)
 			else if(m_iItemType[iType] >= ITEM_POTION+4 && m_iItemType[iType] <= ITEM_POTION+6)
 			{
 				iStartItemType = ITEM_POTION+6; iEndItemType = ITEM_POTION+4;
@@ -4801,12 +4805,12 @@ int CGFxMainUi::GetHotKeyItemIndex(int iType, bool bItemCount)
 	case 3:
 		if(GetHotKeyCommonItem(iType, iStartItemType, iEndItemType) == false)
 		{
-			// Ä¡·á¹°¾à(QÅ°)
+			// Ä¡ï¿½á¹°ï¿½ï¿½(QÅ°)
 			if(m_iItemType[iType] >= ITEM_POTION+0 && m_iItemType[iType] <= ITEM_POTION+3)
 			{
 				iStartItemType = ITEM_POTION+3; iEndItemType = ITEM_POTION+0;
 			}
-			// ¸¶³ª¹°¾à(WÅ°)
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(WÅ°)
 			else if(m_iItemType[iType] >= ITEM_POTION+4 && m_iItemType[iType] <= ITEM_POTION+6)
 			{
 				iStartItemType = ITEM_POTION+6; iEndItemType = ITEM_POTION+4;
@@ -4835,15 +4839,15 @@ int CGFxMainUi::GetHotKeyItemIndex(int iType, bool bItemCount)
 					continue;
 				}
 
-				// Type°ú LevelÀÌ ¸Â°Å³ª ¹°¾àÁ¾·ùÀÌ¸é
+				// Typeï¿½ï¿½ Levelï¿½ï¿½ ï¿½Â°Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½
 				if( 
 					(pItem->Type == i && ((pItem->Level>>3)&15) == m_iItemLevel[iType])
 					|| (pItem->Type == i && (pItem->Type >= ITEM_POTION+0 && pItem->Type <= ITEM_POTION+3)) 
 					)
 				{
-					if(pItem->Type == ITEM_POTION+9			// ¼ú
-						|| pItem->Type == ITEM_POTION+10	// ¸¶À»±ÍÈ¯¹®¼­
-						|| pItem->Type == ITEM_POTION+20	// »ç¶ûÀÇ¹¦¾à
+					if(pItem->Type == ITEM_POTION+9			// ï¿½ï¿½
+						|| pItem->Type == ITEM_POTION+10	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯ï¿½ï¿½ï¿½ï¿½
+						|| pItem->Type == ITEM_POTION+20	// ï¿½ï¿½ï¿½ï¿½Ç¹ï¿½ï¿½ï¿½
 						)
 					{
 						iItemCount++;
@@ -4858,7 +4862,7 @@ int CGFxMainUi::GetHotKeyItemIndex(int iType, bool bItemCount)
 		else
 		{
 			int iIndex = -1;
-			// ¹°¾àÁ¾·ùÀÌ¸é ·¹º§ °ü°è¾øÀÌ °Ë»öÇÑ´Ù.
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Ñ´ï¿½.
 			if(i >= ITEM_POTION+0 && i <= ITEM_POTION+3)	
 			{
 				iIndex = g_pMyInventory->FindItemReverseIndex(i);
@@ -4871,10 +4875,10 @@ int CGFxMainUi::GetHotKeyItemIndex(int iType, bool bItemCount)
 			if (-1 != iIndex)
 			{
 				pItem = g_pMyInventory->FindItem(iIndex);
-				if((pItem->Type != ITEM_POTION+7		// °ø¼º¹°¾àÀÌ ¾Æ´Ï°í
-					&& pItem->Type != ITEM_POTION+10	// ¸¶À»±ÍÈ¯¹®¼­°¡ ¾Æ´Ï°í
-					&& pItem->Type != ITEM_POTION+20)	// »ç¶ûÀÇ¹¦¾àÀÌ ¾Æ´Ï°Å³ª
-					|| ((pItem->Level>>3)&15) == m_iItemLevel[iType] // ¾ÆÀÌÅÛ ·¹º§ÀÌ °°À¸¸é
+				if((pItem->Type != ITEM_POTION+7		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ï°ï¿½
+					&& pItem->Type != ITEM_POTION+10	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ï°ï¿½
+					&& pItem->Type != ITEM_POTION+20)	// ï¿½ï¿½ï¿½ï¿½Ç¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ï°Å³ï¿½
+					|| ((pItem->Level>>3)&15) == m_iItemLevel[iType] // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				)
 				{
 					return iIndex;
@@ -4895,39 +4899,39 @@ bool CGFxMainUi::GetHotKeyCommonItem(IN int iHotKey, OUT int& iStart, OUT int& i
 {
 	switch(m_iItemType[iHotKey])
 	{
-	case ITEM_POTION+7:		// °ø¼º¹°¾à
-	case ITEM_POTION+8:		// ÇØµ¶¹°¾à
-	case ITEM_POTION+9:		// ¼ú
-	case ITEM_POTION+10:	// ¸¶À»±ÍÈ¯¹®¼­
-	case ITEM_POTION+20:	// »ç¶ûÀÇ ¹¦¾à
-	case ITEM_POTION+46:	// Àè¿À·£ÅÏÀÇÃàº¹
-	case ITEM_POTION+47:	// Àè¿À·£ÅÏÀÇºÐ³ë
-	case ITEM_POTION+48:	// Àè¿À·£ÅÏÀÇ¿ÜÄ§
-	case ITEM_POTION+49:	// Àè¿À·£ÅÏÀÇÀ½½Ä
-	case ITEM_POTION+50:	// Àè¿À·£ÅÏÀÇÀ½·á
+	case ITEM_POTION+7:		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	case ITEM_POTION+8:		// ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½
+	case ITEM_POTION+9:		// ï¿½ï¿½
+	case ITEM_POTION+10:	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯ï¿½ï¿½ï¿½ï¿½
+	case ITEM_POTION+20:	// ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	case ITEM_POTION+46:	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½àº¹
+	case ITEM_POTION+47:	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÇºÐ³ï¿½
+	case ITEM_POTION+48:	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¿ï¿½Ä§
+	case ITEM_POTION+49:	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	case ITEM_POTION+50:	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 #ifdef PSW_ELITE_ITEM
-	case ITEM_POTION+70:    // ºÎºÐÀ¯·áÈ­ ¿¤¸®Æ® Ã¼·Â ¹°¾à
-	case ITEM_POTION+71:    // ºÎºÐÀ¯·áÈ­ ¿¤¸®Æ® ¸¶³ª ¹°¾à
+	case ITEM_POTION+70:    // ï¿½Îºï¿½ï¿½ï¿½ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½Æ® Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	case ITEM_POTION+71:    // ï¿½Îºï¿½ï¿½ï¿½ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 #endif //PSW_ELITE_ITEM
 #ifdef PSW_ELITE_ITEM
-	case ITEM_POTION+78:    // ºÎºÐÀ¯·áÈ­ ÈûÀÇ ºñ¾à
-	case ITEM_POTION+79:    // ºÎºÐÀ¯·áÈ­ ¹ÎÃ¸ÀÇ ºñ¾à
-	case ITEM_POTION+80:    // ºÎºÐÀ¯·áÈ­ Ã¼·ÂÀÇ ºñ¾à
-	case ITEM_POTION+81:    // ºÎºÐÀ¯·áÈ­ ¿¡³ÊÁöÀÇ ºñ¾à
-	case ITEM_POTION+82:    // ºÎºÐÀ¯·áÈ­ Åë¼ÖÀÇ
+	case ITEM_POTION+78:    // ï¿½Îºï¿½ï¿½ï¿½ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+	case ITEM_POTION+79:    // ï¿½Îºï¿½ï¿½ï¿½ï¿½ï¿½È­ ï¿½ï¿½Ã¸ï¿½ï¿½ ï¿½ï¿½ï¿½
+	case ITEM_POTION+80:    // ï¿½Îºï¿½ï¿½ï¿½ï¿½ï¿½È­ Ã¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+	case ITEM_POTION+81:    // ï¿½Îºï¿½ï¿½ï¿½ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+	case ITEM_POTION+82:    // ï¿½Îºï¿½ï¿½ï¿½ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½ï¿½
 #endif //PSW_ELITE_ITEM
 #ifdef PSW_NEW_ELITE_ITEM
-	case ITEM_POTION+94:    // ºÎºÐÀ¯·áÈ­ ¿¤¸®Æ® Áß°£ Ã¼·Â ¹°¾à
+	case ITEM_POTION+94:    // ï¿½Îºï¿½ï¿½ï¿½ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ß°ï¿½ Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 #endif //PSW_NEW_ELITE_ITEM	
 #ifdef CSK_EVENT_CHERRYBLOSSOM
-	case ITEM_POTION+85:	// º¢²É¼ú
-	case ITEM_POTION+86:	// º¢²É°æ´Ü
-	case ITEM_POTION+87:	// º¢²ÉÀÙ
+	case ITEM_POTION+85:	// ï¿½ï¿½ï¿½É¼ï¿½
+	case ITEM_POTION+86:	// ï¿½ï¿½ï¿½É°ï¿½ï¿½
+	case ITEM_POTION+87:	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 #endif //CSK_EVENT_CHERRYBLOSSOM
 #ifdef YDG_ADD_CS7_ELITE_SD_POTION
-	case ITEM_POTION+133:	// ¿¤¸®Æ®SDÈ¸º¹¹°¾à
+	case ITEM_POTION+133:	// ï¿½ï¿½ï¿½ï¿½Æ®SDÈ¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 #endif	// YDG_ADD_CS7_ELITE_SD_POTION
-		// »ç¶ûÀÇ ¹¦¾àÀÌ ¾Æ´Ï°Å³ª ·¹º§ÀÌ 0ÀÌ¸é
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ï°Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 0ï¿½Ì¸ï¿½
 		if(m_iItemType[iHotKey] != ITEM_POTION+20 || m_iItemLevel[iHotKey] == 0)
 		{
 			iStart = iEnd = m_iItemType[iHotKey];
@@ -4935,13 +4939,13 @@ bool CGFxMainUi::GetHotKeyCommonItem(IN int iHotKey, OUT int& iStart, OUT int& i
 		}
 		break;
 	default:
-		// SD È¸º¹¹°¾à
+		// SD È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if(m_iItemType[iHotKey] >= ITEM_POTION+35 && m_iItemType[iHotKey] <= ITEM_POTION+37)
 		{
 			iStart = ITEM_POTION+37; iEnd = ITEM_POTION+35;
 			return true;
 		}
-		// º¹ÇÕ¹°¾à
+		// ï¿½ï¿½ï¿½Õ¹ï¿½ï¿½ï¿½
 		else if(m_iItemType[iHotKey] >= ITEM_POTION+38 && m_iItemType[iHotKey] <= ITEM_POTION+40)
 		{
 			iStart = ITEM_POTION+40; iEnd = ITEM_POTION+38;
@@ -4966,25 +4970,25 @@ void CMainUIFSCHandler::Callback(GFxMovieView* pmovie, const char* pcommand, con
 #ifdef FOR_WORK
 		DebugAngel_Write("InGameShopStatue.Txt", "CallStack - CNewUIHotKey.UpdateKeyEvent()\r\n");
 #endif // FOR_WORK
-		// ÀÎ°ÔÀÓ¼¥ÀÌ ¿­¸®¸é ¾ÈµÅ´Â »óÅÂ
+		// ï¿½Î°ï¿½ï¿½Ó¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ÈµÅ´ï¿½ ï¿½ï¿½ï¿½ï¿½
 		if(g_pInGameShop->IsInGameShopOpen() == false)
 			return;
 
 #ifdef KJH_MOD_SHOP_SCRIPT_DOWNLOAD
-		// ½ºÅ©¸³Æ® ´Ù¿î·Îµå
+		// ï¿½ï¿½Å©ï¿½ï¿½Æ® ï¿½Ù¿ï¿½Îµï¿½
 		if( g_InGameShopSystem->IsScriptDownload() == true )
 		{
 			if( g_InGameShopSystem->ScriptDownload() == false )
 				return;
 		}
 
-		// ¹è³Ê ´Ù¿î·Îµå
+		// ï¿½ï¿½ï¿½ ï¿½Ù¿ï¿½Îµï¿½
 		if( g_InGameShopSystem->IsBannerDownload() == true )
 		{
 #ifdef KJH_FIX_INGAMESHOP_INIT_BANNER
 			if( g_InGameShopSystem->BannerDownload() == true )
 			{
-				// ¹è³Ê ÃÊ±âÈ­
+				// ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
 				g_pInGameShop->InitBanner(g_InGameShopSystem->GetBannerFileName(), g_InGameShopSystem->GetBannerURL());
 			}
 #else // KJH_FIX_INGAMESHOP_INIT_BANNER
@@ -4995,16 +4999,16 @@ void CMainUIFSCHandler::Callback(GFxMovieView* pmovie, const char* pcommand, con
 
 		if( g_pNewUISystem->IsVisible(SEASON3B::INTERFACE_INGAMESHOP) == false)
 		{
-			// ¼¥ Open ¿äÃ»Áß »óÅÂ°¡ ¾Æ´Ï¸é 
+			// ï¿½ï¿½ Open ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½Â°ï¿½ ï¿½Æ´Ï¸ï¿½ 
 			if( g_InGameShopSystem->GetIsRequestShopOpenning() == false )		
 			{
-				SendRequestIGS_CashShopOpen(0);		// ¼¥ Open¿äÃ»
+				SendRequestIGS_CashShopOpen(0);		// ï¿½ï¿½ Openï¿½ï¿½Ã»
 				g_InGameShopSystem->SetIsRequestShopOpenning(true);
 			}
 		}
 		else
 		{
-			SendRequestIGS_CashShopOpen(1);		// ¼¥ Close¿äÃ»
+			SendRequestIGS_CashShopOpen(1);		// ï¿½ï¿½ Closeï¿½ï¿½Ã»
 			g_pNewUISystem->Hide(SEASON3B::INTERFACE_INGAMESHOP);
 		}
 		PlayBuffer(SOUND_CLICK01);
@@ -5016,7 +5020,7 @@ void CMainUIFSCHandler::Callback(GFxMovieView* pmovie, const char* pcommand, con
 
 #ifdef ASG_ADD_UI_QUEST_PROGRESS_ETC
 		if (g_pNewUISystem->IsVisible(SEASON3B::INTERFACE_CHARACTER))
-			g_QuestMng.SendQuestIndexByEtcSelection();	// ±âÅ¸ »óÈ²¿¡ ÀÇÇÑ Äù½ºÆ® ÀÎµ¦½º¸¦ ¼±ÅÃÇØ¼­ ¼­¹ö·Î ¾Ë¸².
+			g_QuestMng.SendQuestIndexByEtcSelection();	// ï¿½ï¿½Å¸ ï¿½ï¿½È²ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¸ï¿½.
 #endif	// ASG_ADD_UI_QUEST_PROGRESS_ETC
 	}
 	else if(strcmp(pcommand, "onClickQuestBtn") == 0)
@@ -5035,9 +5039,9 @@ void CMainUIFSCHandler::Callback(GFxMovieView* pmovie, const char* pcommand, con
 	else if(strcmp(pcommand, "onClickCommunityBtn") == 0)
 	{
 		if(InChaosCastle() == true 
-#ifndef CSK_FIX_CHAOSFRIENDWINDOW		// Á¤¸®ÇÒ ¶§ Áö¿ö¾ß ÇÏ´Â ¼Ò½º	
+#ifndef CSK_FIX_CHAOSFRIENDWINDOW		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½Ò½ï¿½	
 			&& g_pNewUISystem->IsVisible(SEASON3B::INTERFACE_CHAOSCASTLE_TIME) == true
-#endif //! CSK_FIX_CHAOSFRIENDWINDOW	// Á¤¸®ÇÒ ¶§ Áö¿ö¾ß ÇÏ´Â ¼Ò½º
+#endif //! CSK_FIX_CHAOSFRIENDWINDOW	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½Ò½ï¿½
 			)
 		{
 			return;
@@ -5048,7 +5052,7 @@ void CMainUIFSCHandler::Callback(GFxMovieView* pmovie, const char* pcommand, con
 		{
 			if(g_pChatListBox->CheckChatRedundancy(GlobalText[1067]) == FALSE)
 			{
-				g_pChatListBox->AddText("",GlobalText[1067],SEASON3B::TYPE_SYSTEM_MESSAGE);	// "·¹º§ 6ºÎÅÍ ³»Ä£±¸ ±â´É »ç¿ëÀÌ °¡´ÉÇÕ´Ï´Ù."
+				g_pChatListBox->AddText("",GlobalText[1067],SEASON3B::TYPE_SYSTEM_MESSAGE);	// "ï¿½ï¿½ï¿½ï¿½ 6ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä£ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½."
 			}
 		}
 		else
@@ -5112,7 +5116,7 @@ void CMainUIEIHandler::Callback(GFxMovieView* pmovieView, const char* methodName
 	}
 	else if(strcmp(methodName, "plzSetSkill") == 0)
 	{
-		//¸ðµç ½ºÅ³ µî·Ï
+		//ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ ï¿½ï¿½ï¿½
 		pMainUi->SetSkillSlot();
 	}
 	else if(strcmp(methodName, "plzSkillInfo") == 0 && argCount == 1 && args[0].GetType() == GFxValue::VT_Number)
@@ -5132,7 +5136,7 @@ void CMainUIEIHandler::Callback(GFxMovieView* pmovieView, const char* methodName
 	}
 	else if(strcmp(methodName, "onClickItemBtn") == 0 && argCount == 3 && args[0].GetType() == GFxValue::VT_Number)
 	{
-		//Äü½½·Ô ¾ÆÀÌÅÛ »ç¿ë
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 
 		pMainUi->SetUseItemSlotNum( (int)args[0].GetNumber() );
 		int _type = args[1].GetNumber(); //x
@@ -5140,7 +5144,7 @@ void CMainUIEIHandler::Callback(GFxMovieView* pmovieView, const char* methodName
 	}
 	else if(strcmp(methodName, "onOverItemBtn") == 0 && argCount == 3 && args[0].GetType() == GFxValue::VT_Number)
 	{
-		//Äü½½·Ô ¾ÆÀÌÅÛ »ç¿ë
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 
 		pMainUi->SetOverItemSlotNum( (int)args[0].GetNumber() );
 		int _type = args[1].GetNumber(); //x
@@ -5148,13 +5152,13 @@ void CMainUIEIHandler::Callback(GFxMovieView* pmovieView, const char* methodName
 	}
 	else if(strcmp(methodName, "onSkillSet") == 0 && argCount == 4 && args[0].GetType() == GFxValue::VT_Number )
 	{
-		//0¹ø ½½·Ô¿¡ ÀúÀå
+		//0ï¿½ï¿½ ï¿½ï¿½ï¿½Ô¿ï¿½ ï¿½ï¿½ï¿½ï¿½
 		int _texture = (int)args[0].GetNumber();
 		int _skill = (int)args[1].GetNumber();
 		bool _disabled = args[2].GetBool();
 		int _return = (int)args[3].GetNumber();
 
-		//»ç¿ë ½ºÅ³¿¡ ¼³Á¤ÇÑ´Ù.
+		//ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 		pMainUi->SetSkillHotKey(0, _return, false);
 	}
 	else if(strcmp(methodName, "onChangeSkill") == 0 && argCount == 5 && args[0].GetType() == GFxValue::VT_Number )
@@ -5165,7 +5169,7 @@ void CMainUIEIHandler::Callback(GFxMovieView* pmovieView, const char* methodName
 		bool _disabled = args[3].GetBool();
 		int _return = (int)args[4].GetNumber();
 
-		//ÇØ´ç ½½·ÔÀÇ ½ºÅ³Á¤º¸°¡ ¹Ù²î¾úÀ½
+		//ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²ï¿½ï¿½ï¿½ï¿½
 		pMainUi->SetSkillHotKey(_slot, _return, false);
 	}
 	else if(strcmp(methodName, "SetVisiblePopup") == 0 && argCount == 6 && args[0].GetType() == GFxValue::VT_Number)

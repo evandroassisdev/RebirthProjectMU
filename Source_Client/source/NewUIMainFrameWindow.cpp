@@ -240,7 +240,9 @@ void SEASON3B::CNewUIMainFrameWindow::RenderFrame()
 
 void SEASON3B::CNewUIMainFrameWindow::RenderLifeMana()
 {
-	WORD wLifeMax, wLife, wManaMax, wMana;
+	// widened WORD->DWORD (matches CharacterAttribute->Life/LifeMax/Mana/ManaMax) --
+	DWORD wLifeMax, wLife;
+	DWORD wManaMax, wMana;
 
 
 	if(gCharacterManager.IsMasterLevel( Hero->Class ) == true )
@@ -335,7 +337,7 @@ void SEASON3B::CNewUIMainFrameWindow::RenderGuageAG()
 	float x, y, width, height;
 	float fY, fH, fV;
 
-	WORD dwMaxSkillMana,dwSkillMana;
+	DWORD dwMaxSkillMana,dwSkillMana; // widened WORD->DWORD, matches CharacterAttribute->SkillMana/SkillManaMax (BP)
 
 	if(gCharacterManager.IsMasterLevel(Hero->Class) == true)
 	{
@@ -378,7 +380,8 @@ void SEASON3B::CNewUIMainFrameWindow::RenderGuageSD()
 {
 	float x, y, width, height;
 	float fY, fH, fV;
-    WORD wMaxShield,wShield;
+	// widened WORD->DWORD, matches CharacterAttribute->Shield/ShieldMax
+    DWORD wMaxShield,wShield;
 
 	//Master_Level_Data.wMaxShield
 	if(gCharacterManager.IsMasterLevel(Hero->Class) == true)
@@ -2192,7 +2195,7 @@ void SEASON3B::CNewUISkillList::RenderSkillIcon(int iIndex, float x, float y, fl
 		}
 	}
 #ifdef PJH_FIX_SPRIT
-/*¹ÚÁ¾ÈÆ*/
+/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 	if( bySkillType>=AT_PET_COMMAND_DEFAULT && bySkillType<AT_PET_COMMAND_END )
 	{
 		int iCharisma = CharacterAttribute->Charisma+CharacterAttribute->AddCharisma;
