@@ -6,9 +6,7 @@
 # Deployed/runnable server (built binaries + live data, not source)
 MuServer/
 
-# Build outputs (client)
-Source_Client/Global Debug/
-Source_Client/Global Release/
+# Build intermediates only (kept Global Debug/Global Release themselves - runnable client + assets)
 Source_Client/tmp/
 Source_Client/source/Global Debug/
 Source_Client/source/Global Release/
