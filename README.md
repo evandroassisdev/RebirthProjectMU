@@ -5,6 +5,7 @@ MU Online client + server source (Season 5.2~6.3), `Source_Client` (C++/OpenGL) 
 ## Changelog
 
 ### 2026-08-14
+- **Feature**: skill use locked out for 1.5s right after the SM's Teleport skill, to stop it being used to chain into other skills faster than normal.
 - **Fix**: mailbox letter-read crash (`MemBlock==0xFD` assert) — `ReceiveLetterText` wrote a null terminator past the received packet data when the letter's memo length exactly matched the packet size.
 - **Feature**: F9 — CTRL Lock, keeps CTRL reporting as held (see names/attack without holding the key), persists across sessions.
 - **Feature**: F12 — minimize to system tray with a tray icon; restoring is double-click-the-icon only (safe with multiple client instances running at once).
