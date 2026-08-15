@@ -1458,15 +1458,74 @@ namespace MUHelper
 			}
 		}
 
-		if (m_config.bUseCombo)
+		// A real player physically can't attack faster than their swing/cast
+		// animation allows, but that's purely cosmetic on its own (how fast
+		// the animation plays) -- it doesn't stop another request from being
+		// sent. Nothing else gates re-attacking either -- CheckSkillDelay()
+		// (SkillManager.cpp) only enforces a cooldown for skills with their
+		// own fixed Delay (Evil Spirit, Chaotic Diseier, etc.), which is 0
+		// for ordinary combos -- and this server has SpeedHackSkillEnable=0,
+		// so nothing rejects an over-fast request either. Without a throttle
+		// here, MuHelper's 250ms tick just re-attacks every tick regardless
+		// of AttackSpeed, i.e. spams as if the character always had max
+		// speed.
+		//
+		// m_dwAttackIntervalMs holds the *exact* real duration of whatever
+		// animation the previous attack actually played, computed after the
+		// fact below from the same data the engine itself uses to advance
+		// the animation (BMD::PlayAnimation, ZzzBMD.cpp: frame +=
+		// PlaySpeed, once per rendered frame) -- NumAnimationKeys (frame
+		// count) and PlaySpeed (which SetAttackSpeed(), ZzzCharacter.cpp,
+		// derives from CharacterAttribute->AttackSpeed) are both real,
+		// already-loaded data, not a guessed constant. Two earlier attempts
+		// here used made-up formulas (one that barely responded to
+		// AttackSpeed at all, since CharacterAttribute->AttackSpeed is a
+		// small class-scaled number -- e.g. a Knight only gets
+		// Dexterity/15 -- not directly comparable to raw Agility; another
+		// that used the right PlaySpeed relationship but an arbitrarily
+		// picked calibration constant) -- both were replaced by this, which
+		// isn't a formula at all, just reading the same numbers the client
+		// already computes for rendering.
+		DWORD dwNow = GetTickCount();
+		if (dwNow - m_dwLastAttackTime < m_dwAttackIntervalMs)
 		{
-			return SimulateComboAttack();
+			return 0;
 		}
 
-		m_iCurrentSkill = SelectAttackSkill();
-		if (m_iCurrentSkill > 0)
+		bool bAttacked = false;
+		if (m_config.bUseCombo)
 		{
-			SimulateAttack(m_iCurrentSkill);
+			bAttacked = (SimulateComboAttack() != 0);
+		}
+		else
+		{
+			m_iCurrentSkill = SelectAttackSkill();
+			if (m_iCurrentSkill > 0)
+			{
+				SimulateAttack(m_iCurrentSkill);
+				bAttacked = true;
+			}
+		}
+
+		if (bAttacked)
+		{
+			m_dwLastAttackTime = dwNow;
+
+			int iAction = Hero->Object.CurrentAction;
+			if (iAction >= 0 && iAction < Models[MODEL_PLAYER].NumActions)
+			{
+				const auto& action = Models[MODEL_PLAYER].Actions[iAction];
+				if (action.PlaySpeed > 0.f && action.NumAnimationKeys > 1)
+				{
+					// FPS cap is 40ms/frame (25fps) -- ZzzScene.cpp's
+					// MainScene() DifTimer<40 sleep-cap, this project's
+					// current setting (see FPS work history elsewhere in
+					// memory if that's ever changed again).
+					float fFrames = (float)(action.NumAnimationKeys - 1);
+					float fSeconds = fFrames / (action.PlaySpeed * 25.f);
+					m_dwAttackIntervalMs = max(400u, (DWORD)(fSeconds * 1000.f));
+				}
+			}
 		}
 
 		return 1;

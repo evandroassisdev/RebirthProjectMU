@@ -113,6 +113,8 @@ namespace MUHelper
 		bool m_bPetActivated;
 		int m_iTotalCost;
 		DWORD m_dwLastRepairCheck = 0;
+		DWORD m_dwLastAttackTime = 0;
+		DWORD m_dwAttackIntervalMs = 1000;
 	};
 
 	extern CMuHelper g_MuHelper;
