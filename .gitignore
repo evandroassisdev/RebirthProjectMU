@@ -48,6 +48,7 @@ Source_Server/ConnectServer/Dependences/curl-master/
 *.exp
 *.lib
 !Source_Server/GameServer/GameServer/Util/lua/lua52.lib
+!Source_Client/dependencies/lib/lua52.lib
 *.exe
 *.res
 *.tlog
