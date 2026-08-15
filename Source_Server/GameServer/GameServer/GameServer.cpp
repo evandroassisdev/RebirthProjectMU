@@ -348,6 +348,9 @@ LRESULT CALLBACK WndProc(HWND hWnd,UINT message,WPARAM wParam,LPARAM lParam) // 
 				case IDM_RELOAD_RELOADUTIL:
 					gServerInfo.ReadUtilInfo();
 					break;
+				case IDM_RELOAD_RELOADSCRIPT:
+					gServerInfo.ReadScriptInfo();
+					break;
 				case IDM_RELOAD_RELOADBOTS: //MC bots
 					gServerInfo.ReloadBotInfo(); //MC bots
 					break;
