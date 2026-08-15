@@ -5806,6 +5806,13 @@ void CSkillManager::CGMultiSkillAttackRecv(PMSG_MULTI_SKILL_ATTACK_RECV* lpMsg,i
 		return;
 	}
 
+	// No skill usable for SKILL_TELEPORT_LOCKOUT_TIME after using the SM's
+	// Teleport skill (see Move.cpp's CGTeleportRecv).
+	if((GetTickCount()-lpObj->LastSkillTeleportTime) < SKILL_TELEPORT_LOCKOUT_TIME)
+	{
+		return;
+	}
+
 	if(gMap[lpObj->Map].CheckAttr(lpObj->X,lpObj->Y,1) != 0)
 	{
 		return;
@@ -5967,6 +5974,13 @@ void CSkillManager::CGSkillAttackRecv(PMSG_SKILL_ATTACK_RECV* lpMsg,int aIndex) 
 		return;
 	}
 
+	// No skill usable for SKILL_TELEPORT_LOCKOUT_TIME after using the SM's
+	// Teleport skill (see Move.cpp's CGTeleportRecv).
+	if((GetTickCount()-lpObj->LastSkillTeleportTime) < SKILL_TELEPORT_LOCKOUT_TIME)
+	{
+		return;
+	}
+
 	#if(GAMESERVER_UPDATE>=701)
 
 	int bIndex = MAKE_NUMBERW(lpMsg->indexH,lpMsg->indexL);
@@ -6085,6 +6099,13 @@ void CSkillManager::CGDurationSkillAttackRecv(PMSG_DURATION_SKILL_ATTACK_RECV* l
 	}
 
 	if(lpObj->Live == 0)
+	{
+		return;
+	}
+
+	// No skill usable for SKILL_TELEPORT_LOCKOUT_TIME after using the SM's
+	// Teleport skill (see Move.cpp's CGTeleportRecv).
+	if((GetTickCount()-lpObj->LastSkillTeleportTime) < SKILL_TELEPORT_LOCKOUT_TIME)
 	{
 		return;
 	}
