@@ -15,6 +15,9 @@ CNewUIHeroPositionInfo::CNewUIHeroPositionInfo()
 	m_Pos.x = m_Pos.y = 0;
 	m_CurHeroPosition.x = m_CurHeroPosition.y = 0;
 	WidenX = 0;
+#ifdef ENABLE_MUHELPER
+	m_bHelperActive = false;
+#endif // ENABLE_MUHELPER
 }
 
 CNewUIHeroPositionInfo::~CNewUIHeroPositionInfo()
@@ -125,17 +128,26 @@ void CNewUIHeroPositionInfo::SetPos(int x, int y)
 
 bool CNewUIHeroPositionInfo::BtnProcess()
 {
+#ifdef ENABLE_MUHELPER
 	if (m_BtnConfig.UpdateMouseEvent())
 	{
+		g_pNewUISystem->Toggle(SEASON3B::INTERFACE_MUHELPER);
+		PlayBuffer(SOUND_CLICK01);
 		return true;
 	}
 	else
 	{
-		if (m_BtnStart.UpdateMouseEvent())
+		CNewUIButton& btn = m_bHelperActive ? m_BtnStop : m_BtnStart;
+		if (btn.UpdateMouseEvent())
 		{
+			m_bHelperActive = !m_bHelperActive;
+			// TODO: hook up the actual bot engine here (start/stop the
+			// auto-play loop). For now this only toggles the UI state.
+			PlayBuffer(SOUND_CLICK01);
 			return true;
 		}
 	}
+#endif // ENABLE_MUHELPER
 	return false;
 }
 
@@ -186,14 +198,18 @@ bool CNewUIHeroPositionInfo::Render()
 	RenderImage(IMAGE_HERO_POSITION_INFO_BASE_WINDOW, m_Pos.x, m_Pos.y, float(HERO_POSITION_INFO_BASEA_WINDOW_WIDTH), float(HERO_POSITION_INFO_BASE_WINDOW_HEIGHT));
 	RenderImage(IMAGE_HERO_POSITION_INFO_BASE_WINDOW + 1, m_Pos.x + HERO_POSITION_INFO_BASEA_WINDOW_WIDTH, m_Pos.y, float(WidenX), float(HERO_POSITION_INFO_BASE_WINDOW_HEIGHT), 0.1f, 0.f, 22.4f / 32.f, 25.f / 32.f);
 #ifdef ENABLE_MUHELPER
-	RenderImage(IMAGE_HERO_POSITION_INFO_BASE_WINDOW + 2, m_Pos.x + HERO_POSITION_INFO_BASEA_WINDOW_WIDTH + WidenX, m_Pos.y, 456.f, 20.f);
+	RenderImage(IMAGE_HERO_POSITION_INFO_BASE_WINDOW + 2, m_Pos.x + HERO_POSITION_INFO_BASEA_WINDOW_WIDTH + WidenX, m_Pos.y, 73.f, 20.f);
 #else
 	RenderImage(IMAGE_HERO_POSITION_INFO_BASE_WINDOW + 2, m_Pos.x + HERO_POSITION_INFO_BASEA_WINDOW_WIDTH + WidenX, m_Pos.y, 22.f, 20.f);
 #endif // 
 	//--
 	m_BtnConfig.Render();
 
+#ifdef ENABLE_MUHELPER
+	m_bHelperActive ? m_BtnStop.Render() : m_BtnStart.Render();
+#else
 	m_BtnStart.Render();
+#endif // ENABLE_MUHELPER
 	//--
 	unicode::_sprintf(szText, "%s (%d , %d)", gMapManager.GetMapName(gMapManager.WorldActive), m_CurHeroPosition.x, m_CurHeroPosition.y);
 

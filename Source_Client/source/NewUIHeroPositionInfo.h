@@ -36,6 +36,9 @@ namespace SEASON3B
 		CNewUIButton     m_BtnConfig;
 		CNewUIButton     m_BtnStart;
 		CNewUIButton     m_BtnStop;
+#ifdef ENABLE_MUHELPER
+		bool             m_bHelperActive;
+#endif // ENABLE_MUHELPER
 	public:
 		CNewUIHeroPositionInfo();
 		virtual ~CNewUIHeroPositionInfo();
