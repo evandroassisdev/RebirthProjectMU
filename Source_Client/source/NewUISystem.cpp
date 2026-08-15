@@ -1328,6 +1328,20 @@ void SEASON3B::CNewUISystem::Hide(DWORD dwKey)
 			}
 		}
 #endif // LEM_ADD_LUCKYITEM
+		else if (dwKey == SEASON3B::INTERFACE_MUHELPER)
+		{
+			// CNewUIObj::Show() isn't virtual, so the generic
+			// ShowInterface(dwKey, false) call below (which only holds a
+			// CNewUIObj* to the window) can't reach
+			// CNewUIMuHelper::Show()'s own closing logic -- do it here too,
+			// same as that override does, so the skill-picker sub-window
+			// doesn't stay open after MuHelper itself closes.
+			if (g_pNewUIMuHelperExt)
+				g_pNewUIMuHelperExt->Show(false);
+
+			if (g_pNewUIMuHelperSkillList)
+				g_pNewUIMuHelperSkillList->Show(false);
+		}
 
 		m_pNewUIMng->ShowInterface(dwKey, false);
 

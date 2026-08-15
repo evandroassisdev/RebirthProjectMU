@@ -168,7 +168,8 @@ void SEASON3B::CNewUIMuHelper::InitCheckBox()
     InsertCheckBox(IMAGE_CHECKBOX_BTN, m_Pos.x + 79, m_Pos.y + 97, 15, 15, 0, GlobalText[3517], CHECKBOX_ID_DRAIN_LIFE, 0);
 
     InsertCheckBox(IMAGE_CHECKBOX_BTN, m_Pos.x + 79, m_Pos.y + 80, 15, 15, 0, GlobalText[3518], CHECKBOX_ID_REPAIR_ITEM, 1);
-    InsertCheckBox(IMAGE_CHECKBOX_BTN, m_Pos.x + 79, m_Pos.y + 100, 15, 15, 0, "OffLine", CHECKBOX_ID_START_OFFLINE, 1);
+    // "OffLine" checkbox disabled for now -- feature not implemented yet.
+    // InsertCheckBox(IMAGE_CHECKBOX_BTN, m_Pos.x + 79, m_Pos.y + 100, 15, 15, 0, "OffLine", CHECKBOX_ID_START_OFFLINE, 1);
     InsertCheckBox(IMAGE_CHECKBOX_BTN, m_Pos.x + 17, m_Pos.y + 125, 15, 15, 0, GlobalText[3519], CHECKBOX_ID_PICK_ALL, 1);
     InsertCheckBox(IMAGE_CHECKBOX_BTN, m_Pos.x + 17, m_Pos.y + 152, 15, 15, 0, GlobalText[3520], CHECKBOX_ID_PICK_SELECTED, 1);
 
@@ -197,7 +198,7 @@ void SEASON3B::CNewUIMuHelper::InitCheckBox()
     RegisterBoxCharacter(0xFF, CHECKBOX_ID_SKILL2_CONDITION);
     RegisterBoxCharacter(0xFF, CHECKBOX_ID_BUFF_DURATION);
     RegisterBoxCharacter(0xFF, CHECKBOX_ID_REPAIR_ITEM);
-    RegisterBoxCharacter(0xFF, CHECKBOX_ID_START_OFFLINE);
+    // RegisterBoxCharacter(0xFF, CHECKBOX_ID_START_OFFLINE); // see InsertCheckBox above
 
     RegisterBoxCharacter(0xFF, CHECKBOX_ID_PICK_ALL);
     RegisterBoxCharacter(0xFF, CHECKBOX_ID_PICK_SELECTED);
@@ -752,9 +753,10 @@ void SEASON3B::CNewUIMuHelper::ApplyConfigFromCheckbox(int iCheckboxId, bool bSt
         _TempConfig.bRepairItem = bState;
         break;
 
-    case CHECKBOX_ID_START_OFFLINE:
-        _TempConfig.StartOffline = bState;
-        break;
+    // CHECKBOX_ID_START_OFFLINE: checkbox disabled, see InsertCheckBox above.
+    // case CHECKBOX_ID_START_OFFLINE:
+    //     _TempConfig.StartOffline = bState;
+    //     break;
 
     case CHECKBOX_ID_PICK_ALL:
     {
@@ -762,6 +764,7 @@ void SEASON3B::CNewUIMuHelper::ApplyConfigFromCheckbox(int iCheckboxId, bool bSt
         if (cboxPickSelected.box->GetBoxState())
         {
             cboxPickSelected.box->RegisterBoxState(false);
+            _TempConfig.bPickSelectItems = false;
         }
         _TempConfig.bPickAllItems = bState;
         break;
@@ -773,6 +776,7 @@ void SEASON3B::CNewUIMuHelper::ApplyConfigFromCheckbox(int iCheckboxId, bool bSt
         if (cboxPickAll.box->GetBoxState())
         {
             cboxPickAll.box->RegisterBoxState(false);
+            _TempConfig.bPickAllItems = false;
         }
         _TempConfig.bPickSelectItems = bState;
         break;
@@ -991,7 +995,7 @@ void SEASON3B::CNewUIMuHelper::ApplyConfig()
     m_CheckBoxList[CHECKBOX_ID_DR_ATTACK_TOGETHER].box->RegisterBoxState(_TempConfig.iDarkRavenMode == PET_ATTACK_TOGETHER);
 
     m_CheckBoxList[CHECKBOX_ID_REPAIR_ITEM].box->RegisterBoxState(_TempConfig.bRepairItem);
-    m_CheckBoxList[CHECKBOX_ID_START_OFFLINE].box->RegisterBoxState(_TempConfig.StartOffline);
+    // m_CheckBoxList[CHECKBOX_ID_START_OFFLINE].box->RegisterBoxState(_TempConfig.StartOffline); // checkbox disabled, see InsertCheckBox above
     m_CheckBoxList[CHECKBOX_ID_PICK_ALL].box->RegisterBoxState(_TempConfig.bPickAllItems);
     m_CheckBoxList[CHECKBOX_ID_PICK_SELECTED].box->RegisterBoxState(_TempConfig.bPickSelectItems);
     m_CheckBoxList[CHECKBOX_ID_PICK_JEWEL].box->RegisterBoxState(_TempConfig.bPickJewel);
