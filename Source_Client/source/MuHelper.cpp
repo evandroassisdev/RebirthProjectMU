@@ -130,66 +130,414 @@ static int ExecuteSkill(CHARACTER* c, int iSkill, float fSkillDistance)
 	}
 
 	extern MovementSkill g_MovementSkill;
+	extern int TargetX, TargetY;
+	extern void SetPlayerBow(CHARACTER* c);
+
+	OBJECT* o = &c->Object;
 	WORD wTargetKey = 0xFFFF;
 	int iTargetIndex = g_MovementSkill.m_iTarget;
-	if (iTargetIndex >= 0 && iTargetIndex < MAX_CHARACTERS_CLIENT)
+	bool bHasTarget = (iTargetIndex >= 0 && iTargetIndex < MAX_CHARACTERS_CLIENT);
+	if (bHasTarget)
 	{
 		wTargetKey = CharactersClient[iTargetIndex].Key;
+		VectorCopy(CharactersClient[iTargetIndex].Object.Position, c->TargetPosition);
 	}
 
-	// Evil Spirit (and its Twister sibling) aren't locked-on projectiles --
-	// they're client-authoritative directional AoE skills fired from the
-	// caster's own position, at an angle toward the target.
-	// SendRequestMagic() alone only starts the cast; the server never gets
-	// told where to apply damage unless SendRequestMagicContinue (0x1E)
-	// follows with the caster's position/facing angle, exactly like
-	// UseSkillWizard() sends for a manually-pressed cast.
+	// Many skills are client-authoritative: the real manual-cast path sends
+	// SendRequestMagicContinue (0x1E, with position/angle/target) instead of
+	// plain SendRequestMagic, and calls SetAction() to actually play the
+	// animation locally. Plain SendRequestMagic alone still lands the hit
+	// server-side (so damage looks fine), but the character never visibly
+	// performs the skill. Every case below is ported from its own specific
+	// call site in ZzzInterface.cpp (UseSkillWizard/Warrior/Elf/Summon/
+	// Ragefighter, AttackKnight/Wizard/Elf/Common) -- each site's exact
+	// arguments (real target key vs 0xFFFF, own position vs target
+	// position, angle recomputed or not, serial pointer or none) were
+	// checked individually against its own source, not copied from a
+	// sibling case that merely looked similar.
+
+	// --- Evil Spirit / Storm (UseSkillWizard) ---
 	if (iSkill == AT_SKILL_EVIL || iSkill == AT_SKILL_STORM)
 	{
-		if (iTargetIndex < 0 || iTargetIndex >= MAX_CHARACTERS_CLIENT)
-		{
-			return 0;
-		}
-
-		OBJECT* pTargetObj = &CharactersClient[iTargetIndex].Object;
-		float fAngle = CreateAngle(c->Object.Position[0], c->Object.Position[1], pTargetObj->Position[0], pTargetObj->Position[1]);
-		c->Object.Angle[2] = fAngle;
-
-		SendRequestMagicContinue(iSkill, (int)c->PositionX, (int)c->PositionY, (BYTE)(fAngle / 360.f * 256.f), 0, 0, 0xFFFF, &c->Object.m_bySkillSerialNum);
+		if (!bHasTarget) return 0;
+		float fAngle = CreateAngle(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		o->Angle[2] = fAngle;
+		SendRequestMagicContinue(iSkill, (int)c->PositionX, (int)c->PositionY, (BYTE)(fAngle / 360.f * 256.f), 0, 0, 0xFFFF, &o->m_bySkillSerialNum);
 		SetPlayerMagic(c);
 		return 1;
 	}
 
-	// Twisting Slash (Wheel) and its Tornado-upgrade tiers are the warrior
-	// equivalent of the Evil/Storm case above: UseSkillWarrior() (
-	// ZzzInterface.cpp) never calls plain SendRequestMagic for these -- it
-	// sends a move-confirm packet, then SendRequestMagicContinue with the
-	// target's key and no serial pointer, then SetAction() to actually play
-	// the swing locally. Sending only SendRequestMagic (like every other
-	// physical skill) still lands the hit server-side, but the character
-	// never visibly swings.
+	// --- Twisting Slash (Wheel) + Tornado Sword A/B upgrades (AttackKnight) ---
 	if (iSkill == AT_SKILL_WHEEL ||
 		(iSkill >= AT_SKILL_TORNADO_SWORDA_UP && iSkill <= AT_SKILL_TORNADO_SWORDA_UP + 4) ||
 		(iSkill >= AT_SKILL_TORNADO_SWORDB_UP && iSkill <= AT_SKILL_TORNADO_SWORDB_UP + 4))
 	{
-		if (iTargetIndex < 0 || iTargetIndex >= MAX_CHARACTERS_CLIENT)
-		{
-			return 0;
-		}
-
-		extern int TargetX, TargetY;
-		OBJECT* o = &c->Object;
-		VectorCopy(CharactersClient[iTargetIndex].Object.Position, c->TargetPosition);
+		if (!bHasTarget) return 0;
 		o->Angle[2] = CreateAngle(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
-
 		BYTE PathX[1] = { (BYTE)c->PositionX };
 		BYTE PathY[1] = { (BYTE)c->PositionY };
 		SendCharacterMove(c->Key, o->Angle[2], 1, &PathX[0], &PathY[0], (BYTE)TargetX, (BYTE)TargetY);
-
 		SendRequestMagicContinue(iSkill, (int)c->PositionX, (int)c->PositionY, (BYTE)(o->Angle[2] / 360.f * 256.f), 0, 0, wTargetKey, 0);
 		SetAttackSpeed();
 		SetAction(o, PLAYER_ATTACK_SKILL_WHEEL);
 		c->Movement = false;
+		return 1;
+	}
+
+	// --- Blood Attack / Reduce Defense (AttackKnight) ---
+	if ((iSkill >= AT_SKILL_BLOOD_ATT_UP && iSkill <= AT_SKILL_BLOOD_ATT_UP + 4) || iSkill == AT_SKILL_REDUCEDEFENSE)
+	{
+		if (!bHasTarget) return 0;
+		o->Angle[2] = CreateAngle(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		BYTE byValue = GetDestValue((int)c->PositionX, (int)c->PositionY, TargetX, TargetY);
+		SendRequestMagicContinue(iSkill, (int)c->PositionX, (int)c->PositionY, (BYTE)(o->Angle[2] / 360.f * 256.f), byValue, 0, wTargetKey, 0);
+		SetAttackSpeed();
+		SetAction(o, PLAYER_ATTACK_SKILL_WHEEL);
+		c->Movement = false;
+		return 1;
+	}
+
+	// --- Power Slash / Ice Blade (AttackKnight) ---
+	if ((iSkill >= AT_SKILL_POWER_SLASH_UP && iSkill <= AT_SKILL_POWER_SLASH_UP + 4) || iSkill == AT_SKILL_ICE_BLADE)
+	{
+		if (!bHasTarget) return 0;
+		o->Angle[2] = CreateAngle(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		BYTE PathX[1] = { (BYTE)c->PositionX };
+		BYTE PathY[1] = { (BYTE)c->PositionY };
+		SendCharacterMove(c->Key, o->Angle[2], 1, &PathX[0], &PathY[0], (BYTE)TargetX, (BYTE)TargetY);
+		BYTE byValue = GetDestValue((int)c->PositionX, (int)c->PositionY, TargetX, TargetY);
+		BYTE angle = (BYTE)(((o->Angle[2] + 180.f) / 360.f) * 255.f);
+		SendRequestMagicContinue(iSkill, (int)c->PositionX, (int)c->PositionY, (BYTE)((o->Angle[2] / 360.f) * 255), byValue, angle, wTargetKey, 0);
+		SetAttackSpeed();
+		if (c->Helper.Type == MODEL_HELPER + 37 && !c->SafeZone) SetAction(o, PLAYER_FENRIR_ATTACK_MAGIC);
+		else SetAction(o, PLAYER_ATTACK_TWO_HAND_SWORD_TWO);
+		c->Movement = false;
+		return 1;
+	}
+
+	// --- Chaotic Diseier (Gaotic) (AttackKnight) ---
+	if (iSkill == AT_SKILL_GAOTIC)
+	{
+		if (!bHasTarget) return 0;
+		o->Angle[2] = CreateAngle(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		BYTE PathX[1] = { (BYTE)c->PositionX };
+		BYTE PathY[1] = { (BYTE)c->PositionY };
+		SendCharacterMove(c->Key, o->Angle[2], 1, &PathX[0], &PathY[0], (BYTE)TargetX, (BYTE)TargetY);
+		BYTE byValue = GetDestValue((int)c->PositionX, (int)c->PositionY, TargetX, TargetY);
+		BYTE angle = (BYTE)(((o->Angle[2] + 180.f) / 360.f) * 255.f);
+		SendRequestMagicContinue(iSkill, (int)c->PositionX, (int)c->PositionY, (BYTE)((o->Angle[2] / 360.f) * 255), byValue, angle, wTargetKey, 0);
+		SetAttackSpeed();
+		if (c->Helper.Type == MODEL_HELPER + 37) SetAction(o, PLAYER_FENRIR_ATTACK_DARKLORD_STRIKE);
+		else if (c->Helper.Type >= MODEL_HELPER + 2 && c->Helper.Type <= MODEL_HELPER + 4) SetAction(o, PLAYER_ATTACK_RIDE_STRIKE);
+		else SetAction(o, PLAYER_ATTACK_STRIKE);
+		c->Movement = false;
+		return 1;
+	}
+
+	// --- Flame Strike (AttackKnight) ---
+	if (iSkill == AT_SKILL_FLAME_STRIKE)
+	{
+		if (!bHasTarget) return 0;
+		o->Angle[2] = CreateAngle(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		BYTE PathX[1] = { (BYTE)c->PositionX };
+		BYTE PathY[1] = { (BYTE)c->PositionY };
+		SendCharacterMove(c->Key, o->Angle[2], 1, &PathX[0], &PathY[0], (BYTE)TargetX, (BYTE)TargetY);
+		BYTE byValue = GetDestValue((int)c->PositionX, (int)c->PositionY, TargetX, TargetY);
+		BYTE angle = (BYTE)(((o->Angle[2] + 180.f) / 360.f) * 255.f);
+		SendRequestMagicContinue(iSkill, (int)c->PositionX, (int)c->PositionY, (BYTE)((o->Angle[2] / 360.f) * 255), byValue, angle, wTargetKey, 0);
+		SetAttackSpeed();
+		SetAction(o, PLAYER_SKILL_FLAMESTRIKE);
+		c->Movement = false;
+		return 1;
+	}
+
+	// --- Gigantic Storm (AttackKnight) ---
+	if (iSkill == AT_SKILL_GIGANTIC_STORM)
+	{
+		if (!bHasTarget) return 0;
+		o->Angle[2] = CreateAngle(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		BYTE PathX[1] = { (BYTE)c->PositionX };
+		BYTE PathY[1] = { (BYTE)c->PositionY };
+		SendCharacterMove(c->Key, o->Angle[2], 1, &PathX[0], &PathY[0], (BYTE)TargetX, (BYTE)TargetY);
+		BYTE byValue = GetDestValue((int)c->PositionX, (int)c->PositionY, TargetX, TargetY);
+		BYTE angle = (BYTE)(((o->Angle[2] + 180.f) / 360.f) * 255.f);
+		SendRequestMagicContinue(iSkill, (int)c->PositionX, (int)c->PositionY, (BYTE)((o->Angle[2] / 360.f) * 255), byValue, angle, wTargetKey, 0);
+		SetAttackSpeed();
+		SetAction(o, PLAYER_SKILL_GIGANTICSTORM);
+		c->Movement = false;
+		return 1;
+	}
+
+	// --- Fire Scream / Dark Scream (AttackKnight) ---
+	if ((iSkill >= AT_SKILL_FIRE_SCREAM_UP && iSkill <= AT_SKILL_FIRE_SCREAM_UP + 4) || iSkill == AT_SKILL_DARK_SCREAM)
+	{
+		if (!bHasTarget) return 0;
+		o->Angle[2] = CreateAngle(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		BYTE byValue = GetDestValue((int)c->PositionX, (int)c->PositionY, TargetX, TargetY);
+		BYTE pos = CalcTargetPos(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		SendRequestMagicContinue(iSkill, (int)c->PositionX, (int)c->PositionY, (BYTE)(o->Angle[2] / 360.f * 256.f), byValue, pos, wTargetKey, 0);
+		SetAttackSpeed();
+		if (c->Helper.Type >= MODEL_HELPER + 2 && c->Helper.Type <= MODEL_HELPER + 4 && !c->SafeZone) SetAction(o, PLAYER_ATTACK_RIDE_STRIKE);
+		else if (c->Helper.Type == MODEL_HELPER + 37 && !c->SafeZone) SetAction(o, PLAYER_FENRIR_ATTACK_DARKLORD_STRIKE);
+		else SetAction(o, PLAYER_ATTACK_STRIKE);
+		c->Movement = false;
+		return 1;
+	}
+
+	// --- Ashake / Dark Horse / Thunder Strike (AttackKnight) ---
+	if ((iSkill >= AT_SKILL_ASHAKE_UP && iSkill <= AT_SKILL_ASHAKE_UP + 4) || iSkill == AT_SKILL_DARK_HORSE || iSkill == AT_SKILL_THUNDER_STRIKE)
+	{
+		if (!bHasTarget) return 0;
+		o->Angle[2] = CreateAngle(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		BYTE byValue = GetDestValue((int)c->PositionX, (int)c->PositionY, TargetX, TargetY);
+		BYTE pos = CalcTargetPos(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		SendRequestMagicContinue(iSkill, (int)c->PositionX, (int)c->PositionY, (BYTE)(o->Angle[2] / 360.f * 256.f), byValue, pos, wTargetKey, 0);
+		SetAttackSpeed();
+		if (iSkill == AT_SKILL_THUNDER_STRIKE)
+		{
+			if (c->Helper.Type == MODEL_HELPER + 4 && !c->SafeZone) SetAction(o, PLAYER_ATTACK_RIDE_ATTACK_FLASH);
+			else if (c->Helper.Type == MODEL_HELPER + 37 && !c->SafeZone) SetAction(o, PLAYER_FENRIR_ATTACK_DARKLORD_FLASH);
+			else SetAction(o, PLAYER_SKILL_FLASH);
+		}
+		else
+		{
+			SetAction(o, PLAYER_ATTACK_DARKHORSE);
+		}
+		c->Movement = false;
+		return 1;
+	}
+
+	// --- Fury Strike / Anger Sword upgrades (AttackKnight) ---
+	if ((iSkill >= AT_SKILL_ANGER_SWORD_UP && iSkill <= AT_SKILL_ANGER_SWORD_UP + 4) || iSkill == AT_SKILL_FURY_STRIKE)
+	{
+		if (!bHasTarget) return 0;
+		o->Angle[2] = CreateAngle(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		BYTE pos = CalcTargetPos(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		SendRequestMagicContinue(iSkill, (int)c->PositionX, (int)c->PositionY, (BYTE)(o->Angle[2] / 360.f * 256.f), 0, pos, wTargetKey, 0);
+		SetAction(o, PLAYER_ATTACK_SKILL_FURY_STRIKE);
+		c->Movement = false;
+		return 1;
+	}
+
+	// --- Blow of Destruction (AttackKnight) ---
+	if (iSkill == AT_SKILL_BLOW_OF_DESTRUCTION)
+	{
+		if (!bHasTarget) return 0;
+		o->Angle[2] = CreateAngle(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		BYTE pos = CalcTargetPos(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		SendRequestMagicContinue(iSkill, TargetX, TargetY, (BYTE)(o->Angle[2] / 360.f * 256.f), 0, pos, wTargetKey, 0);
+		SetAction(o, PLAYER_SKILL_BLOW_OF_DESTRUCTION);
+		c->Movement = false;
+		return 1;
+	}
+
+	// --- Plasma Storm (Fenrir mount only -- appears identically across
+	// AttackKnight/AttackWizard/UseSkillRagefighter, ported once) ---
+	if (iSkill == AT_SKILL_PLASMA_STORM_FENRIR)
+	{
+		if (!bHasTarget) return 0;
+		BYTE pos = CalcTargetPos(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		o->Angle[2] = CreateAngle(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		c->m_iFenrirSkillTarget = iTargetIndex;
+		SendRequestMagicContinue(iSkill, (int)c->PositionX, (int)c->PositionY, (BYTE)(o->Angle[2] / 360.f * 256.f), 0, pos, wTargetKey, &o->m_bySkillSerialNum);
+		c->Movement = false;
+		if (o->Type == MODEL_PLAYER) SetAction_Fenrir_Skill(c, o);
+		return 1;
+	}
+
+	// --- Hell Fire upgrades + Hell (Wizard, AoE around self, no target lock) ---
+	if ((iSkill >= AT_SKILL_HELL_FIRE_UP && iSkill <= AT_SKILL_HELL_FIRE_UP + 4) || iSkill == AT_SKILL_HELL)
+	{
+		SendRequestMagicContinue(iSkill, (int)c->PositionX, (int)c->PositionY, (BYTE)(o->Angle[2] / 360.f * 256.f), 0, 0, 0xFFFF, 0);
+		SetAttackSpeed();
+		SetAction(o, PLAYER_SKILL_HELL);
+		c->Movement = false;
+		return 1;
+	}
+
+	// --- Inferno (Wizard, AoE around self, no target lock) ---
+	if (iSkill == AT_SKILL_INFERNO)
+	{
+		SendRequestMagicContinue(iSkill, (int)c->PositionX, (int)c->PositionY, (BYTE)(o->Angle[2] / 360.f * 256.f), 0, 0, 0xFFFF, 0);
+		SetAttackSpeed();
+		SetAction(o, PLAYER_SKILL_INFERNO);
+		c->Movement = false;
+		return 1;
+	}
+
+	// --- Flash (Wizard) ---
+	if (iSkill == AT_SKILL_FLASH)
+	{
+		if (!bHasTarget) return 0;
+		o->Angle[2] = CreateAngle(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		SendRequestMagicContinue(iSkill, (int)c->PositionX, (int)c->PositionY, (BYTE)(o->Angle[2] / 360.f * 256.f), 0, 0, 0xFFFF, 0);
+		SetAttackSpeed();
+		SetAction(o, PLAYER_SKILL_FLASH);
+		c->Movement = false;
+		return 1;
+	}
+
+	// --- Flame (Wizard) ---
+	if (iSkill == AT_SKILL_FLAME)
+	{
+		if (!bHasTarget) return 0;
+		o->Angle[2] = CreateAngle(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		SendRequestMagicContinue(iSkill, (BYTE)(c->TargetPosition[0] / TERRAIN_SCALE), (BYTE)(c->TargetPosition[1] / TERRAIN_SCALE), (BYTE)(o->Angle[2] / 360.f * 256.f), 0, 0, 0xFFFF, 0);
+		SetPlayerMagic(c);
+		return 1;
+	}
+
+	// --- Ice family / Blast Poison / Blast Freeze (Wizard) ---
+	if ((iSkill >= AT_SKILL_ICE_UP && iSkill <= AT_SKILL_ICE_UP + 4) || iSkill == AT_SKILL_BLAST_POISON || iSkill == AT_SKILL_BLAST_FREEZE)
+	{
+		if (!bHasTarget) return 0;
+		o->Angle[2] = CreateAngle(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		SendRequestMagicContinue(iSkill, (BYTE)(c->TargetPosition[0] / TERRAIN_SCALE), (BYTE)(c->TargetPosition[1] / TERRAIN_SCALE), (BYTE)(o->Angle[2] / 360.f * 256.f), 0, 0, wTargetKey, 0);
+		SetPlayerMagic(c);
+		c->Movement = false;
+		return 1;
+	}
+
+	// --- Blast upgrades + Blast (Wizard, UseSkillWizard) ---
+	if ((iSkill >= AT_SKILL_BLAST_UP && iSkill <= AT_SKILL_BLAST_UP + 4) || iSkill == AT_SKILL_BLAST)
+	{
+		if (!bHasTarget) return 0;
+		o->Angle[2] = CreateAngle(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		SendRequestMagicContinue(iSkill, (int)(c->TargetPosition[0] / 100.f), (int)(c->TargetPosition[1] / 100.f), (BYTE)(o->Angle[2] / 360.f * 256.f), 0, 0, wTargetKey, 0);
+		SetPlayerMagic(c);
+		return 1;
+	}
+
+	// --- Lightning Shock (Summoner, AttackWizard) ---
+	if ((iSkill >= AT_SKILL_LIGHTNING_SHOCK_UP && iSkill <= AT_SKILL_LIGHTNING_SHOCK_UP + 4) || iSkill == AT_SKILL_LIGHTNING_SHOCK)
+	{
+		if (!bHasTarget) return 0;
+		o->Angle[2] = CreateAngle(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		BYTE PathX[1] = { (BYTE)c->PositionX };
+		BYTE PathY[1] = { (BYTE)c->PositionY };
+		SendCharacterMove(c->Key, o->Angle[2], 1, &PathX[0], &PathY[0], (BYTE)TargetX, (BYTE)TargetY);
+		BYTE byValue = GetDestValue((int)c->PositionX, (int)c->PositionY, TargetX, TargetY);
+		BYTE angle = (BYTE)(((o->Angle[2] + 180.f) / 360.f) * 255.f);
+		SendRequestMagicContinue(iSkill, (int)c->PositionX, (int)c->PositionY, (BYTE)((o->Angle[2] / 360.f) * 255), byValue, angle, wTargetKey, 0);
+		SetAttackSpeed();
+		SetAction(o, PLAYER_SKILL_LIGHTNING_SHOCK);
+		c->Movement = false;
+		return 1;
+	}
+
+	// --- Alice Drain Life / Lightning Orb (Summoner, UseSkillSummon) ---
+	if ((iSkill >= AT_SKILL_ALICE_DRAINLIFE_UP && iSkill <= AT_SKILL_ALICE_DRAINLIFE_UP + 4) || iSkill == AT_SKILL_ALICE_DRAINLIFE || iSkill == AT_SKILL_ALICE_LIGHTNINGORB)
+	{
+		if (!bHasTarget) return 0;
+		bool bDrainLife = (iSkill == AT_SKILL_ALICE_DRAINLIFE) || (iSkill >= AT_SKILL_ALICE_DRAINLIFE_UP && iSkill <= AT_SKILL_ALICE_DRAINLIFE_UP + 4);
+		if (c->Helper.Type == MODEL_HELPER + 2) SetAction(o, bDrainLife ? PLAYER_SKILL_DRAIN_LIFE_UNI : PLAYER_SKILL_LIGHTNING_ORB_UNI);
+		else if (c->Helper.Type == MODEL_HELPER + 3) SetAction(o, bDrainLife ? PLAYER_SKILL_DRAIN_LIFE_DINO : PLAYER_SKILL_LIGHTNING_ORB_DINO);
+		else if (c->Helper.Type == MODEL_HELPER + 37) SetAction(o, bDrainLife ? PLAYER_SKILL_DRAIN_LIFE_FENRIR : PLAYER_SKILL_LIGHTNING_ORB_FENRIR);
+		else SetAction(o, bDrainLife ? PLAYER_SKILL_DRAIN_LIFE : PLAYER_SKILL_LIGHTNING_ORB);
+		SendRequestMagicContinue(iSkill, (int)(c->TargetPosition[0] / 100.f), (int)(c->TargetPosition[1] / 100.f), (BYTE)(o->Angle[2] / 360.f * 256.f), 0, 0, wTargetKey, 0);
+		return 1;
+	}
+
+	// --- Alice Chain Lightning (Summoner, UseSkillSummon) ---
+	if ((iSkill >= AT_SKILL_ALICE_CHAINLIGHTNING_UP && iSkill <= AT_SKILL_ALICE_CHAINLIGHTNING_UP + 4) || iSkill == AT_SKILL_ALICE_CHAINLIGHTNING)
+	{
+		if (!bHasTarget) return 0;
+		if (c->Helper.Type == MODEL_HELPER + 2) SetAction(o, PLAYER_SKILL_CHAIN_LIGHTNING_UNI);
+		else if (c->Helper.Type == MODEL_HELPER + 3) SetAction(o, PLAYER_SKILL_CHAIN_LIGHTNING_DINO);
+		else if (c->Helper.Type == MODEL_HELPER + 37) SetAction(o, PLAYER_SKILL_CHAIN_LIGHTNING_FENRIR);
+		else SetAction(o, PLAYER_SKILL_CHAIN_LIGHTNING);
+		SendRequestMagicContinue(iSkill, (int)(c->TargetPosition[0] / 100.f), (int)(c->TargetPosition[1] / 100.f), (BYTE)(o->Angle[2] / 360.f * 256.f), 0, 0, wTargetKey, 0);
+		return 1;
+	}
+
+	// --- Alice Weakness / Enervation (Summoner, UseSkillSummon -- self-cast, no target lock) ---
+	if (iSkill == AT_SKILL_ALICE_WEAKNESS || iSkill == AT_SKILL_ALICE_ENERVATION)
+	{
+		SendRequestMagicContinue(iSkill, (int)c->PositionX, (int)c->PositionY, (BYTE)(o->Angle[2] / 360.f * 256.f), 0, 0, 0xFFFF, 0);
+		if (c->Helper.Type == MODEL_HELPER + 2) SetAction(o, PLAYER_SKILL_SLEEP_UNI);
+		else if (c->Helper.Type == MODEL_HELPER + 3) SetAction(o, PLAYER_SKILL_SLEEP_DINO);
+		else if (c->Helper.Type == MODEL_HELPER + 37) SetAction(o, PLAYER_SKILL_SLEEP_FENRIR);
+		else SetAction(o, PLAYER_SKILL_SLEEP);
+		return 1;
+	}
+
+	// --- Dragon Lower (Rage Fighter, UseSkillRagefighter) ---
+	if (iSkill == AT_SKILL_DRAGON_LOWER)
+	{
+		BYTE angle = (BYTE)(((o->Angle[2] + 180.f) / 360.f) * 255.f);
+		BYTE byValue = GetDestValue((int)c->PositionX, (int)c->PositionY, TargetX, TargetY);
+		SendRequestMagicContinue(iSkill, (int)c->PositionX, (int)c->PositionY, (BYTE)((o->Angle[2] / 360.f) * 255), byValue, angle, wTargetKey, 0);
+		return 1;
+	}
+
+	// --- Multi-Shot (Elf/Rage Fighter, AttackElf) ---
+	if (iSkill == AT_SKILL_MULTI_SHOT)
+	{
+		if (!CheckArrow()) return 0;
+		if (!bHasTarget) return 0;
+		o->Angle[2] = CreateAngle(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		BYTE PathX[1] = { (BYTE)c->PositionX };
+		BYTE PathY[1] = { (BYTE)c->PositionY };
+		SendCharacterMove(c->Key, o->Angle[2], 1, &PathX[0], &PathY[0], (BYTE)TargetX, (BYTE)TargetY);
+		BYTE byValue = GetDestValue((int)c->PositionX, (int)c->PositionY, TargetX, TargetY);
+		BYTE angle = (BYTE)(((o->Angle[2] + 180.f) / 360.f) * 255.f);
+		SendRequestMagicContinue(iSkill, (int)c->PositionX, (int)c->PositionY, (BYTE)((o->Angle[2] / 360.f) * 255), byValue, angle, wTargetKey, 0);
+		SetAttackSpeed();
+		c->Movement = false;
+		SetPlayerBow(c);
+		return 1;
+	}
+
+	// --- Piercing (Elf, AttackElf) ---
+	if (iSkill == AT_SKILL_PIERCING)
+	{
+		if (!CheckArrow()) return 0;
+		if (!bHasTarget) return 0;
+		o->Angle[2] = CreateAngle(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		SendRequestMagicContinue(iSkill, (int)c->PositionX, (int)c->PositionY, (BYTE)(o->Angle[2] / 360.f * 256.f), 0, 0, wTargetKey, 0);
+		SetPlayerAttack(c);
+		return 1;
+	}
+
+	// --- Stun (AttackCommon) ---
+	if (iSkill == AT_SKILL_STUN)
+	{
+		if (!bHasTarget) return 0;
+		o->Angle[2] = CreateAngle(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		BYTE byValue = GetDestValue((int)c->PositionX, (int)c->PositionY, TargetX, TargetY);
+		BYTE pos = CalcTargetPos(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		SendRequestMagicContinue(iSkill, (int)c->PositionX, (int)c->PositionY, (BYTE)(o->Angle[2] / 360.f * 256.f), byValue, pos, wTargetKey, 0);
+		SetAttackSpeed();
+		if (c->Helper.Type == MODEL_HELPER + 4 && !c->SafeZone) SetAction(o, PLAYER_ATTACK_RIDE_ATTACK_MAGIC);
+		else if (c->Helper.Type == MODEL_HELPER + 2 && !c->SafeZone) SetAction(o, PLAYER_SKILL_RIDER);
+		else if (c->Helper.Type == MODEL_HELPER + 3 && !c->SafeZone) SetAction(o, PLAYER_SKILL_RIDER_FLY);
+		else if (c->Helper.Type == MODEL_HELPER + 37 && !c->SafeZone) SetAction(o, PLAYER_FENRIR_ATTACK_MAGIC);
+		else SetAction(o, PLAYER_SKILL_VITALITY);
+		c->Movement = false;
+		return 1;
+	}
+
+	// --- Many Arrow upgrades + Crossbow (special combo-key path) ---
+	if ((iSkill >= AT_SKILL_MANY_ARROW_UP && iSkill <= AT_SKILL_MANY_ARROW_UP + 4) || iSkill == AT_SKILL_CROSSBOW)
+	{
+		if (!CheckArrow()) return 0;
+		if (!bHasTarget) return 0;
+		o->Angle[2] = CreateAngle(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		SendRequestMagicContinue(iSkill, (int)c->PositionX, (int)c->PositionY, (BYTE)(o->Angle[2] / 360.f * 256.f), 0, 0, wTargetKey, 0);
+		SetPlayerAttack(c);
+		return 1;
+	}
+
+	// --- Blast Crossbow 4 (special combo-key path) ---
+	if (iSkill == AT_SKILL_BLAST_CROSSBOW4)
+	{
+		if (!CheckArrow()) return 0;
+		if (!bHasTarget) return 0;
+		o->Angle[2] = CreateAngle(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+		BYTE byValue = GetDestValue((int)c->PositionX, (int)c->PositionY, TargetX, TargetY);
+		BYTE angle = (BYTE)(((o->Angle[2] + 180.f) / 360.f) * 255.f);
+		SendRequestMagicContinue(iSkill, (int)c->PositionX, (int)c->PositionY, (BYTE)((o->Angle[2] / 360.f) * 255), byValue, angle, wTargetKey, 0);
+		SetPlayerAttack(c);
 		return 1;
 	}
 
