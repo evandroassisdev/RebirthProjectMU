@@ -1138,6 +1138,11 @@ void CUIExtraItemListBox::AddText(const char* pszPattern)
 {
 	if (pszPattern == NULL || pszPattern[0] == '\0') return;
 
+	for (std::deque<FILTERLIST_TEXT>::iterator it = m_TextList.begin(); it != m_TextList.end(); ++it)
+	{
+		if (strcmp(it->m_szPattern, pszPattern) == 0) return;
+	}
+
 	FILTERLIST_TEXT text;
 	text.m_bIsSelected = FALSE;
 	strncpy(text.m_szPattern, pszPattern, sizeof(text.m_szPattern) - 1);
@@ -1169,25 +1174,27 @@ void CUIExtraItemListBox::RenderInterface()
 	ComputeScrollBar();
 }
 
+int CUIExtraItemListBox::GetRenderLinePos_y(int iLineNumber)
+{
+	if (GetLineNum() > m_iNumRenderLine) return m_iPos_y - 12 - iLineNumber * 13;
+	return m_iPos_y - 12 - (iLineNumber - GetLineNum() + m_iNumRenderLine) * 13;
+}
+
 BOOL CUIExtraItemListBox::RenderDataLine(int iLineNumber)
 {
 	EnableAlphaTest();
 	int iPos_x = m_iPos_x + 4;
-	int iPos_y;
-	if (GetLineNum() > m_iNumRenderLine) iPos_y = m_iPos_y - 12 - iLineNumber * 13;
-	else iPos_y = m_iPos_y - 12 - (iLineNumber - GetLineNum() + m_iNumRenderLine) * 13;
+	int iPos_y = GetRenderLinePos_y(iLineNumber);
 
 	g_pRenderText->SetFont(g_hFont);
 
-	if (++m_TextListIter == m_TextList.end())
+	if (SLGetSelectLineNum() == m_iCurrentRenderEndLine + iLineNumber + 1)
 	{
-		--m_TextListIter;
 		g_pRenderText->SetBgColor(40, 40, 150, 255);
 		g_pRenderText->SetTextColor(255, 255, 255, 255);
 	}
 	else
 	{
-		--m_TextListIter;
 		g_pRenderText->SetBgColor(0, 0, 0, 0);
 		g_pRenderText->SetTextColor(210, 230, 255, 255);
 	}
@@ -1201,7 +1208,14 @@ BOOL CUIExtraItemListBox::RenderDataLine(int iLineNumber)
 
 BOOL CUIExtraItemListBox::DoLineMouseAction(int iLineNumber)
 {
-	SLSetSelectLine(iLineNumber);
+	if (::CheckMouseIn(m_iPos_x, GetRenderLinePos_y(iLineNumber) - 3, m_iWidth - m_fScrollBarWidth + 1, 13))
+	{
+		if (MouseLButtonPush)
+		{
+			SLSetSelectLine(m_iCurrentRenderEndLine + iLineNumber + 1);
+			MouseLButtonPush = false;
+		}
+	}
 	return TRUE;
 }
 

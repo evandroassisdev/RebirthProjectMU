@@ -60,10 +60,12 @@ typedef struct
 } GUILDLIST_TEXT;
 
 // MU Helper: "extra item names" filter list (item names typed by the player).
+// Size must match MUHelper::MUHELPER_ITEM_NAME_SIZE (MuHelperData.h), the
+// slot width CMuHelper::SerializeConfig saves these names into.
 typedef struct
 {
 	BOOL	m_bIsSelected;
-	char	m_szPattern[15];
+	char	m_szPattern[20];
 } FILTERLIST_TEXT;
 
 typedef struct
@@ -350,6 +352,7 @@ protected:
 	virtual void RenderInterface();
 	virtual BOOL RenderDataLine(int iLineNumber);
 	virtual BOOL DoLineMouseAction(int iLineNumber);
+	int GetRenderLinePos_y(int iLineNumber);
 };
 
 class CUIGuildListBox : public CUITextListBox<GUILDLIST_TEXT>

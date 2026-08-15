@@ -447,6 +447,14 @@ bool SEASON3B::CNewUIMuHelperConfig::UpdateMouseEvent()
                 m_iCurrentPotionThreshold = (int)fValue + 1;
             }
         }
+
+        // Write straight through to _TempConfig, same as every checkbox in
+        // this UI -- otherwise the value only ever lands there via the
+        // explicit Save button, and is silently lost on X/ESC close.
+        if (m_iCurrentPotionThreshold != iOldValue)
+        {
+            _TempConfig.iPotionThreshold = m_iCurrentPotionThreshold * 10;
+        }
     }
 
     if (m_iCurrentPage == SUB_PAGE_POTION_CONFIG_ELF || m_iCurrentPage == SUB_PAGE_POTION_CONFIG_SUMMY)
@@ -485,6 +493,11 @@ bool SEASON3B::CNewUIMuHelperConfig::UpdateMouseEvent()
                     m_iCurrentHealThreshold = (int)fValue + 1;
                 }
             }
+
+            if (m_iCurrentHealThreshold != iOldValue)
+            {
+                _TempConfig.iHealThreshold = m_iCurrentHealThreshold * 10;
+            }
         }
     }
     else if (m_iCurrentPage == SUB_PAGE_PARTY_CONFIG_ELF)
@@ -522,6 +535,11 @@ bool SEASON3B::CNewUIMuHelperConfig::UpdateMouseEvent()
                     float fValue = (10.f * x) / 124.f;
                     m_iCurrentPartyHealThreshold = (int)fValue + 1;
                 }
+            }
+
+            if (m_iCurrentPartyHealThreshold != iOldValue)
+            {
+                _TempConfig.iHealPartyThreshold = m_iCurrentPartyHealThreshold * 10;
             }
         }
         else if (CheckMouseIn(m_BuffTimeInput.GetPosition_x(), m_BuffTimeInput.GetPosition_y(), 20, 15))

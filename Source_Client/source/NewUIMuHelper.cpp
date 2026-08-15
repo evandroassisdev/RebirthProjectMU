@@ -17,8 +17,10 @@ constexpr int BITMAP_DISTANCE_BEGIN = BITMAP_INTERFACE_CRYWOLF_BEGIN + 33;
 constexpr int MAX_NUMBER_DIGITS = 3;
 constexpr int MAX_HUNTING_RANGE = 6;
 constexpr int MAX_OBTAINING_RANGE = 8;
-// Matches PRECEIVE_MUHELPER_DATA::ExtraItems[12][15] (14 usable chars + null).
-constexpr int MAX_ITEM_NAME = 14;
+// Matches the per-item slot width in CMuHelper::SerializeConfig/
+// DeserializeConfig (MuHelper.cpp) -- MUHELPER_ITEM_NAME_SIZE bytes,
+// 1 reserved for the null terminator.
+constexpr int MAX_ITEM_NAME = MUHELPER_ITEM_NAME_SIZE - 1;
 constexpr DWORD HEX_COLOR_WHITE = 0xFFFFFFFF;
 
 SEASON3B::CNewUIMuHelper::CNewUIMuHelper()

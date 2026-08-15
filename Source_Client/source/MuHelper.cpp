@@ -223,16 +223,6 @@ namespace MUHelper
 		m_config = config;
 	}
 
-	namespace
-	{
-		// Fixed-width slot for each extra-item filter name in the wire
-		// format below (19 chars + null). 14 slots fit in the remaining
-		// budget after the 35 bytes of scalar fields (35 + 14*20 = 315,
-		// leaving a few spare bytes in MUHELPER_SAVEDATA_SIZE=320).
-		constexpr int MUHELPER_ITEM_NAME_SIZE = 20;
-		constexpr int MUHELPER_MAX_SAVED_ITEMS = 14;
-	}
-
 	void CMuHelper::SerializeConfig(BYTE* pOutBuffer) const
 	{
 		ZeroMemory(pOutBuffer, MUHELPER_SAVEDATA_SIZE);

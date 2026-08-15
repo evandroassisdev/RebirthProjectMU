@@ -23,6 +23,14 @@ namespace MUHelper
 	// Must match MuOnline.HelperData.Data's DB column width.
 	constexpr int MUHELPER_SAVEDATA_SIZE = 320;
 
+	// Fixed-width slot for each extra-item filter name in that wire format
+	// (18 usable chars + null), and how many slots fit. 14 slots fit in the
+	// remaining budget after the 35 bytes of scalar fields
+	// (35 + 14*20 = 315, leaving a few spare bytes in MUHELPER_SAVEDATA_SIZE).
+	// Also caps NewUIMuHelper.cpp's "Add Extra Item" text input length.
+	constexpr int MUHELPER_ITEM_NAME_SIZE = 20;
+	constexpr int MUHELPER_MAX_SAVED_ITEMS = 14;
+
 	enum ESkillActivationBase : uint32_t
 	{
 		ALWAYS = 0x00000000,
