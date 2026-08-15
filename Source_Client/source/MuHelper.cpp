@@ -160,6 +160,39 @@ static int ExecuteSkill(CHARACTER* c, int iSkill, float fSkillDistance)
 		return 1;
 	}
 
+	// Twisting Slash (Wheel) and its Tornado-upgrade tiers are the warrior
+	// equivalent of the Evil/Storm case above: UseSkillWarrior() (
+	// ZzzInterface.cpp) never calls plain SendRequestMagic for these -- it
+	// sends a move-confirm packet, then SendRequestMagicContinue with the
+	// target's key and no serial pointer, then SetAction() to actually play
+	// the swing locally. Sending only SendRequestMagic (like every other
+	// physical skill) still lands the hit server-side, but the character
+	// never visibly swings.
+	if (iSkill == AT_SKILL_WHEEL ||
+		(iSkill >= AT_SKILL_TORNADO_SWORDA_UP && iSkill <= AT_SKILL_TORNADO_SWORDA_UP + 4) ||
+		(iSkill >= AT_SKILL_TORNADO_SWORDB_UP && iSkill <= AT_SKILL_TORNADO_SWORDB_UP + 4))
+	{
+		if (iTargetIndex < 0 || iTargetIndex >= MAX_CHARACTERS_CLIENT)
+		{
+			return 0;
+		}
+
+		extern int TargetX, TargetY;
+		OBJECT* o = &c->Object;
+		VectorCopy(CharactersClient[iTargetIndex].Object.Position, c->TargetPosition);
+		o->Angle[2] = CreateAngle(o->Position[0], o->Position[1], c->TargetPosition[0], c->TargetPosition[1]);
+
+		BYTE PathX[1] = { (BYTE)c->PositionX };
+		BYTE PathY[1] = { (BYTE)c->PositionY };
+		SendCharacterMove(c->Key, o->Angle[2], 1, &PathX[0], &PathY[0], (BYTE)TargetX, (BYTE)TargetY);
+
+		SendRequestMagicContinue(iSkill, (int)c->PositionX, (int)c->PositionY, (BYTE)(o->Angle[2] / 360.f * 256.f), 0, 0, wTargetKey, 0);
+		SetAttackSpeed();
+		SetAction(o, PLAYER_ATTACK_SKILL_WHEEL);
+		c->Movement = false;
+		return 1;
+	}
+
 	SendRequestMagic(iSkill, wTargetKey);
 	return 1;
 }
@@ -694,17 +727,24 @@ namespace MUHelper
 			return 1;
 		}
 
+		// The server expects a small 0-based mode index (DARK_SPIRIT_MODE_*
+		// in DarkSpirit.h: 0=Normal, 1=AttackRandom, 2=AttackWithMaster),
+		// not the raw AT_PET_COMMAND_* enum value -- same subtraction the
+		// native pet UI does (GIPetManager.cpp). Sending the raw enum
+		// (120/121/122) never matches any of the server's cases, so it
+		// always fell through to the default (Normal/Cease) regardless of
+		// the mode picked here.
 		if (m_config.iDarkRavenMode == PET_ATTACK_CEASE)
 		{
-			SendRequestPetCommand(PET_TYPE_DARK_SPIRIT, AT_PET_COMMAND_DEFAULT, 0xFFFF);
+			SendRequestPetCommand(PET_TYPE_DARK_SPIRIT, AT_PET_COMMAND_DEFAULT - AT_PET_COMMAND_DEFAULT, 0xFFFF);
 		}
 		else if (m_config.iDarkRavenMode == PET_ATTACK_AUTO)
 		{
-			SendRequestPetCommand(PET_TYPE_DARK_SPIRIT, AT_PET_COMMAND_RANDOM, 0xFFFF);
+			SendRequestPetCommand(PET_TYPE_DARK_SPIRIT, AT_PET_COMMAND_RANDOM - AT_PET_COMMAND_DEFAULT, 0xFFFF);
 		}
 		else if (m_config.iDarkRavenMode == PET_ATTACK_TOGETHER)
 		{
-			SendRequestPetCommand(PET_TYPE_DARK_SPIRIT, AT_PET_COMMAND_OWNER, 0xFFFF);
+			SendRequestPetCommand(PET_TYPE_DARK_SPIRIT, AT_PET_COMMAND_OWNER - AT_PET_COMMAND_DEFAULT, 0xFFFF);
 		}
 
 		m_bPetActivated = true;
