@@ -8,6 +8,7 @@
 #include <locale.h>
 #include <zmouse.h>
 #include "UIWindows.h"
+#include "MuHelper.h"
 #include "UIManager.h"
 #include "ZzzOpenglUtil.h"
 #include "ZzzTexture.h"
@@ -1581,6 +1582,7 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance,
 
 	SetTimer(g_hWnd, HACK_TIMER, 20*1000, NULL);
 	SetTimer(g_hWnd, TRAY_HOTKEY_TIMER, 150, NULL);
+	SetTimer(g_hWnd, MUHELPER_TIMER, 250 /* ms */, MUHelper::CMuHelper::TimerProc);
 
 	srand((unsigned)time(NULL));
 	for(int i=0;i<100;i++)

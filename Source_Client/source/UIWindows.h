@@ -17,6 +17,7 @@
 #ifdef TEENAGER_REGULATION
 #define WARNING_TIMER	1004
 #endif
+#define MUHELPER_TIMER 1005
 
 const int g_ciWindowFrameThickness = 5;
 const int g_ciWindowTitleHeight = 21;

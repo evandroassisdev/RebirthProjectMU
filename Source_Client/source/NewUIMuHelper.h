@@ -1,152 +1,286 @@
 #pragma once
+
+#include <array>
+#include <vector>
+
 #include "NewUIBase.h"
 #include "NewUIManager.h"
 #include "NewUIButton.h"
+#include "MuHelper.h"
 
 namespace SEASON3B
 {
-	class CNewUIMuHelper : public CNewUIObj
-	{
-	public:
-		enum IMAGE_LIST
-		{
+    class CNewUIMuHelper : public CNewUIObj
+    {
+    public:
+        CNewUIMuHelper();
+        ~CNewUIMuHelper();
+        void AllDataOfflineSave();
+        bool Create(CNewUIManager* pNewUIMng, int x, int y);
+        void Release();
 
-			IMAGE_BASE_WINDOW_BACK = CNewUIMessageBoxMng::IMAGE_MSGBOX_BACK,				//. newui_msgbox_back.jpg
-			IMAGE_BASE_WINDOW_TOP = CNewUIMyInventory::IMAGE_INVENTORY_BACK_TOP,			//. newui_item_back01.tga	(190,64)
-			IMAGE_BASE_WINDOW_LEFT = CNewUIMyInventory::IMAGE_INVENTORY_BACK_LEFT,		//. newui_item_back02-l.tga	(21,320)
-			IMAGE_BASE_WINDOW_RIGHT = CNewUIMyInventory::IMAGE_INVENTORY_BACK_RIGHT,		//. newui_item_back02-r.tga	(21,320)
-			IMAGE_BASE_WINDOW_BOTTOM = CNewUIMyInventory::IMAGE_INVENTORY_BACK_BOTTOM,	//. newui_item_back03.tga	(190,45)
-			IMAGE_BASE_WINDOW_BTN_EXIT = CNewUIMyInventory::IMAGE_INVENTORY_EXIT_BTN,		//. newui_exit_00.tga
-			//--
-			IMAGE_TABLE_TOP_LEFT = CNewUIInventoryCtrl::IMAGE_ITEM_TABLE_TOP_LEFT,			//. newui_item_table01(L).tga (14,14)
-			IMAGE_TABLE_TOP_RIGHT = CNewUIInventoryCtrl::IMAGE_ITEM_TABLE_TOP_RIGHT,			//. newui_item_table01(R).tga (14,14)
-			IMAGE_TABLE_BOTTOM_LEFT = CNewUIInventoryCtrl::IMAGE_ITEM_TABLE_BOTTOM_LEFT,		//. newui_item_table02(L).tga (14,14)
-			IMAGE_TABLE_BOTTOM_RIGHT = CNewUIInventoryCtrl::IMAGE_ITEM_TABLE_BOTTOM_RIGHT,	//. newui_item_table02(R).tga (14,14)
-			IMAGE_TABLE_TOP_PIXEL = CNewUIInventoryCtrl::IMAGE_ITEM_TABLE_TOP_PIXEL,			//. newui_item_table03(up).tga (1, 14)
-			IMAGE_TABLE_BOTTOM_PIXEL = CNewUIInventoryCtrl::IMAGE_ITEM_TABLE_BOTTOM_PIXEL,	//. newui_item_table03(dw).tga (1,14)
-			IMAGE_TABLE_LEFT_PIXEL = CNewUIInventoryCtrl::IMAGE_ITEM_TABLE_LEFT_PIXEL,		//. newui_item_table03(L).tga (14,1)
-			IMAGE_TABLE_RIGHT_PIXEL = CNewUIInventoryCtrl::IMAGE_ITEM_TABLE_RIGHT_PIXEL,		//. newui_item_table03(R).tga (14,1)
-			//--
-			IMAGE_WINDOW_TAB_BTN = CNewUIGuildInfoWindow::IMAGE_GUILDINFO_TAB_BUTTON,
-			//--
-			IMAGE_MACROUI_HELPER_RAGEMINUS = BITMAP_INTERFACE_MACROUI_BEGIN,		// newui_position02.tga			(70, 25)	
-			IMAGE_MACROUI_HELPER_OPTIONBUTTON = BITMAP_INTERFACE_MACROUI_BEGIN+1,		// newui_position02.tga			(70, 25)	
-			IMAGE_MACROUI_HELPER_INPUTNUMBER = BITMAP_INTERFACE_MACROUI_BEGIN+2,
-			IMAGE_MACROUI_HELPER_INPUTSTRING = BITMAP_INTERFACE_MACROUI_BEGIN+3,
-			//-- Buttons
-			IMAGE_CHAINFO_BTN_STAT = BITMAP_INTERFACE_NEW_CHAINFO_WINDOW_BEGIN+1,
-			IMAGE_CLEARNESS_BTN = BITMAP_CURSEDTEMPLE_BEGIN + 4,
-			IMAGE_IGS_BUTTON = BITMAP_IGS_MSGBOX_BUTTON,
+        void Show(bool bShow);
+        bool Render();
+        bool Update();
+        bool UpdateMouseEvent();
+        bool UpdateKeyEvent();
 
-		};
-		enum CLASS_LIST_{
-			Dark_Wizard = 0,
-			Dark_Knight,
-			Fairy_Elf,
-			Magic_Gladiator,
-			Dark_Lord,
-			Summoner,
-			Rage_Fighter,
-		};
-	private:
-		enum PARTY_WINDOW_SIZE
-		{
-			WINDOW_WIDTH = 190,
-			WINDOW_HEIGHT = 429,
-		};
-		typedef struct
-		{
-			int iNumTab;
-			BYTE class_character[MAX_CLASS];
-			CNewUIButton* btn;
-		} CButtonTap;
+        float GetLayerDepth();
+        float GetKeyEventOrder();
+        void AutoReset();
 
-		typedef struct
-		{
-			int iNumTab;
-			BYTE class_character[MAX_CLASS];
-			CNewUICheckBox* box;
-		} CheckBoxTap;
+        void Reset();
+        void LoadSavedConfig(const MUHelper::ConfigData& config);
+        void AssignSkill(int iSkill);
+        static int GetIntFromTextInput(char* pstrInput);
+        inline void WritePrivateProfileInt(const char* section, const char* key, int value, const char* path);
 
-		typedef struct
-		{
-			int iNumTab;
-			int s_ImgIndex;
-			POINT m_Pos;
-			POINT m_Size;
-			BYTE class_character[MAX_CLASS];
-		} cTexture;
+        enum ESkillSlot
+        {
+            SUB_PAGE_SKILL2_CONFIG = 2,
+            SUB_PAGE_SKILL3_CONFIG,
+            SUB_PAGE_POTION_CONFIG_ELF,
+            SUB_PAGE_POTION_CONFIG_SUMMY,
+            SUB_PAGE_POTION_CONFIG,
+            SUB_PAGE_PARTY_CONFIG,
+            SUB_PAGE_PARTY_CONFIG_ELF
+        };
+        enum ECheckBoxId : uint16_t
+        {
+            CHECKBOX_ID_POTION = 0,
+            CHECKBOX_ID_LONG_DISTANCE,
+            CHECKBOX_ID_ORIG_POSITION,
+            CHECKBOX_ID_SKILL2_DELAY,
+            CHECKBOX_ID_SKILL2_CONDITION,
+            CHECKBOX_ID_SKILL3_DELAY,
+            CHECKBOX_ID_SKILL3_CONDITION,
+            CHECKBOX_ID_COMBO,
+            CHECKBOX_ID_BUFF_DURATION,
+            CHECKBOX_ID_USE_PET,
+            CHECKBOX_ID_PARTY,
+            CHECKBOX_ID_AUTO_HEAL,
+            CHECKBOX_ID_DRAIN_LIFE,
+            CHECKBOX_ID_REPAIR_ITEM,
+            CHECKBOX_ID_START_OFFLINE,
+            CHECKBOX_ID_PICK_ALL,
+            CHECKBOX_ID_PICK_SELECTED,
+            CHECKBOX_ID_PICK_JEWEL,
+            CHECKBOX_ID_PICK_ANCIENT,
+            CHECKBOX_ID_PICK_ZEN,
+            CHECKBOX_ID_PICK_EXCELLENT,
+            CHECKBOX_ID_ADD_OTHER_ITEM,
+            CHECKBOX_ID_AUTO_ACCEPT_FRIEND,
+            CHECKBOX_ID_AUTO_DEFEND,
+            CHECKBOX_ID_AUTO_ACCEPT_GUILD,
+            CHECKBOX_ID_DR_ATTACK_CEASE,
+            CHECKBOX_ID_DR_ATTACK_AUTO,
+            CHECKBOX_ID_DR_ATTACK_TOGETHER,
+            CHECKBOX_ID_AUTO_RESET
+        };
 
-		typedef struct
-		{
-			int iNumTab;
-			POINT m_Pos;
-			unicode::t_string m_Name;
-			BYTE class_character[MAX_CLASS];
-		} cTextName;
+        enum EButtonId : uint16_t
+        {
+            BUTTON_ID_HUNT_RANGE_ADD = 0,
+            BUTTON_ID_HUNT_RANGE_MINUS,
+            BUTTON_ID_SKILL2_CONFIG,
+            BUTTON_ID_SKILL3_CONFIG,
+            BUTTON_ID_POTION_CONFIG_ELF,
+            BUTTON_ID_POTION_CONFIG_SUMMY,
+            BUTTON_ID_POTION_CONFIG,
+            BUTTON_ID_PARTY_CONFIG,
+            BUTTON_ID_PARTY_CONFIG_ELF,
+            BUTTON_ID_PICK_RANGE_ADD,
+            BUTTON_ID_PICK_RANGE_MINUS,
+            BUTTON_ID_ADD_OTHER_ITEM,
+            BUTTON_ID_DELETE_OTHER_ITEM,
+            BUTTON_ID_SAVE_CONFIG,
+            BUTTON_ID_INIT_CONFIG,
+            BUTTON_ID_EXIT_CONFIG
+        };
 
-		typedef std::map<int, CButtonTap> cButtonMap;
-		typedef std::map<int, CheckBoxTap> cCheckBoxMap;
-		typedef std::map<int, cTexture> cTextureMap;
-		typedef std::map<int, cTextName> cTextNameMap;
+        enum ESkillSlotImg : uint16_t
+        {
+            SKILL_SLOT_SKILL1 = 0,
+            SKILL_SLOT_SKILL2 = 1,
+            SKILL_SLOT_SKILL3 = 2,
+            SKILL_SLOT_BUFF1 = 3,
+            SKILL_SLOT_BUFF2 = 4,
+            SKILL_SLOT_BUFF3 = 5
+        };
 
-	private:
-		CNewUIManager* m_pNewUIMng;
-		POINT					m_Pos;
-		CNewUIRadioGroupButton	m_TabBtn;
-		int						m_iNumCurOpenTab;
-		cButtonMap				m_ButtonList;
-		cCheckBoxMap			m_CheckBoxList;
-		cTextureMap				m_TextureList;
-		cTextNameMap			m_TextNameList;
-	public:
-		void RenderBtnList();
-		int UpdateMouseBtnList();
-		void RegisterBtnCharacter(BYTE class_character, int Identificador);
-		void RegisterButton(int Identificador, CButtonTap button);
-		void InsertButton(int imgindex, int x, int y, int sx, int sy, bool overflg, bool isimgwidth, bool bClickEffect, bool MoveTxt, unicode::t_string btname, unicode::t_string tooltiptext, int Identificador, int iNumTab);
-		//--
-		void RenderBoxList();
-		int UpdateMouseBoxList();
-		void RegisterBoxCharacter(BYTE class_character, int Identificador);
-		void RegisterCheckBox(int Identificador, CheckBoxTap button);
-		void InsertCheckBox(int imgindex, int x, int y, int sx, int sy, bool overflg, unicode::t_string btname, int Identificador, int iNumTab);
-		//--
-		void RenderTextureList();
-		int UpdateTextureList();
-		void RegisterTextureCharacter(BYTE class_character, int Identificador);
-		void RegisterTexture(int Identificador, cTexture button);
-		void InsertTexture(int imgindex, int x, int y, int sx, int sy, int Identificador, int iNumTab);
-		//--
-		void RenderTextList();
-		void RegisterTextCharacter(BYTE class_character, int Identificador);
-		void RegisterTextur(int Identificador, cTextName button);
-		void InsertText(int x, int y, unicode::t_string Name, int Identificador, int iNumTab);
-	public:
-		CNewUIMuHelper();
-		virtual ~CNewUIMuHelper();
+        enum ETextBoxImg : uint16_t
+        {
+            TEXTBOX_IMG_DISTANCE_TIME = 6,
+            TEXTBOX_IMG_SKILL1_TIME = 7,
+            TEXTBOX_IMG_SKILL2_TIME = 8,
+            TEXTBOX_IMG_ADD_EXTRA_ITEM = 9
+        };
 
-		bool Create(CNewUIManager* pNewUIMng, int x, int y);
-		void Release();
+    private:
+        enum IMAGE_LIST
+        {
+            IMAGE_BASE_WINDOW_BACK = BITMAP_INTERFACE_NEW_MESSAGEBOX_BEGIN + 3,				//. newui_msgbox_back.jpg
+            IMAGE_BASE_WINDOW_TOP = BITMAP_INTERFACE_NEW_PERSONALINVENTORY_BEGIN,			//. newui_item_back01.tga	(190,64)
+            IMAGE_BASE_WINDOW_LEFT = BITMAP_INTERFACE_NEW_PERSONALINVENTORY_BEGIN + 2,		//. newui_item_back02-l.tga	(21,320)
+            IMAGE_BASE_WINDOW_RIGHT = BITMAP_INTERFACE_NEW_PERSONALINVENTORY_BEGIN + 3,		//. newui_item_back02-r.tga	(21,320)
+            IMAGE_BASE_WINDOW_BOTTOM = BITMAP_INTERFACE_NEW_PERSONALINVENTORY_BEGIN + 4,	//. newui_item_back03.tga	(190,45)
+            IMAGE_BASE_WINDOW_BTN_EXIT = BITMAP_INTERFACE_NEW_PERSONALINVENTORY_BEGIN + 17,		//. newui_exit_00.tga
+            //--
+            IMAGE_TABLE_SQUARE = BITMAP_INTERFACE_NEW_INVENTORY_BASE_BEGIN,	//. newui_item_box.tga
+            IMAGE_TABLE_TOP_LEFT,			//. newui_item_table01(L).tga (14,14)
+            IMAGE_TABLE_TOP_RIGHT,			//. newui_item_table01(R).tga (14,14)
+            IMAGE_TABLE_BOTTOM_LEFT,		//. newui_item_table02(L).tga (14,14)
+            IMAGE_TABLE_BOTTOM_RIGHT,	//. newui_item_table02(R).tga (14,14)
+            IMAGE_TABLE_TOP_PIXEL,			//. newui_item_table03(up).tga (1, 14)
+            IMAGE_TABLE_BOTTOM_PIXEL,	//. newui_item_table03(dw).tga (1,14)
+            IMAGE_TABLE_LEFT_PIXEL,		//. newui_item_table03(L).tga (14,1)
+            IMAGE_TABLE_RIGHT_PIXEL,		//. newui_item_table03(R).tga (14,1)
+            //--
+            IMAGE_WINDOW_TAB_BTN = BITMAP_GUILDINFO_BEGIN,
+            //--
+            IMAGE_MACROUI_HELPER_RAGEMINUS = BITMAP_INTERFACE_MACROUI_BEGIN,		// newui_position02.tga			(70, 25)
+            IMAGE_MACROUI_HELPER_OPTIONBUTTON = BITMAP_INTERFACE_MACROUI_BEGIN + 1,		// newui_position02.tga			(70, 25)
+            IMAGE_MACROUI_HELPER_INPUTNUMBER = BITMAP_INTERFACE_MACROUI_BEGIN + 2,
+            IMAGE_MACROUI_HELPER_INPUTSTRING = BITMAP_INTERFACE_MACROUI_BEGIN + 3,
+            //-- Buttons
+            IMAGE_CHAINFO_BTN_STAT = BITMAP_INTERFACE_NEW_CHAINFO_WINDOW_BEGIN + 1,
+            IMAGE_CLEARNESS_BTN = BITMAP_CURSEDTEMPLE_BEGIN + 4,
+            IMAGE_IGS_BUTTON = BITMAP_IGS_MSGBOX_BUTTON,
+            IMAGE_CHECKBOX_BTN = BITMAP_OPTION_BEGIN + 5,
 
-		bool Render();
-		bool Update();
-		bool UpdateMouseEvent();
-		bool UpdateKeyEvent();
+            //-- Skills
+            IMAGE_SKILL1 = BITMAP_INTERFACE_NEW_SKILLICON_BEGIN,
+            IMAGE_SKILL2,
+            IMAGE_COMMAND,
+            IMAGE_SKILL3,
+            IMAGE_SKILLBOX,
+            IMAGE_SKILLBOX_USE,
+            IMAGE_NON_SKILL1,
+            IMAGE_NON_SKILL2,
+            IMAGE_NON_COMMAND,
+            IMAGE_NON_SKILL3,
+        };
 
-		float GetLayerDepth();
-		float GetKeyEventOrder();
+        enum CLASS_LIST_ 
+        {
+            DW = 0,
+            DK,
+            FE,
+            MG,
+            DL,
+            SM,
+            RF,
+        };
 
-		void InitText();
-		void InitImage();
-		void InitButtons();
-		void InitCheckBox();
-		void SetPos(int x, int y);
-		void RenderBack(int x, int y, int width, int height);
+        static constexpr int MAX_SKILLS_SLOT = 6;
+        static constexpr int WINDOW_WIDTH = 190;
+        static constexpr int WINDOW_HEIGHT = 429;
 
-	private:
-		void LoadImages();
-		void UnloadImages();
-	};
+        typedef struct
+        {
+            int iNumTab;
+            BYTE class_character[MAX_CLASS];
+            CNewUIButton* btn;
+        } CButtonTap;
 
+        typedef struct
+        {
+            int iNumTab;
+            BYTE class_character[MAX_CLASS];
+            CNewUICheckBox* box;
+        } CheckBoxTap;
+
+        typedef struct
+        {
+            int iNumTab;
+            int s_ImgIndex;
+            POINT m_Pos;
+            POINT m_Size;
+            BYTE class_character[MAX_CLASS];
+        } cTexture;
+
+        typedef struct
+        {
+            int iNumTab;
+            POINT m_Pos;
+            std::string m_Name;
+            BYTE class_character[MAX_CLASS];
+        } cTextName;
+
+        typedef std::map<int, CButtonTap> cButtonMap;
+        typedef std::map<int, CheckBoxTap> cCheckBoxMap;
+        typedef std::map<int, cTexture> cTextureMap;
+        typedef std::map<int, cTextName> cTextNameMap;
+
+        public:
+
+        void RenderBtnList();
+        int UpdateMouseBtnList();
+        void RegisterBtnCharacter(BYTE class_character, int Identifier);
+        void RegisterButton(int Identifier, CButtonTap button);
+        void InsertButton(int imgindex, int x, int y, int sx, int sy, bool overflg, bool isimgwidth, bool bClickEffect, bool MoveTxt,std::string btname,std::string tooltiptext, int Identifier, int iNumTab);
+        //--
+        void RenderBoxList();
+        int UpdateMouseBoxList();
+        void RegisterBoxCharacter(BYTE class_character, int Identifier);
+        void RegisterCheckBox(int Identifier, CheckBoxTap button);
+        void InsertCheckBox(int imgindex, int x, int y, int sx, int sy, bool overflg,std::string btname, int Identifier, int iNumTab);
+        //--
+        void RenderIconList();
+        int UpdateMouseIconList();
+        void RegisterIconCharacter(BYTE class_character, int Identifier);
+        void RegisterIcon(int Identifier, cTexture button);
+        void InsertIcon(int imgindex, int x, int y, int sx, int sy, int Identifier, int iNumTab);
+        //--
+        void RenderTextList();
+        void RegisterTextCharacter(BYTE class_character, int Identifier);
+        void RegisterText(int Identifier, cTextName button);
+        void InsertText(int x, int y,std::string Name, int Identifier, int iNumTab);
+        void InitText();
+        void InitImage();
+        void InitButtons();
+        void InitCheckBox();
+        void InitTextboxInput();
+        void SetPos(int x, int y);
+        void RenderBack(int x, int y, int width, int height);
+
+        int GetSkillIndex(int iSkill);
+        bool IsSkillAssigned(int iSkill);
+        void RenderSkillIcon(int iSkill, float x, float y, float width, float height);
+        
+        void InitConfig();
+        void SaveConfig();
+        void ApplyConfig();
+
+        void LoadImages();
+        void UnloadImages();
+
+        void ApplyConfigFromCheckbox(int iCheckboxId, bool bState);
+        void ApplyConfigFromSkillSlot(int iSlot, int iSkill);
+        void ApplyHuntRangeUpdate(int iDelta);
+        void ApplyLootRangeUpdate(int iDelta);
+        void SaveExtraItem();
+        void RemoveExtraItem();
+
+    private:
+        CNewUIManager* m_pNewUIMng;
+        CUITextInputBox m_DistanceTimeInput;
+        CUITextInputBox m_Skill2DelayInput;
+        CUITextInputBox m_Skill3DelayInput;
+        CUITextInputBox m_ItemInput;
+        CUIExtraItemListBox m_ItemFilter;
+
+        POINT m_Pos;
+        POINT m_SubPos;
+        CNewUIRadioGroupButton m_TabBtn;
+        int m_iCurrentOpenTab;
+        int m_iCurrentOpenSubWin;
+        bool m_bSubWinOpen;
+        cButtonMap m_ButtonList;
+        cCheckBoxMap m_CheckBoxList;
+        cTextNameMap m_TextNameList;
+        cTextureMap m_IconList;
+        int m_iSelectedSkillSlot;
+        std::array<int, MAX_SKILLS_SLOT> m_aiSelectedSkills;
+    };
 }

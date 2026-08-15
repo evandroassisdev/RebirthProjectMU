@@ -2275,6 +2275,19 @@ __forceinline bool SendRequestMixExit()
     spe.Send(); \
 }
 
+// Used only by CNewUIMuHelper::AutoReset() (0xFD:0x32) - generic subcode sender,
+// same shape as the other C1-family macros above. NOTE: our GameServer's
+// Protocol.cpp has no case for opcode 0xFD, so this currently does nothing
+// server-side (harmless - unknown opcodes are ignored - but Auto Reset won't
+// actually trigger a reset until/unless that's implemented server-side too).
+#define SendRequestDataSend(head, code) \
+{ \
+    CStreamPacketEngine spe; \
+    spe.Init(0xC1, (BYTE)(head)); \
+    spe << (BYTE)(code); \
+    spe.Send(); \
+}
+
 #define SendRequestEnterEmpireGuardianEvent() \
 { \
     CStreamPacketEngine spe; \

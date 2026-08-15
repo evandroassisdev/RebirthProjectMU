@@ -6,6 +6,8 @@
 #include "NewUISystem.h"
 #include "wsclientinline.h"
 #include "MapManager.h"
+#include "MuHelper.h"
+#include "GameShop/MsgBoxIGSCommon.h"
 
 using namespace SEASON3B;
 
@@ -15,9 +17,6 @@ CNewUIHeroPositionInfo::CNewUIHeroPositionInfo()
 	m_Pos.x = m_Pos.y = 0;
 	m_CurHeroPosition.x = m_CurHeroPosition.y = 0;
 	WidenX = 0;
-#ifdef ENABLE_MUHELPER
-	m_bHelperActive = false;
-#endif // ENABLE_MUHELPER
 }
 
 CNewUIHeroPositionInfo::~CNewUIHeroPositionInfo()
@@ -129,23 +128,29 @@ void CNewUIHeroPositionInfo::SetPos(int x, int y)
 bool CNewUIHeroPositionInfo::BtnProcess()
 {
 #ifdef ENABLE_MUHELPER
-	if (m_BtnConfig.UpdateMouseEvent())
+	if (m_BtnConfig.UpdateMouseEvent()) // Config
 	{
 		g_pNewUISystem->Toggle(SEASON3B::INTERFACE_MUHELPER);
 		PlayBuffer(SOUND_CLICK01);
 		return true;
 	}
-	else
+
+	bool bStartClicked = (MUHelper::g_MuHelper.IsActive() ? m_BtnStop.UpdateMouseEvent() : m_BtnStart.UpdateMouseEvent());
+	if (bStartClicked) // Start/Stop
 	{
-		CNewUIButton& btn = m_bHelperActive ? m_BtnStop : m_BtnStart;
-		if (btn.UpdateMouseEvent())
+		if (g_pNewUISystem->IsVisible(SEASON3B::INTERFACE_MUHELPER))
 		{
-			m_bHelperActive = !m_bHelperActive;
-			// TODO: hook up the actual bot engine here (start/stop the
-			// auto-play loop). For now this only toggles the UI state.
-			PlayBuffer(SOUND_CLICK01);
+			CMsgBoxIGSCommon* pMsgBox = NULL;
+			CreateMessageBox(MSGBOX_LAYOUT_CLASS(CMsgBoxIGSCommonLayout), &pMsgBox);
+			pMsgBox->Initialize(GlobalText[3028], GlobalText[3186]);
 			return true;
 		}
+		else
+		{
+			MUHelper::g_MuHelper.Toggle();
+		}
+		PlayBuffer(SOUND_CLICK01);
+		return true;
 	}
 #endif // ENABLE_MUHELPER
 	return false;
@@ -206,7 +211,7 @@ bool CNewUIHeroPositionInfo::Render()
 	m_BtnConfig.Render();
 
 #ifdef ENABLE_MUHELPER
-	m_bHelperActive ? m_BtnStop.Render() : m_BtnStart.Render();
+	MUHelper::g_MuHelper.IsActive() ? m_BtnStop.Render() : m_BtnStart.Render();
 #else
 	m_BtnStart.Render();
 #endif // ENABLE_MUHELPER

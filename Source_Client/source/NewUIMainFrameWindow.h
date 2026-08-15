@@ -137,15 +137,19 @@ namespace SEASON3B
 		bool IsSkillListUp();
 
 		static void UI2DEffectCallback(LPVOID pClass, DWORD dwParamA, DWORD dwParamB);
-		
+
+		// Made public so other windows (e.g. the MU Helper skill picker,
+		// NewUIMuHelper.cpp) can draw a learned skill's icon exactly like the
+		// real skill list does, without duplicating its icon-atlas UV lookup.
+		void RenderSkillIcon(int iIndex, float x, float y, float width, float height, int TypeMuHelper = 0);
+
 	private:
 		void LoadImages();
 		void UnloadImages();
 		bool IsArrayUp(BYTE bySkill);
 		bool IsArrayIn(BYTE bySkill);
 		void UseHotKey(int iHotKey);
-		
-		void RenderSkillIcon(int iIndex, float x, float y, float width, float height);
+
 		void RenderSkillDelay(int iIndex, float x, float y, float width, float height);
 		void RenderPetSkill();
 

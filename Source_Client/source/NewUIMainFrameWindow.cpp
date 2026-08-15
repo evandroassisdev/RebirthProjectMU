@@ -2109,9 +2109,18 @@ void SEASON3B::CNewUISkillList::RenderPetSkill()
 	}
 }
 
-void SEASON3B::CNewUISkillList::RenderSkillIcon(int iIndex, float x, float y, float width, float height)
+void SEASON3B::CNewUISkillList::RenderSkillIcon(int iIndex, float x, float y, float width, float height, int TypeMuHelper)
 {
 	WORD bySkillType = CharacterAttribute->Skill[iIndex];
+
+	if (TypeMuHelper == 1) // MuHelper fetches the skill list
+	{
+		bySkillType = iIndex;
+		if ((bySkillType == 0 || !gSkillManager.FindHeroSkill((ActionSkillType)bySkillType)))
+		{
+			return;
+		}
+	}
 
 	if(bySkillType == 0)
 	{
