@@ -59,6 +59,15 @@ typedef struct
 	BYTE	m_GuildStatus;
 } GUILDLIST_TEXT;
 
+// MU Helper: "extra item names" filter list (item names typed by the player).
+// Size must match MUHelper::MUHELPER_ITEM_NAME_SIZE (MuHelperData.h), the
+// slot width CMuHelper::SerializeConfig saves these names into.
+typedef struct
+{
+	BOOL	m_bIsSelected;
+	char	m_szPattern[20];
+} FILTERLIST_TEXT;
+
 typedef struct
 {
 	BOOL	m_bIsSelected;
@@ -327,6 +336,23 @@ protected:
 	BOOL m_bNewTypeScrollBar;
 
 	BOOL m_bUseNewUIScrollBar;
+};
+
+// MU Helper: simple scrollable list for the "extra items to pick up" filter.
+class CUIExtraItemListBox : public CUITextListBox<FILTERLIST_TEXT>
+{
+public:
+	CUIExtraItemListBox();
+	virtual ~CUIExtraItemListBox() {}
+
+	virtual void AddText(const char* pszPattern);
+	void DeleteText(const char* pszPattern);
+	FILTERLIST_TEXT* GetSelectedText() { return (SLGetSelectLine() == m_TextList.end() ? NULL : &(*SLGetSelectLine())); }
+protected:
+	virtual void RenderInterface();
+	virtual BOOL RenderDataLine(int iLineNumber);
+	virtual BOOL DoLineMouseAction(int iLineNumber);
+	int GetRenderLinePos_y(int iLineNumber);
 };
 
 class CUIGuildListBox : public CUITextListBox<GUILDLIST_TEXT>

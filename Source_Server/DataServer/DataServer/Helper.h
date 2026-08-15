@@ -24,7 +24,7 @@ struct SDHP_HELPER_DATA_SAVE_RECV
 	WORD index;
 	char account[11];
 	char name[11];
-	BYTE data[256];
+	BYTE data[320]; // MuHelper full config (widened from vanilla-Helper 256, see MuOnline.HelperData.Data column)
 };
 
 //**********************************************//
@@ -38,7 +38,7 @@ struct SDHP_HELPER_DATA_SEND
 	char account[11];
 	char name[11];
 	BYTE result;
-	BYTE data[256];
+	BYTE data[320]; // MuHelper full config (widened from vanilla-Helper 256, see MuOnline.HelperData.Data column)
 };
 
 //**********************************************//

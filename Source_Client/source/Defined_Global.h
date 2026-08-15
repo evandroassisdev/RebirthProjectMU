@@ -42,3 +42,9 @@
 #endif
 
 // #define ADD_MASTERLEVEL_LVL_INFO // Original Master level character info
+
+// MU Helper (Setup/Start/Stop buttons next to the coordinate HUD, 'Z' hotkey
+// to toggle the config window). The button plumbing and hotkey stub already
+// existed in the codebase, gated behind this macro, but were never wired up
+// and this macro was never defined. See NewUIHeroPositionInfo.cpp/NewUIHotKey.cpp.
+#define ENABLE_MUHELPER

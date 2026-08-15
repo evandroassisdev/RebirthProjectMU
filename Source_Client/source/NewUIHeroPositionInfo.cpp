@@ -6,6 +6,8 @@
 #include "NewUISystem.h"
 #include "wsclientinline.h"
 #include "MapManager.h"
+#include "MuHelper.h"
+#include "GameShop/MsgBoxIGSCommon.h"
 
 using namespace SEASON3B;
 
@@ -125,17 +127,32 @@ void CNewUIHeroPositionInfo::SetPos(int x, int y)
 
 bool CNewUIHeroPositionInfo::BtnProcess()
 {
-	if (m_BtnConfig.UpdateMouseEvent())
+#ifdef ENABLE_MUHELPER
+	if (m_BtnConfig.UpdateMouseEvent()) // Config
 	{
+		g_pNewUISystem->Toggle(SEASON3B::INTERFACE_MUHELPER);
+		PlayBuffer(SOUND_CLICK01);
 		return true;
 	}
-	else
+
+	bool bStartClicked = (MUHelper::g_MuHelper.IsActive() ? m_BtnStop.UpdateMouseEvent() : m_BtnStart.UpdateMouseEvent());
+	if (bStartClicked) // Start/Stop
 	{
-		if (m_BtnStart.UpdateMouseEvent())
+		if (g_pNewUISystem->IsVisible(SEASON3B::INTERFACE_MUHELPER))
 		{
+			CMsgBoxIGSCommon* pMsgBox = NULL;
+			CreateMessageBox(MSGBOX_LAYOUT_CLASS(CMsgBoxIGSCommonLayout), &pMsgBox);
+			pMsgBox->Initialize(GlobalText[3028], GlobalText[3186]);
 			return true;
 		}
+		else
+		{
+			MUHelper::g_MuHelper.Toggle();
+		}
+		PlayBuffer(SOUND_CLICK01);
+		return true;
 	}
+#endif // ENABLE_MUHELPER
 	return false;
 }
 
@@ -186,14 +203,18 @@ bool CNewUIHeroPositionInfo::Render()
 	RenderImage(IMAGE_HERO_POSITION_INFO_BASE_WINDOW, m_Pos.x, m_Pos.y, float(HERO_POSITION_INFO_BASEA_WINDOW_WIDTH), float(HERO_POSITION_INFO_BASE_WINDOW_HEIGHT));
 	RenderImage(IMAGE_HERO_POSITION_INFO_BASE_WINDOW + 1, m_Pos.x + HERO_POSITION_INFO_BASEA_WINDOW_WIDTH, m_Pos.y, float(WidenX), float(HERO_POSITION_INFO_BASE_WINDOW_HEIGHT), 0.1f, 0.f, 22.4f / 32.f, 25.f / 32.f);
 #ifdef ENABLE_MUHELPER
-	RenderImage(IMAGE_HERO_POSITION_INFO_BASE_WINDOW + 2, m_Pos.x + HERO_POSITION_INFO_BASEA_WINDOW_WIDTH + WidenX, m_Pos.y, 456.f, 20.f);
+	RenderImage(IMAGE_HERO_POSITION_INFO_BASE_WINDOW + 2, m_Pos.x + HERO_POSITION_INFO_BASEA_WINDOW_WIDTH + WidenX, m_Pos.y, 73.f, 20.f);
 #else
 	RenderImage(IMAGE_HERO_POSITION_INFO_BASE_WINDOW + 2, m_Pos.x + HERO_POSITION_INFO_BASEA_WINDOW_WIDTH + WidenX, m_Pos.y, 22.f, 20.f);
 #endif // 
 	//--
 	m_BtnConfig.Render();
 
+#ifdef ENABLE_MUHELPER
+	MUHelper::g_MuHelper.IsActive() ? m_BtnStop.Render() : m_BtnStart.Render();
+#else
 	m_BtnStart.Render();
+#endif // ENABLE_MUHELPER
 	//--
 	unicode::_sprintf(szText, "%s (%d , %d)", gMapManager.GetMapName(gMapManager.WorldActive), m_CurHeroPosition.x, m_CurHeroPosition.y);
 

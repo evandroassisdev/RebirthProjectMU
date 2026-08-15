@@ -1180,7 +1180,16 @@
     <ClCompile Include="source\ExternalObject\Leaf\xstreambuf.cpp">
       <Filter>External Object\Leaf</Filter>
     </ClCompile>
+    <ClCompile Include="source\MuHelper.cpp">
+      <Filter>MU\Interface\NewUI</Filter>
+    </ClCompile>
     <ClCompile Include="source\NewUIMuHelper.cpp">
+      <Filter>MU\Interface\NewUI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\NewUIMuHelperConfig.cpp">
+      <Filter>MU\Interface\NewUI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\NewUIMuHelperSkillList.cpp">
       <Filter>MU\Interface\NewUI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2268,7 +2277,19 @@
     <ClInclude Include="source\ExternalObject\Leaf\intrinsics.h">
       <Filter>External Object\Leaf</Filter>
     </ClInclude>
+    <ClInclude Include="source\MuHelper.h">
+      <Filter>MU\Interface\NewUI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\MuHelperData.h">
+      <Filter>MU\Interface\NewUI</Filter>
+    </ClInclude>
     <ClInclude Include="source\NewUIMuHelper.h">
+      <Filter>MU\Interface\NewUI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\NewUIMuHelperConfig.h">
+      <Filter>MU\Interface\NewUI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\NewUIMuHelperSkillList.h">
       <Filter>MU\Interface\NewUI</Filter>
     </ClInclude>
     <ClInclude Include="source\Utilities\GLM\glm.h">

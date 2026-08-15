@@ -402,7 +402,10 @@
     <ClCompile Include="source\NewUIMiniMap.cpp" />
     <ClCompile Include="source\NewUIMixInventory.cpp" />
     <ClCompile Include="source\NewUIMoveCommandWindow.cpp" />
+    <ClCompile Include="source\MuHelper.cpp" />
     <ClCompile Include="source\NewUIMuHelper.cpp" />
+    <ClCompile Include="source\NewUIMuHelperConfig.cpp" />
+    <ClCompile Include="source\NewUIMuHelperSkillList.cpp" />
     <ClCompile Include="source\NewUIMyInventory.cpp" />
     <ClCompile Include="source\NewUIMyQuestInfoWindow.cpp" />
     <ClCompile Include="source\NewUIMyShopInventory.cpp" />
@@ -782,7 +785,11 @@
     <ClInclude Include="source\NewUIMiniMap.h" />
     <ClInclude Include="source\NewUIMixInventory.h" />
     <ClInclude Include="source\NewUIMoveCommandWindow.h" />
+    <ClInclude Include="source\MuHelper.h" />
+    <ClInclude Include="source\MuHelperData.h" />
     <ClInclude Include="source\NewUIMuHelper.h" />
+    <ClInclude Include="source\NewUIMuHelperConfig.h" />
+    <ClInclude Include="source\NewUIMuHelperSkillList.h" />
     <ClInclude Include="source\NewUIMyInventory.h" />
     <ClInclude Include="source\NewUIMyQuestInfoWindow.h" />
     <ClInclude Include="source\NewUIMyShopInventory.h" />

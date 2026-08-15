@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "MuHelper.h"
 #include "UIManager.h"
 #include "GuildCache.h"
 #include "ZzzBMD.h"
@@ -45,6 +46,7 @@
 #include "MapManager.h"
 #include "UIGuardsMan.h"
 #include "NewUISystem.h"
+#include "NewUIMuHelper.h"
 #include "NewUICommonMessageBox.h"
 #include "NewUICustomMessageBox.h"
 #include "NewUIInventoryCtrl.h"
@@ -76,6 +78,17 @@
 #endif //PBG_ADD_NEWCHAR_MONK_SKILL
 
 #define MAX_DEBUG_MAX 10
+
+// MU Helper: monster/player classification, used to feed CMuHelper's target list.
+static inline bool IsMonster(CHARACTER* c)
+{
+	return c != nullptr && c->Object.Type >= MODEL_MONSTER01 && c->Object.Type < MODEL_MONSTER_END;
+}
+
+static inline bool IsPlayer(CHARACTER* c)
+{
+	return c != nullptr && c->Object.Type == MODEL_PLAYER;
+}
 
 extern BYTE m_AltarState[];
 extern int g_iChatInputType;
@@ -1620,6 +1633,11 @@ void ReceiveMoveCharacter(BYTE *ReceiveBuffer)
 
 	OBJECT *o = &c->Object;
 
+	if (IsMonster(c))
+	{
+		MUHelper::g_MuHelper.AddTarget(Key, false);
+	}
+
 	if(c->Dead==0)
 	{
 		OBJECT *o = &c->Object;
@@ -1857,7 +1875,9 @@ BOOL ReceiveTeleport(BYTE *ReceiveBuffer, BOOL bEncrypted)
 	}
 	
 	g_ConsoleDebug->Write(MCD_RECEIVE, "0x1C [ReceiveTeleport(%d)]", Data->Flag);
-	
+
+	MUHelper::g_MuHelper.TriggerStop();
+
 	return (TRUE);
 }
 
@@ -2538,6 +2558,11 @@ void ReceiveCreateMonsterViewport( BYTE *ReceiveBuffer )
 
 		OBJECT *o = &c->Object;
 
+		if (IsMonster(c))
+		{
+			MUHelper::g_MuHelper.AddTarget(Key, false);
+		}
+
 		for( int j = 0; j < Data2->s_BuffCount; ++j )
 		{
 			RegisterBuff(static_cast<eBuffState>(Data2->s_BuffEffectState[j]), o);
@@ -3115,6 +3140,11 @@ void ReceiveAttackDamage( BYTE *ReceiveBuffer )
 	c->Hit = Damage;
 	
 	g_ConsoleDebug->Write(MCD_RECEIVE, "0x15 [ReceiveAttackDamage(%d %d)]", AttackPlayer, Damage);
+
+	if (IsMonster(c) || IsPlayer(c))
+	{
+		MUHelper::g_MuHelper.AddTarget(Key, true);
+	}
 }
 
 void ReceiveAction(BYTE *ReceiveBuffer,int Size)
@@ -3152,7 +3182,12 @@ void ReceiveAction(BYTE *ReceiveBuffer,int Size)
 		c->Object.AnimationFrame = 0;
 		
 		c->TargetCharacter = HeroIndex;
-		
+
+		if (IsMonster(c) || IsPlayer(c))
+		{
+			MUHelper::g_MuHelper.AddTarget(Key, true);
+		}
+
 		AttackPlayer = Index;
 		break;
 	case AT_SKILL_BLOCKING:
@@ -5553,6 +5588,11 @@ void ReceiveDie(BYTE *ReceiveBuffer,int Size)
     }
 	
 	g_ConsoleDebug->Write(MCD_RECEIVE, "0x17 [ReceiveDie(%d)]", Key);
+
+	if (c == Hero)
+	{
+		MUHelper::g_MuHelper.TriggerStop();
+	}
 }
 
 void ReceiveCreateItemViewport( BYTE *ReceiveBuffer )
@@ -5571,6 +5611,7 @@ void ReceiveCreateItemViewport( BYTE *ReceiveBuffer )
 		if(Key<0 || Key>=MAX_ITEMS)
 			Key = 0;
 		CreateItem(&Items[Key],Data2->Item,Position,CreateFlag);
+		MUHelper::g_MuHelper.AddItem(Key, { Data2->PositionX, Data2->PositionY });
 		int Type = ConvertItemType(Data2->Item);
 		if(Type==ITEM_POTION+15)
 		{
@@ -5597,6 +5638,7 @@ void ReceiveDeleteItemViewport( BYTE *ReceiveBuffer )
 			Key = 0;
 		Items[Key].Object.Live = false;
 		Offset += sizeof(PDELETE_CHARACTER);
+		MUHelper::g_MuHelper.DeleteItem(Key);
 	}
 }
 
@@ -6331,6 +6373,26 @@ void ReceiveDurability( BYTE *ReceiveBuffer )
 	}
 	
 	g_ConsoleDebug->Write(MCD_RECEIVE, "0x2A [ReceiveDurability(%d %d)]", Data->Value, Data->KeyL);
+}
+
+// Server-side MuHelper config push (HelperData table) -- fires once
+// automatically on login (GDHelperDataSend, right alongside the join-map
+// packet) and again as the reply whenever we save via
+// SendRequestHelperDataSave. Result=1 means this character has no saved
+// config yet (fresh character), in which case the UI just keeps its
+// current/default state.
+void ReceiveHelperData( BYTE *ReceiveBuffer )
+{
+	LPPRECEIVE_HELPER_DATA Data = (LPPRECEIVE_HELPER_DATA)ReceiveBuffer;
+
+	if (Data->Result == 0)
+	{
+		MUHelper::ConfigData config;
+		MUHelper::g_MuHelper.DeserializeConfig(Data->Data, config);
+		g_pNewUIMuHelper->LoadSavedConfig(config);
+	}
+
+	g_ConsoleDebug->Write(MCD_RECEIVE, "0xAE [ReceiveHelperData(%d)]", Data->Result);
 }
 
 BOOL ReceiveHelperItem(BYTE *ReceiveBuffer, BOOL bEncrypted)
@@ -13579,6 +13641,9 @@ BOOL TranslateProtocol( int HeadCode, BYTE *ReceiveBuffer, int Size, BOOL bEncry
 				break;
 			}
 		}
+		break;
+	case 0xAE:
+		ReceiveHelperData( ReceiveBuffer );
 		break;
 	case 0xF7:
 		{

@@ -471,6 +471,14 @@ bool SEASON3B::CNewUISystem::LoadMainSceneInterface()
 	if(m_pNewUIMuHelper->Create(m_pNewUIMng, 640-190, 0) == false)
 		return false;
 
+	m_pNewUIMuHelperConfig = new CNewUIMuHelperConfig;
+	if(m_pNewUIMuHelperConfig->Create(m_pNewUIMng, 640-380, 0) == false)
+		return false;
+
+	m_pNewUIMuHelperSkillList = new CNewUIMuHelperSkillList;
+	if(m_pNewUIMuHelperSkillList->Create(m_pNewUIMng, m_pNewUI3DRenderMng) == false)
+		return false;
+
 	return true;
 }
 
@@ -945,9 +953,15 @@ void SEASON3B::CNewUISystem::Show(DWORD dwKey)
 			m_pNewUIMng->ShowInterface(SEASON3B::INTERFACE_INVENTORY);
 		}
 #endif // LEM_ADD_LUCKYITEM
+		else if (dwKey == SEASON3B::INTERFACE_MUHELPER)
+		{
+			Hide(SEASON3B::INTERFACE_INVENTORY);
+			HideGroupBeforeOpenInterface();
+			MUHelper::g_MuHelper.Stop();
+		}
 
 		m_pNewUIMng->ShowInterface(dwKey);
-		
+
 		int iScreenWidth = GetScreenWidth();
 		m_pNewItemEnduranceInfo->SetPos( iScreenWidth );
 		m_pNewBuffWindow->SetPos(iScreenWidth);
@@ -1314,6 +1328,20 @@ void SEASON3B::CNewUISystem::Hide(DWORD dwKey)
 			}
 		}
 #endif // LEM_ADD_LUCKYITEM
+		else if (dwKey == SEASON3B::INTERFACE_MUHELPER)
+		{
+			// CNewUIObj::Show() isn't virtual, so the generic
+			// ShowInterface(dwKey, false) call below (which only holds a
+			// CNewUIObj* to the window) can't reach
+			// CNewUIMuHelper::Show()'s own closing logic -- do it here too,
+			// same as that override does, so the skill-picker sub-window
+			// doesn't stay open after MuHelper itself closes.
+			if (g_pNewUIMuHelperExt)
+				g_pNewUIMuHelperExt->Show(false);
+
+			if (g_pNewUIMuHelperSkillList)
+				g_pNewUIMuHelperSkillList->Show(false);
+		}
 
 		m_pNewUIMng->ShowInterface(dwKey, false);
 
@@ -2135,4 +2163,14 @@ CNewUILuckyItemWnd* SEASON3B::CNewUISystem::Get_pNewUILuckyItemWnd() const
 CNewUIMuHelper* SEASON3B::CNewUISystem::Get_pNewUIMuHelper() const
 {
 	return m_pNewUIMuHelper;
+}
+
+CNewUIMuHelperConfig* SEASON3B::CNewUISystem::Get_pNewUIMuHelperConfig() const
+{
+	return m_pNewUIMuHelperConfig;
+}
+
+CNewUIMuHelperSkillList* SEASON3B::CNewUISystem::Get_pNewUIMuHelperSkillList() const
+{
+	return m_pNewUIMuHelperSkillList;
 }
