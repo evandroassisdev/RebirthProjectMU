@@ -112,11 +112,22 @@
 #include <thread>
 #include <chrono>
 #include "pugixml.hpp"
+#include "Util\\lua\\include\\lua.hpp"
 
 #pragma comment(lib,"ws2_32.lib")
 #pragma comment(lib,"Rpcrt4.lib")
 #pragma comment(lib,"dbghelp.lib")
 #pragma comment(lib,"Psapi.lib")
+#pragma comment(lib,"Util\\lua\\lua52.lib")
+// lua52.lib was built with an old MSVC CRT that exposes __iob_func/fscanf in
+// a way the modern UCRT no longer does directly - this compatibility lib
+// (shipped with every VS toolset) bridges the gap.
+#pragma comment(lib,"legacy_stdio_definitions.lib")
+
+#define LuaSystem 1
+
+extern char CustomerName[32];
+extern WORD CustomerLicenseId;
 
 #if(GAMESERVER_UPDATE>=701)
 #if(NDEBUG==0)

@@ -13,6 +13,7 @@
 #include "CastleSiegeCrownSwitch.h"
 #include "CastleSiegeSync.h"
 #include "CastleSiegeWeapon.h"
+#include "ScriptLoader.h"
 #include "ChaosBox.h"
 #include "ChaosCastle.h"
 #include "CommandManager.h"
@@ -218,6 +219,8 @@ void gObjEventRunProc() // OK
 	#endif
 
 	gRaklion.MainProc();
+
+	gScriptLoader.OnTimerThread();
 }
 
 void gObjViewportProc() // OK
@@ -2559,6 +2562,11 @@ void gObjUserDie(LPOBJ lpObj,LPOBJ lpTarget) // OK
 void gObjPlayerKiller(LPOBJ lpObj,LPOBJ lpTarget) // OK
 {
 	if(lpObj->Type != OBJECT_USER || lpTarget->Type != OBJECT_USER)
+	{
+		return;
+	}
+
+	if(gScriptLoader.OnCheckUserKiller(lpObj->Index,lpTarget->Index) == 0)
 	{
 		return;
 	}

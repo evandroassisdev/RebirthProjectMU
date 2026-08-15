@@ -537,6 +537,11 @@ typedef struct {
 	BYTE         Notice[256];
 } PRECEIVE_NOTICE, * LPPRECEIVE_NOTICE;
 
+typedef struct {
+	PBMSG_HEADER Header;
+	char         Title[128];
+} PRECEIVE_WINDOW_TITLE, * LPPRECEIVE_WINDOW_TITLE;
+
 //receive equipment
 typedef struct {
 	PBMSG_HEADER Header;

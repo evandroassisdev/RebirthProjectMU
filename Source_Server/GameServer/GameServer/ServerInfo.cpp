@@ -18,6 +18,7 @@
 #include "CrywolfSync.h"
 #include "CustomArena.h"
 #include "CustomAttack.h"
+#include "ScriptLoader.h"
 #include "CustomBuyVip.h"
 #include "CustomCommandDescription.h"
 #include "CustomCombo.h"
@@ -124,6 +125,9 @@
 
 CServerInfo gServerInfo;
 
+char CustomerName[32] = "RebirthProjectMU";
+WORD CustomerLicenseId = 0;
+
 bool AlreadyReaded = false;
 
 //////////////////////////////////////////////////////////////////////
@@ -176,6 +180,8 @@ void CServerInfo::ReadInit() // OK
 
 	this->ReadSkillInfo();
 
+	this->ReadScriptInfo();
+
 	this->ReadUtilInfo();
 
 	//MC bot
@@ -215,6 +221,8 @@ void CServerInfo::ReloadAll() // OK
 	this->ReadShopInfo();
 
 	this->ReadSkillInfo();
+
+	this->ReadScriptInfo();
 
 	this->ReadUtilInfo();
 
@@ -719,6 +727,17 @@ void CServerInfo::ReadSkillInfo() // OK
 	#endif
 
 	LogAdd(LOG_BLUE,"[ServerInfo] Skill loaded successfully");
+}
+
+void CServerInfo::ReadScriptInfo() // OK
+{
+	gScriptLoader.Load(gPath.GetFullPath("Script\\ScriptMain.lua"));
+
+	gScriptLoader.OnShutScript();
+
+	gScriptLoader.OnReadScript();
+
+	LogAdd(LOG_BLUE,"[ServerInfo] Script loaded successfully");
 }
 
 void CServerInfo::ReadUtilInfo() // OK

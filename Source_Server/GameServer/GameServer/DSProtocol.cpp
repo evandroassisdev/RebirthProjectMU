@@ -13,6 +13,7 @@
 #include "CustomRanking.h"
 #include "Crywolf.h"
 #include "CrywolfSync.h"
+#include "ScriptLoader.h"
 #include "CSProtocol.h"
 #include "CustomRankUser.h"
 #include "CustomStore.h"
@@ -1301,6 +1302,8 @@ void DGCharacterInfoRecv(SDHP_CHARACTER_INFO_RECV* lpMsg) // OK
 	gNotice.GCNoticeSend(lpObj->Index,0,0,0,0,0,0,gMessage.GetMessage(256),lpObj->Name);
 
 	gNotice.GCNoticeSend(lpObj->Index,1,0,0,0,0,0,gMessage.GetMessage((248+lpObj->AccountLevel)),lpObj->AccountExpireDate);
+
+	gScriptLoader.OnCharacterEntry(lpObj->Index);
 
 	lpObj->MapServerMoveRequest = 0;
 

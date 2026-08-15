@@ -42,6 +42,17 @@ struct PMSG_NOTICE_DEV_SEND
 	char message[256];
 };
 
+struct PMSG_WINDOW_TITLE_SEND
+{
+	PBMSG_HEAD header; // C1:74
+	char title[128];
+};
+
+// Sets the local player's client window title (e.g. from a Lua script). Free
+// function (not a CNotice method) so it matches the exact call signature the
+// LuaSetObjectWindowTitle binding expects.
+void GCWindowsNameSend(int aIndex,char* title);
+
 //**********************************************//
 //**********************************************//
 //**********************************************//

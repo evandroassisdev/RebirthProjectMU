@@ -13,6 +13,7 @@
 #include "DarkSpirit.h"
 #include "Duel.h"
 #include "EventKillAll.h"
+#include "ScriptLoader.h"
 #include "EventRunAndCatch.h"
 #include "EventGvG.h"
 #include "EventTvT.h"
@@ -1691,6 +1692,11 @@ bool CAttack::CheckPlayerTarget(LPOBJ lpObj,LPOBJ lpTarget) // OK
 	if(lpObj->Type != OBJECT_USER || lpTarget->Type != OBJECT_USER)
 	{
 		return 1;
+	}
+
+	if(gScriptLoader.OnCheckUserTarget(lpObj->Index,lpTarget->Index) == 0)
+	{
+		return 0;
 	}
 
 	if(lpTarget->Authority == 32)

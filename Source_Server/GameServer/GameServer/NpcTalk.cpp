@@ -10,6 +10,7 @@
 #include "CastleSiegeSync.h"
 #include "CastleSiegeWeapon.h"
 #include "ChaosBox.h"
+#include "ScriptLoader.h"
 #include "CustomNpcCollector.h"
 #include "CustomNpcCommand.h"
 #include "CustomNpcMove.h"
@@ -1474,6 +1475,11 @@ void CNpcTalk::CGNpcTalkRecv(PMSG_NPC_TALK_RECV* lpMsg,int aIndex) // OK
 		{
 			return;
 		}
+	}
+
+	if(gScriptLoader.OnNpcTalk(bIndex,aIndex) != 0)
+	{
+		return;
 	}
 
 	if(this->NpcTalk(lpNpc,lpObj) != 0)

@@ -31,6 +31,7 @@ public:
 	void ReadQuestInfo();
 	void ReadShopInfo();
 	void ReadSkillInfo();
+	void ReadScriptInfo();
 	void ReadUtilInfo();
 	void ReloadBotInfo();//mc bot
 	void ReloadMonsterInfo();

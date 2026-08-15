@@ -12,6 +12,19 @@ CNotice gNotice;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
+void GCWindowsNameSend(int aIndex,char* title) // OK
+{
+	PMSG_WINDOW_TITLE_SEND pMsg;
+
+	pMsg.header.set(0x74,sizeof(pMsg));
+
+	strncpy(pMsg.title,title,sizeof(pMsg.title)-1);
+
+	pMsg.title[sizeof(pMsg.title)-1] = 0;
+
+	DataSend(aIndex,(BYTE*)&pMsg,pMsg.header.size);
+}
+
 CNotice::CNotice() // OK
 {
 	this->m_count = 0;

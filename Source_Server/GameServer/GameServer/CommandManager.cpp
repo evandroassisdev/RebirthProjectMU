@@ -13,6 +13,7 @@
 #include "CustomAttack.h"
 #include "CustomEventDrop.h"
 #include "CustomPick.h"
+#include "ScriptLoader.h"
 #include "CustomQuest.h"
 #include "CustomQuiz.h"
 #include "CustomRankUser.h"
@@ -440,6 +441,11 @@ bool CCommandManager::ManagementCore(LPOBJ lpObj,char* message, int Npc) // OK
 		return 0;
 	}
 
+	if(gScriptLoader.OnCommandManager(lpObj->Index,code,argument) != 0)
+	{
+		return 1;
+	}
+
 	int Result = 0;
 
 	switch(code)
@@ -713,8 +719,10 @@ bool CCommandManager::ManagementCore(LPOBJ lpObj,char* message, int Npc) // OK
 
 	if (Result)
 	{
-		this->RemoveRequisites(lpObj,CommandData.Index); 
+		this->RemoveRequisites(lpObj,CommandData.Index);
 		lpObj->CommandDelay[code] = GetTickCount();
+
+		gScriptLoader.OnCommandDone(lpObj->Index,code);
 	}
 
 	return 1;
