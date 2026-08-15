@@ -131,6 +131,9 @@ bool GrabFirst = false;
 void SaveScreen()
 {
 	GrabFirst = true;
+
+	CreateDirectory("Screenshots", NULL);
+
 	auto Buffer = new unsigned char[WindowWidth * WindowHeight * 4];
 
 	glReadPixels(0, 0, WindowWidth, WindowHeight, GL_RGBA, GL_UNSIGNED_BYTE, Buffer);

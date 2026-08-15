@@ -2381,7 +2381,7 @@ void MainScene(HDC hDC)
 
 	SYSTEMTIME st;
 	GetLocalTime( &st);
-	sprintf( GrabFileName, "Screen(%02d_%02d-%02d_%02d)-%04d.jpg", st.wMonth, st.wDay, st.wHour, st.wMinute, GrabScreen);
+	sprintf( GrabFileName, "Screenshots\\Screen(%02d_%02d-%02d_%02d)-%s-%04d.jpg", st.wMonth, st.wDay, st.wHour, st.wMinute, Hero->ID, GrabScreen);
 	char Text[256];
 	sprintf(Text,GlobalText[459],GrabFileName);
 	char lpszTemp[64];
