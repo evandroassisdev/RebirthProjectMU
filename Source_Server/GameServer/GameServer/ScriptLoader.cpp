@@ -278,6 +278,37 @@ void CScriptLoader::OnCharacterEntry(int aIndex) // OK
 	this->m_critical.unlock();
 }
 
+void CScriptLoader::OnUserLevelUp(int aIndex) // OK
+{
+	this->m_critical.lock();
+
+	if (this->m_luaState == 0)
+	{
+		this->m_critical.unlock();
+		return;
+	}
+
+	lua_getglobal(this->m_luaState, "BridgeFunction_OnUserLevelUp");
+
+	if (lua_isfunction(this->m_luaState, -1) == 0)
+	{
+		gLog.Output(LOG_GENERAL, "Error: Function 'OnUserLevelUp' is not defined.");
+		this->m_critical.unlock();
+		return;
+	}
+
+	lua_pushinteger(this->m_luaState, aIndex);
+
+	if (lua_pcall(this->m_luaState, 1, 0, 0) != 0)
+	{
+		gLog.Output(LOG_GENERAL, "Error: %s", lua_tostring(this->m_luaState, -1));
+		this->m_critical.unlock();
+		return;
+	}
+
+	this->m_critical.unlock();
+}
+
 void CScriptLoader::OnCharacterClose(int aIndex) // OK
 {
 	this->m_critical.lock();

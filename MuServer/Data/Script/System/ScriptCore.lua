@@ -122,13 +122,28 @@ end
 function BridgeFunction_OnCharacterEntry(...)
 
 	if BridgeFunctionTable["OnCharacterEntry"] ~= nil then
-	
+
 		for _, func in ipairs(BridgeFunctionTable["OnCharacterEntry"]) do
-		
+
 			_G[func.Function](...)
-			
+
 		end
-		
+
+	end
+
+end
+
+
+function BridgeFunction_OnUserLevelUp(...)
+
+	if BridgeFunctionTable["OnUserLevelUp"] ~= nil then
+
+		for _, func in ipairs(BridgeFunctionTable["OnUserLevelUp"]) do
+
+			_G[func.Function](...)
+
+		end
+
 	end
 
 end

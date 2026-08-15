@@ -1,12 +1,15 @@
 --############################################################################
 -- WindowTitle - test script for the Lua scripting engine
 -- Sets the client window title to show the character's nick, level and
--- reset count, refreshed whenever the character enters the game.
+-- reset count. Refreshed on login and again immediately on every level up
+-- (there's no separate "reset" hook - resets also go through a level
+-- change, so this covers it too).
 --############################################################################
 
-BridgeFunctionAttach('OnCharacterEntry','WindowTitle_OnCharacterEntry')
+BridgeFunctionAttach('OnCharacterEntry','WindowTitle_Update')
+BridgeFunctionAttach('OnUserLevelUp','WindowTitle_Update')
 
-function WindowTitle_OnCharacterEntry(aIndex)
+function WindowTitle_Update(aIndex)
 
 	local Name = GetObjectName(aIndex)
 

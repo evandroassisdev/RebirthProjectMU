@@ -1662,6 +1662,8 @@ bool CObjectManager::CharacterLevelUp(LPOBJ lpObj,DWORD AddExperience,int MaxLev
 		gCustomRankUser.GCReqRankLevelUser(lpObj->Index, lpObj->Index);
 
 		GCLevelUpSend(lpObj);
+
+		gScriptLoader.OnUserLevelUp(lpObj->Index);
 	}
 	else
 	{

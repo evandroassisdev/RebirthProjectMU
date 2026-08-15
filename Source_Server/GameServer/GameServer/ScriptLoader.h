@@ -22,6 +22,7 @@ public:
 	void OnMonsterDie(int aIndex, int bIndex);
 	void OnUserDie(int aIndex, int bIndex);
 	void OnUserRespawn(int aIndex, int KillerType);
+	void OnUserLevelUp(int aIndex);
 	int OnCheckUserTarget(int aIndex, int bIndex);
 	int OnCheckUserKiller(int aIndex, int bIndex);
 	int OnUserItemPick(int aIndex, int slot);
