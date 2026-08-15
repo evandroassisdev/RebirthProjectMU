@@ -13,6 +13,7 @@
 #include "CastleSiege.h"
 #include "CastleSiegeSync.h"
 #include "ChaosBox.h"
+#include "ScriptLoader.h"
 #include "ChaosCastle.h"
 #include "CommandManager.h"
 #include "Crywolf.h"
@@ -376,6 +377,8 @@ void CObjectManager::ObjectSetStateProc() // OK
 				continue;
 			}
 
+			gScriptLoader.OnUserRespawn(lpObj->Index,lpObj->KillerType);
+
 			lpObj->Live = 1;
 			lpObj->ViewState = 0;
 			lpObj->Teleport = 0;
@@ -707,6 +710,8 @@ bool CObjectManager::CharacterGameClose(int aIndex) // OK
 	{
 		return 0;
 	}
+
+	gScriptLoader.OnCharacterClose(aIndex);
 
 	if(OBJECT_RANGE(lpObj->SummonIndex) != 0)
 	{
@@ -1657,6 +1662,8 @@ bool CObjectManager::CharacterLevelUp(LPOBJ lpObj,DWORD AddExperience,int MaxLev
 		gCustomRankUser.GCReqRankLevelUser(lpObj->Index, lpObj->Index);
 
 		GCLevelUpSend(lpObj);
+
+		gScriptLoader.OnUserLevelUp(lpObj->Index);
 	}
 	else
 	{
@@ -4820,6 +4827,8 @@ void CObjectManager::CharacterLifeCheck(LPOBJ lpObj,LPOBJ lpTarget,int damage,in
 				gObjAddMsgSendDelay(lpTarget,1,SummonIndex,500,0);
 			}
 
+			gScriptLoader.OnMonsterDie(lpTarget->Index,lpObj->Index);
+
 			if (lpObj->CustomQuestMonsterIndex >= 0)
 			{
 				if (lpObj->CustomQuestMonsterIndex == lpTarget->Class && lpObj->CustomQuestMonsterQtd != 0)
@@ -4925,6 +4934,8 @@ void CObjectManager::CharacterLifeCheck(LPOBJ lpObj,LPOBJ lpTarget,int damage,in
 
 		if(lpTarget->Type == OBJECT_USER)
 		{
+			gScriptLoader.OnUserDie(lpTarget->Index,SummonIndex);
+
 			gObjUserDie(lpTarget,&gObj[SummonIndex]);
 
 			if(lpTarget->AttackerKilled == 0)

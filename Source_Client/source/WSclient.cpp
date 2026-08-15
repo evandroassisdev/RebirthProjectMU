@@ -1625,6 +1625,15 @@ void ReceiveNotice( BYTE *ReceiveBuffer )
 	g_ConsoleDebug->Write(MCD_RECEIVE, "0x0D [ReceiveNotice(%s)]", Data->Notice);
 }
 
+void ReceiveWindowTitle(BYTE *ReceiveBuffer)
+{
+	LPPRECEIVE_WINDOW_TITLE Data = (LPPRECEIVE_WINDOW_TITLE)ReceiveBuffer;
+
+	SetWindowText(g_hWnd,(char*)Data->Title);
+
+	g_ConsoleDebug->Write(MCD_RECEIVE, "0x74 [ReceiveWindowTitle(%s)]", Data->Title);
+}
+
 void ReceiveMoveCharacter(BYTE *ReceiveBuffer)
 {
 	LPPMOVE_CHARACTER Data = (LPPMOVE_CHARACTER)ReceiveBuffer;
@@ -14290,6 +14299,9 @@ BOOL TranslateProtocol( int HeadCode, BYTE *ReceiveBuffer, int Size, BOOL bEncry
 			ReceiveDarkside(ReceiveBuffer);
 			break;
 #endif //PBG_ADD_NEWCHAR_MONK_SKILL
+		case 0x74:
+			ReceiveWindowTitle(ReceiveBuffer);
+			break;
 		default:
 			break;
 	}

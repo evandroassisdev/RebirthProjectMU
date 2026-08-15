@@ -13,6 +13,7 @@
 #include "EffectManager.h"
 #include "EventInventory.h"
 #include "Fruit.h"
+#include "ScriptLoader.h"
 #include "IllusionTemple.h"
 #include "ItemBagManager.h"
 #include "ItemMove.h"
@@ -3115,6 +3116,12 @@ void CItemManager::CGItemGetRecv(PMSG_ITEM_GET_RECV* lpMsg,int aIndex) // OK
 		return;
 	}
 
+	if(gScriptLoader.OnUserItemPick(aIndex,index) == 0)
+	{
+		DataSend(aIndex,(BYTE*)&pMsg,pMsg.header.size);
+		return;
+	}
+
 	if(gQuestObjective.CheckQuestObjectiveItemCount(lpObj,lpItem->m_Index,lpItem->m_Level) == 0)
 	{
 		DataSend(aIndex,(BYTE*)&pMsg,pMsg.header.size);
@@ -3271,6 +3278,12 @@ void CItemManager::CGItemDropRecv(PMSG_ITEM_DROP_RECV* lpMsg,int aIndex) // OK
 	}
 
 	if(lpItem->m_IsPeriodicItem != 0)
+	{
+		DataSend(aIndex,(BYTE*)&pMsg,pMsg.header.size);
+		return;
+	}
+
+	if(gScriptLoader.OnUserItemDrop(aIndex,lpMsg->slot,lpMsg->x,lpMsg->y) == 0)
 	{
 		DataSend(aIndex,(BYTE*)&pMsg,pMsg.header.size);
 		return;
@@ -3563,6 +3576,12 @@ void CItemManager::CGItemMoveRecv(PMSG_ITEM_MOVE_RECV* lpMsg,int aIndex) // OK
 	}
 
 	int index = lpMsg->ItemInfo[0]+((lpMsg->ItemInfo[3] & 0x80)*2)+((lpMsg->ItemInfo[5] & 0xF0)*32);
+
+	if(gScriptLoader.OnUserItemMove(aIndex,lpMsg->SourceFlag,lpMsg->SourceSlot,lpMsg->TargetFlag,lpMsg->TargetSlot) == 0)
+	{
+		DataSend(aIndex,(BYTE*)&pMsg,pMsg.header.size);
+		return;
+	}
 
 	if(lpMsg->SourceFlag == 1 || lpMsg->TargetFlag == 1) // Trade
 	{

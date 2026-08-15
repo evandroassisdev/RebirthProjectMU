@@ -5,6 +5,13 @@
 
 # Deployed/runnable server (built binaries + live data, not source)
 MuServer/
+# ...except the Lua scripts themselves - hand-written source, not build output
+!MuServer/
+MuServer/*
+!MuServer/Data/
+MuServer/Data/*
+!MuServer/Data/Script/
+!MuServer/Data/Script/**
 
 # Global Release client build (1GB+, never tracked/pushed - only Global Debug is)
 Source_Client/Global Release/
@@ -40,6 +47,7 @@ Source_Server/ConnectServer/Dependences/curl-master/
 *.ilk
 *.exp
 *.lib
+!Source_Server/GameServer/GameServer/Util/lua/lua52.lib
 *.exe
 *.res
 *.tlog

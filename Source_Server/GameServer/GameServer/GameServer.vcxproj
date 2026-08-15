@@ -277,6 +277,7 @@
     <ClInclude Include="kissnet.hpp" />
     <ClInclude Include="LifeStone.h" />
     <ClInclude Include="Log.h" />
+    <ClInclude Include="LuaFunction.h" />
     <ClInclude Include="LuckyCoin.h" />
     <ClInclude Include="LuckyItem.h" />
     <ClInclude Include="Map.h" />
@@ -361,6 +362,7 @@
     <ClInclude Include="ResetTable.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ScheduleManager.h" />
+    <ClInclude Include="ScriptLoader.h" />
     <ClInclude Include="SerialCheck.h" />
     <ClInclude Include="ServerDisplayer.h" />
     <ClInclude Include="ServerInfo.h" />
@@ -535,6 +537,7 @@
     <ClCompile Include="KanturuUtil.cpp" />
     <ClCompile Include="LifeStone.cpp" />
     <ClCompile Include="Log.cpp" />
+    <ClCompile Include="LuaFunction.cpp" />
     <ClCompile Include="LuckyCoin.cpp" />
     <ClCompile Include="LuckyItem.cpp" />
     <ClCompile Include="Map.cpp" />
@@ -615,6 +618,7 @@
     <ClCompile Include="ReiDoMu.cpp" />
     <ClCompile Include="ResetTable.cpp" />
     <ClCompile Include="ScheduleManager.cpp" />
+    <ClCompile Include="ScriptLoader.cpp" />
     <ClCompile Include="SerialCheck.cpp" />
     <ClCompile Include="ServerDisplayer.cpp" />
     <ClCompile Include="ServerInfo.cpp" />
