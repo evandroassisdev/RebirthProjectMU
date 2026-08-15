@@ -9,6 +9,7 @@
 #include "SimpleModulus.h"
 #include "WSclient.h"
 #include "SocketSystem.h"
+#include "MuHelperData.h"
 #include "ItemAddOptioninfo.h"
 extern ItemAddOptioninfo*			g_pItemAddOptioninfo;
 #ifdef _DEBUG
@@ -737,6 +738,20 @@ __forceinline void SendRequestBuy(int Index,int Cost)
 	spe.Init( 0xC1, 0x34);\
 	spe << ( BYTE)( p_Index ) << ( BYTE )( p_AddGold );\
 	spe.Send( TRUE);\
+}
+
+// Saves MuHelper's config to the server (HelperData table, see WSclient.h's
+// PRECEIVE_HELPER_DATA and GameServer's Helper.h). p_Data must point at
+// MUHelper::MUHELPER_SAVEDATA_SIZE bytes.
+__forceinline void SendRequestHelperDataSave(BYTE* p_Data)
+{
+	CStreamPacketEngine spe;
+	spe.Init(0xC2, 0xAE);
+	spe << (BYTE)0;
+	spe.AddData(p_Data, MUHelper::MUHELPER_SAVEDATA_SIZE);
+	spe.Send(TRUE);
+
+	g_ConsoleDebug->Write(MCD_SEND, "0xAE [SendRequestHelperDataSave]");
 }
 
 #define SendRequestEventChip( p_Type, p_Index )\

@@ -46,6 +46,7 @@
 #include "MapManager.h"
 #include "UIGuardsMan.h"
 #include "NewUISystem.h"
+#include "NewUIMuHelper.h"
 #include "NewUICommonMessageBox.h"
 #include "NewUICustomMessageBox.h"
 #include "NewUIInventoryCtrl.h"
@@ -6372,6 +6373,26 @@ void ReceiveDurability( BYTE *ReceiveBuffer )
 	}
 	
 	g_ConsoleDebug->Write(MCD_RECEIVE, "0x2A [ReceiveDurability(%d %d)]", Data->Value, Data->KeyL);
+}
+
+// Server-side MuHelper config push (HelperData table) -- fires once
+// automatically on login (GDHelperDataSend, right alongside the join-map
+// packet) and again as the reply whenever we save via
+// SendRequestHelperDataSave. Result=1 means this character has no saved
+// config yet (fresh character), in which case the UI just keeps its
+// current/default state.
+void ReceiveHelperData( BYTE *ReceiveBuffer )
+{
+	LPPRECEIVE_HELPER_DATA Data = (LPPRECEIVE_HELPER_DATA)ReceiveBuffer;
+
+	if (Data->Result == 0)
+	{
+		MUHelper::ConfigData config;
+		MUHelper::g_MuHelper.DeserializeConfig(Data->Data, config);
+		g_pNewUIMuHelper->LoadSavedConfig(config);
+	}
+
+	g_ConsoleDebug->Write(MCD_RECEIVE, "0xAE [ReceiveHelperData(%d)]", Data->Result);
 }
 
 BOOL ReceiveHelperItem(BYTE *ReceiveBuffer, BOOL bEncrypted)
@@ -13620,6 +13641,9 @@ BOOL TranslateProtocol( int HeadCode, BYTE *ReceiveBuffer, int Size, BOOL bEncry
 				break;
 			}
 		}
+		break;
+	case 0xAE:
+		ReceiveHelperData( ReceiveBuffer );
 		break;
 	case 0xF7:
 		{

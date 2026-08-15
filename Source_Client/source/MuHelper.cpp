@@ -223,6 +223,144 @@ namespace MUHelper
 		m_config = config;
 	}
 
+	namespace
+	{
+		// Fixed-width slot for each extra-item filter name in the wire
+		// format below (19 chars + null). 14 slots fit in the remaining
+		// budget after the 35 bytes of scalar fields (35 + 14*20 = 315,
+		// leaving a few spare bytes in MUHELPER_SAVEDATA_SIZE=320).
+		constexpr int MUHELPER_ITEM_NAME_SIZE = 20;
+		constexpr int MUHELPER_MAX_SAVED_ITEMS = 14;
+	}
+
+	void CMuHelper::SerializeConfig(BYTE* pOutBuffer) const
+	{
+		ZeroMemory(pOutBuffer, MUHELPER_SAVEDATA_SIZE);
+		int pos = 0;
+
+		auto WriteByte = [&](int v) { pOutBuffer[pos++] = (BYTE)v; };
+		auto WriteWord = [&](int v) { pOutBuffer[pos++] = (BYTE)(v & 0xFF); pOutBuffer[pos++] = (BYTE)((v >> 8) & 0xFF); };
+
+		WriteByte(m_config.iHuntingRange);
+
+		BYTE flags1 = (m_config.bLongRangeCounterAttack << 0) | (m_config.bReturnToOriginalPosition << 1) |
+			(m_config.bUseCombo << 2) | (m_config.bBuffDuration << 3) | (m_config.bBuffDurationParty << 4) |
+			(m_config.bAutoHeal << 5) | (m_config.bSupportParty << 6) | (m_config.bAutoHealParty << 7);
+		WriteByte(flags1);
+
+		BYTE flags2 = (m_config.bUseHealPotion << 0) | (m_config.bUseDrainLife << 1) | (m_config.bUseDarkRaven << 2) |
+			(m_config.bRepairItem << 3) | (m_config.StartOffline << 4) | (m_config.bPickAllItems << 5) |
+			(m_config.bPickSelectItems << 6) | (m_config.bPickJewel << 7);
+		WriteByte(flags2);
+
+		BYTE flags3 = (m_config.bPickZen << 0) | (m_config.bPickAncient << 1) | (m_config.bPickExcellent << 2) |
+			(m_config.bPickExtraItems << 3) | (m_config.bUseSelfDefense << 4) | (m_config.bAutoAcceptFriend << 5) |
+			(m_config.bAutoAcceptGuild << 6) | (m_config.bAutoReset << 7);
+		WriteByte(flags3);
+
+		WriteWord(m_config.iMaxSecondsAway);
+
+		for (int i = 0; i < 3; i++) WriteWord(m_config.aiSkill[i]);
+		for (int i = 0; i < 3; i++) WriteByte(m_config.aiSkillCondition[i]);
+		for (int i = 0; i < 3; i++) WriteWord(m_config.aiSkillInterval[i]);
+		for (int i = 0; i < 3; i++) WriteWord(m_config.aiBuff[i]);
+
+		WriteWord(m_config.iBuffCastInterval);
+		WriteByte(m_config.iHealThreshold);
+		WriteByte(m_config.iHealPartyThreshold);
+		WriteByte(m_config.iPotionThreshold);
+		WriteByte(m_config.iDarkRavenMode);
+		WriteByte(m_config.iObtainingRange);
+
+		int iItemCount = (int)m_config.aExtraItems.size();
+		if (iItemCount > MUHELPER_MAX_SAVED_ITEMS) iItemCount = MUHELPER_MAX_SAVED_ITEMS;
+		WriteByte(iItemCount);
+
+		int iWritten = 0;
+		for (const auto& item : m_config.aExtraItems)
+		{
+			if (iWritten >= iItemCount) break;
+
+			char szName[MUHELPER_ITEM_NAME_SIZE] = {};
+			strncpy_s(szName, item.c_str(), MUHELPER_ITEM_NAME_SIZE - 1);
+			memcpy(&pOutBuffer[pos], szName, MUHELPER_ITEM_NAME_SIZE);
+			pos += MUHELPER_ITEM_NAME_SIZE;
+			iWritten++;
+		}
+	}
+
+	void CMuHelper::DeserializeConfig(const BYTE* pBuffer, ConfigData& outConfig) const
+	{
+		ConfigData config;
+		int pos = 0;
+
+		auto ReadByte = [&]() -> int { return pBuffer[pos++]; };
+		auto ReadWord = [&]() -> int { int v = pBuffer[pos] | (pBuffer[pos + 1] << 8); pos += 2; return v; };
+
+		config.iHuntingRange = ReadByte();
+
+		BYTE flags1 = (BYTE)ReadByte();
+		config.bLongRangeCounterAttack = (flags1 >> 0) & 1;
+		config.bReturnToOriginalPosition = (flags1 >> 1) & 1;
+		config.bUseCombo = (flags1 >> 2) & 1;
+		config.bBuffDuration = (flags1 >> 3) & 1;
+		config.bBuffDurationParty = (flags1 >> 4) & 1;
+		config.bAutoHeal = (flags1 >> 5) & 1;
+		config.bSupportParty = (flags1 >> 6) & 1;
+		config.bAutoHealParty = (flags1 >> 7) & 1;
+
+		BYTE flags2 = (BYTE)ReadByte();
+		config.bUseHealPotion = (flags2 >> 0) & 1;
+		config.bUseDrainLife = (flags2 >> 1) & 1;
+		config.bUseDarkRaven = (flags2 >> 2) & 1;
+		config.bRepairItem = (flags2 >> 3) & 1;
+		config.StartOffline = (flags2 >> 4) & 1;
+		config.bPickAllItems = (flags2 >> 5) & 1;
+		config.bPickSelectItems = (flags2 >> 6) & 1;
+		config.bPickJewel = (flags2 >> 7) & 1;
+
+		BYTE flags3 = (BYTE)ReadByte();
+		config.bPickZen = (flags3 >> 0) & 1;
+		config.bPickAncient = (flags3 >> 1) & 1;
+		config.bPickExcellent = (flags3 >> 2) & 1;
+		config.bPickExtraItems = (flags3 >> 3) & 1;
+		config.bUseSelfDefense = (flags3 >> 4) & 1;
+		config.bAutoAcceptFriend = (flags3 >> 5) & 1;
+		config.bAutoAcceptGuild = (flags3 >> 6) & 1;
+		config.bAutoReset = (flags3 >> 7) & 1;
+
+		config.iMaxSecondsAway = ReadWord();
+
+		for (int i = 0; i < 3; i++) config.aiSkill[i] = ReadWord();
+		for (int i = 0; i < 3; i++) config.aiSkillCondition[i] = ReadByte();
+		for (int i = 0; i < 3; i++) config.aiSkillInterval[i] = ReadWord();
+		for (int i = 0; i < 3; i++) config.aiBuff[i] = ReadWord();
+
+		config.iBuffCastInterval = ReadWord();
+		config.iHealThreshold = ReadByte();
+		config.iHealPartyThreshold = ReadByte();
+		config.iPotionThreshold = ReadByte();
+		config.iDarkRavenMode = ReadByte();
+		config.iObtainingRange = ReadByte();
+
+		int iItemCount = ReadByte();
+		if (iItemCount > MUHELPER_MAX_SAVED_ITEMS) iItemCount = MUHELPER_MAX_SAVED_ITEMS;
+
+		for (int i = 0; i < iItemCount; i++)
+		{
+			char szName[MUHELPER_ITEM_NAME_SIZE + 1] = {};
+			memcpy(szName, &pBuffer[pos], MUHELPER_ITEM_NAME_SIZE);
+			pos += MUHELPER_ITEM_NAME_SIZE;
+
+			if (szName[0] != '\0')
+			{
+				config.aExtraItems.insert(szName);
+			}
+		}
+
+		outConfig = config;
+	}
+
 	ConfigData CMuHelper::GetConfig() const {
 		return m_config;
 	}
@@ -870,6 +1008,17 @@ namespace MUHelper
 	{
 		if (m_config.bRepairItem)
 		{
+			// Repairing is instant server-side (one request fully restores
+			// durability), so there's no need to re-check every 250ms tick --
+			// that just floods 0x34 requests while gear is wearing down in
+			// combat. Throttle the whole check to once every 5s.
+			DWORD dwNow = GetTickCount();
+			if (dwNow - m_dwLastRepairCheck < 5000)
+			{
+				return 1;
+			}
+			m_dwLastRepairCheck = dwNow;
+
 			for (int i = 0; i < MAX_EQUIPMENT; i++)
 			{
 				ITEM* pItem = &CharacterMachine->Equipment[i];

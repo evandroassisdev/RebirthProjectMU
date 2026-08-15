@@ -1039,6 +1039,10 @@ void SEASON3B::CNewUIMuHelper::SaveConfig()
     _TempConfig.aiBuff[2] = m_aiSelectedSkills[5] > 0 ? m_aiSelectedSkills[5] : 0;
 
     g_MuHelper.Save(_TempConfig);
+
+    BYTE data[MUHelper::MUHELPER_SAVEDATA_SIZE];
+    g_MuHelper.SerializeConfig(data);
+    SendRequestHelperDataSave(data);
 }
 
 float SEASON3B::CNewUIMuHelper::GetLayerDepth()

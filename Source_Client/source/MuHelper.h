@@ -29,6 +29,16 @@ namespace MUHelper
 		ConfigData GetConfig() const;
 		void Save(const ConfigData& config);
 		void Load(const ConfigData& config);
+
+		// Packs/unpacks ConfigData to/from the fixed MUHELPER_SAVEDATA_SIZE
+		// wire format sent over the 0xAE Helper-data packet (see WSclient.h
+		// and GameServer's Helper.h -- this is real server-side persistence
+		// via the HelperData DB table, despite the name being a holdover
+		// from that unrelated vanilla feature). Compact bit/byte packed,
+		// not a raw struct dump (ConfigData has std::array/std::set members
+		// that don't have a stable wire layout).
+		void SerializeConfig(BYTE* pOutBuffer) const;
+		void DeserializeConfig(const BYTE* pBuffer, ConfigData& outConfig) const;
 		void Start();
 		void Stop();
 		void Toggle();
@@ -102,6 +112,7 @@ namespace MUHelper
 		bool m_bTimerActivatedBuffOngoing;
 		bool m_bPetActivated;
 		int m_iTotalCost;
+		DWORD m_dwLastRepairCheck = 0;
 	};
 
 	extern CMuHelper g_MuHelper;

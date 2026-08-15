@@ -16,7 +16,7 @@ struct PMSG_HELPER_DATA_RECV
 {
 	PWMSG_HEAD header; // C1:AE
 	BYTE result;
-	BYTE data[256];
+	BYTE data[320]; // MuHelper full config (widened from vanilla-Helper 256, see MuOnline.HelperData.Data column)
 };
 
 struct PMSG_HELPER_START_RECV
@@ -33,7 +33,7 @@ struct PMSG_HELPER_DATA_SEND
 {
 	PWMSG_HEAD header; // C1:AE
 	BYTE result;
-	BYTE data[256];
+	BYTE data[320]; // MuHelper full config (widened from vanilla-Helper 256, see MuOnline.HelperData.Data column)
 };
 
 struct PMSG_HELPER_START_SEND
@@ -55,7 +55,7 @@ struct SDHP_HELPER_DATA_RECV
 	char account[11];
 	char name[11];
 	BYTE result;
-	BYTE data[256];
+	BYTE data[320]; // MuHelper full config (widened from vanilla-Helper 256, see MuOnline.HelperData.Data column)
 };
 
 //**********************************************//
@@ -76,7 +76,7 @@ struct SDHP_HELPER_DATA_SAVE_SEND
 	WORD index;
 	char account[11];
 	char name[11];
-	BYTE data[256];
+	BYTE data[320]; // MuHelper full config (widened from vanilla-Helper 256, see MuOnline.HelperData.Data column)
 };
 
 //**********************************************//

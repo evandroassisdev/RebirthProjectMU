@@ -17,6 +17,12 @@
 
 namespace MUHelper
 {
+	// Wire size of the 0xAE Helper-data blob (see WSclient.h's
+	// PRECEIVE_HELPER_DATA and GameServer's Helper.h) that
+	// CMuHelper::SerializeConfig/DeserializeConfig pack ConfigData into.
+	// Must match MuOnline.HelperData.Data's DB column width.
+	constexpr int MUHELPER_SAVEDATA_SIZE = 320;
+
 	enum ESkillActivationBase : uint32_t
 	{
 		ALWAYS = 0x00000000,

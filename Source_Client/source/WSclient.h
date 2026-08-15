@@ -215,8 +215,19 @@ typedef struct {
 	PWMSG_HEADER Header;
 	BYTE         SubCode;
 	BYTE         Value;
-	
+
 } PHEADER_DEFAULT_SUBCODE_WORD, * LPPHEADER_DEFAULT_SUBCODE_WORD;
+
+// MU Helper data blob (0xAE), both directions -- generic storage tied to
+// the character server-side (HelperData table), used here to persist
+// MuHelper's ConfigData. Matches GameServer's Helper.h
+// PMSG_HELPER_DATA_RECV/SEND (data size widened together on both ends).
+// Size is MUHelper::MUHELPER_SAVEDATA_SIZE (MuHelperData.h).
+typedef struct {
+	PWMSG_HEADER Header;
+	BYTE         Result;
+	BYTE         Data[320];
+} PRECEIVE_HELPER_DATA, * LPPRECEIVE_HELPER_DATA;
 
 typedef struct {
 	PBMSG_HEADER Header;
