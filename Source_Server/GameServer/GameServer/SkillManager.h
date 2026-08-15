@@ -24,6 +24,10 @@
 #define CHECK_SKILL_ATTACK_COUNT(x) (((++x)>=10)?0:1)
 #define CHECK_SKILL_ATTACK_EXTENDED_COUNT(x) (((++x)>=20)?0:1)
 
+// ms during which no skill can be used right after the SM's Teleport skill -
+// see LPOBJ::LastSkillTeleportTime (User.h) / CGTeleportRecv (Move.cpp).
+#define SKILL_TELEPORT_LOCKOUT_TIME 1500
+
 enum eSkillNumber
 {
 	SKILL_NONE = 0,

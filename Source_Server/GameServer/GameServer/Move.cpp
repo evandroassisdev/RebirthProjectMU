@@ -279,6 +279,10 @@ void CMove::CGTeleportRecv(PMSG_TELEPORT_RECV* lpMsg,int aIndex) // OK
 
 			gObjTeleportMagicUse(aIndex,lpMsg->x,lpMsg->y);
 
+			// Blocks any other skill for a short window right after Teleport -
+			// see LastSkillTeleportTime's checks in SkillManager.cpp.
+			lpObj->LastSkillTeleportTime = GetTickCount();
+
 			lpObj->Mana -= (gSkillManager.GetSkillMana(lpSkill->m_index)*lpObj->MPConsumptionRate)/100;
 
 			lpObj->BP -= (gSkillManager.GetSkillBP(lpSkill->m_index)*lpObj->BPConsumptionRate)/100;

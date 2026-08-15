@@ -570,6 +570,11 @@ struct OBJECTSTRUCT
 	DWORD LastAttackTime;
 	DWORD TeleportTime;
 	char Teleport;
+	// Separate from TeleportTime above (that one drives the general map-
+	// transition Teleport state machine, unrelated to this). Set when the
+	// SM's own Teleport skill (SKILL_TELEPORT) is used, so skill-use
+	// handlers can reject any skill for a short window afterward.
+	DWORD LastSkillTeleportTime;
 	char KillerType;
 	char DieRegen;
 	char RegenOk;
