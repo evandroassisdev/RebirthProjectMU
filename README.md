@@ -4,6 +4,21 @@ MU Online client + server source (Season 5.2~6.3), `Source_Client` (C++/OpenGL) 
 
 ## Changelog
 
+### 2026-08-15
+- **Feature**: MU Helper auto-play engine ported in full (attack, heal, buff, drain life, item pickup/filtering, equipment repair, party support, combo skills, self-defense), with a gear/play icon pair on the position HUD and a `Z` hotkey to open it.
+- **Feature**: MU Helper config (skills, range, repair, pickup filters, thresholds) now persists across logins, server-side — reused this pack's existing but previously client-unused `HelperData` DB pipe (`0xC1:0xAE`/`0xC1:0x17`) instead of a bespoke mechanism.
+- **Fix**: MU Helper's repair-item check flooded a request every 250ms tick during combat — throttled to once every 5s.
+- **Fix**: MU Helper's "Pick All Near Items" / "Pick Selected Items" were only visually mutually exclusive — the underlying flags never actually cleared, so it kept picking up everything regardless of the UI.
+- **Fix**: closing MU Helper left its skill-picker sub-window open (`CNewUIObj::Show()` isn't virtual, so the generic window-close path couldn't reach the override that closes it).
+- **Fix**: MU Helper's "Add Extra Item" truncated names to 14 characters (e.g. "Scroll of Hellfire" → "Scroll of Hell") — two separate leftover buffers, both from a dropped older protocol format.
+- **Fix**: MU Helper's saved-item list couldn't select any line but the first, and allowed duplicate entries.
+- **Fix**: MU Helper's Auto Potion/Heal/Party-Heal threshold bars reset unless closed via the exact right button.
+- **Fix**: Dark Spirit pet never actually attacked in any mode — was sending the raw command enum value instead of the small index the server expects.
+- **Fix**: several skills (Twisting Slash, Evil Spirit/Storm, and ~30 others across every class) dealt damage via MU Helper but never played their animation — ported each one's real client-authoritative packet sequence from its own source location.
+- **Fix**: MU Helper's basic attack ignored the character's actual attack speed, attacking every 250ms tick regardless of Agility — now paced using the same animation-duration data the game itself uses to play the swing.
+- **Fix**: skill names (character skill list tooltip) were in Portuguese in *both* the Portuguese and English clients — translated all 365 to English in both.
+- **Fix/Translation**: Command Window (`D` key), several item-stat tooltip lines (e.g. "Reflect Damage"), a few special-item descriptions, all 158 buff names/descriptions, and the Guild creation prompt were in English in the Portuguese client — translated to Portuguese.
+
 ### 2026-08-14
 - **Feature**: skill use locked out for 1.5s right after the SM's Teleport skill, to stop it being used to chain into other skills faster than normal.
 - **Fix**: mailbox letter-read crash (`MemBlock==0xFD` assert) — `ReceiveLetterText` wrote a null terminator past the received packet data when the letter's memo length exactly matched the packet size.
