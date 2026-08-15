@@ -18,6 +18,8 @@ MU Online client + server source (Season 5.2~6.3), `Source_Client` (C++/OpenGL) 
 - **Fix**: MU Helper's basic attack ignored the character's actual attack speed, attacking every 250ms tick regardless of Agility — now paced using the same animation-duration data the game itself uses to play the swing.
 - **Fix**: skill names (character skill list tooltip) were in Portuguese in *both* the Portuguese and English clients — translated all 365 to English in both.
 - **Fix/Translation**: Command Window (`D` key), several item-stat tooltip lines (e.g. "Reflect Damage"), a few special-item descriptions, all 158 buff names/descriptions, and the Guild creation prompt were in English in the Portuguese client — translated to Portuguese.
+- **Feature**: screenshots (`PrintScreen`) now save into a `Screenshots\` folder (created automatically if missing) instead of the client's root, and the filename now includes the character's nickname.
+- **Chore**: stopped tracking `Source_Client/Global Debug/Main` — it was a stale 19MB `.ilk` (incremental linker database) file mistakenly committed instead of the real `Main.exe` (it dodged the `.gitignore`'s `*.exe`/`*.ilk` rules by having no extension). The real `Main.exe` stays untracked, as it already was.
 
 ### 2026-08-14
 - **Feature**: skill use locked out for 1.5s right after the SM's Teleport skill, to stop it being used to chain into other skills faster than normal.
