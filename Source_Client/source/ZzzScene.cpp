@@ -61,6 +61,7 @@
 #include "PartyManager.h"
 #include "w_CursedTemple.h"
 #include "CameraMove.h"
+#include "ClientScriptLoader.h"
 #include "w_MapHeaders.h"
 #include "w_PetProcess.h"
 #include "PortalMgr.h"
@@ -1986,7 +1987,12 @@ void MoveMainScene()
 
 		g_pPartyManager->Update();
 		g_pNewUISystem->Update();
-		
+
+		if(MouseLButtonPush)
+		{
+			gClientScriptLoader.OnClickEvent();
+		}
+
 		if (MouseLButton == true && false == g_pNewUISystem->CheckMouseUse() && g_dwMouseUseUIID == 0 && g_pNewUISystem->IsVisible(SEASON3B::INTERFACE_CHATINPUTBOX) == false )
 		{
 			g_pWindowMgr->SetWindowsEnable(FALSE);
@@ -2278,7 +2284,11 @@ bool RenderMainScene()
 	
 	g_pPartyManager->Render();
 	g_pNewUISystem->Render();
-	
+
+	BeginBitmap();
+	gClientScriptLoader.OnMainProc();
+	EndBitmap();
+
 	BeginBitmap();
 
 	RenderInfomation();

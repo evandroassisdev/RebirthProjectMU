@@ -91,3 +91,10 @@
 #include "./Math/ZzzMathLib.h"
 #include "ZzzOpenglUtil.h"
 
+#include "lua/lua.hpp"
+#pragma comment(lib,"lua52.lib")
+// See Source_Server/GameServer/GameServer/stdafx.h for why this is needed -
+// lua52.lib needs a symbol legacy_stdio_definitions.lib no longer provides
+// on this toolset (worked around in ClientScriptLoader.cpp instead).
+#pragma comment(lib,"legacy_stdio_definitions.lib")
+

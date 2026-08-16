@@ -224,6 +224,8 @@
     <ClCompile Include="source\CharInfoBalloonMng.cpp" />
     <ClCompile Include="source\CharMakeWin.cpp" />
     <ClCompile Include="source\CharSelMainWin.cpp" />
+    <ClCompile Include="source\ClientLuaFunction.cpp" />
+    <ClCompile Include="source\ClientScriptLoader.cpp" />
     <ClCompile Include="source\CKANTURUDirection.cpp" />
     <ClCompile Include="source\CMVP1stDirection.cpp" />
     <ClCompile Include="source\CreditInfo.cpp" />
@@ -585,6 +587,8 @@
     <ClInclude Include="source\CharInfoBalloonMng.h" />
     <ClInclude Include="source\CharMakeWin.h" />
     <ClInclude Include="source\CharSelMainWin.h" />
+    <ClInclude Include="source\ClientLuaFunction.h" />
+    <ClInclude Include="source\ClientScriptLoader.h" />
     <ClInclude Include="source\CKANTURUDirection.h" />
     <ClInclude Include="source\CMVP1stDirection.h" />
     <ClInclude Include="source\CreditInfo.h" />
