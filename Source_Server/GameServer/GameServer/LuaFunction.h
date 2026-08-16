@@ -172,7 +172,13 @@ int LuaUserCalcAttribute(lua_State* L);
 int LuaUserInfoSend(lua_State* L);
 int LuaUserActionSend(lua_State* L);
 int LuaUserSetAccountLevel(lua_State* L);
-// NOTE: the original pack's LuaSQL* bindings (LuaSQLConnect, LuaSQLQuery, ...) were
-// dropped here - they depend on a standalone QueryManager (ODBC) class this project
-// doesn't have, and none of our scripts need raw SQL access from Lua. Add it back
-// (as its own class, not tied to the game DB connection) if that's ever needed.
+int LuaSQLConnect(lua_State* L);
+int LuaSQLDisconnect(lua_State* L);
+int LuaSQLCheck(lua_State* L);
+int LuaSQLQuery(lua_State* L);
+int LuaSQLClose(lua_State* L);
+int LuaSQLFetch(lua_State* L);
+int LuaSQLGetResult(lua_State* L);
+int LuaSQLGetNumber(lua_State* L);
+int LuaSQLGetSingle(lua_State* L);
+int LuaSQLGetString(lua_State* L);

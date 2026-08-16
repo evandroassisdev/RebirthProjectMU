@@ -20,6 +20,7 @@
 #include "ObjectManager.h"
 #include "Party.h"
 #include "Path.h"
+#include "QueryManager.h"
 #include "Quest.h"
 #include "ServerInfo.h"
 #include "SetItemType.h"
@@ -198,6 +199,16 @@ void InitLuaFunction(lua_State* L) // OK
 	lua_register(L, "UserInfoSend", LuaUserInfoSend);
 	lua_register(L, "UserActionSend", LuaUserActionSend);
 	lua_register(L, "UserSetAccountLevel", LuaUserSetAccountLevel);
+	lua_register(L, "SQLConnect", LuaSQLConnect);
+	lua_register(L, "SQLDisconnect", LuaSQLDisconnect);
+	lua_register(L, "SQLCheck", LuaSQLCheck);
+	lua_register(L, "SQLQuery", LuaSQLQuery);
+	lua_register(L, "SQLClose", LuaSQLClose);
+	lua_register(L, "SQLFetch", LuaSQLFetch);
+	lua_register(L, "SQLGetResult", LuaSQLGetResult);
+	lua_register(L, "SQLGetNumber", LuaSQLGetNumber);
+	lua_register(L, "SQLGetSingle", LuaSQLGetSingle);
+	lua_register(L, "SQLGetString", LuaSQLGetString);
 }
 
 int LuaRequire(lua_State* L)
@@ -4261,5 +4272,181 @@ int LuaUserSetAccountLevel(lua_State* L) // OK
 	GJAccountLevelSaveSend(aIndex, aValue, bValue);
 	GJAccountLevelSend(aIndex);
 
+	return 1;
+}
+
+// Uses gQueryManager, a standalone ODBC connection this project's GameServer
+// opens for its own use (see CServerInfo::ReadScriptInfo, GameServerSQL.ini) -
+// separate from the GameServer<->DataServer protocol every other Lua binding
+// goes through. Scripts are responsible for their own SQLConnect/SQLQuery/
+// SQLFetch/SQLClose sequencing - there's only one connection, shared by every
+// script that uses it.
+
+int LuaSQLConnect(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 3)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 3);
+	}
+
+	const char* aString = lua_tostring(L, 1);
+	const char* bString = lua_tostring(L, 2);
+	const char* cString = lua_tostring(L, 3);
+
+	if (gQueryManager.Connect((char*)aString, (char*)bString, (char*)cString) == 0)
+	{
+		LogAdd(LOG_RED, "[LuaFunction][SQLConnect] Could not connect to database [%s][%s][%s]", aString, bString, cString);
+		lua_pushinteger(L, 0);
+	}
+	else
+	{
+		lua_pushinteger(L, 1);
+	}
+
+	return 1;
+}
+
+int LuaSQLDisconnect(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 0)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR0);
+	}
+
+	gQueryManager.Disconnect();
+
+	return 1;
+}
+
+int LuaSQLCheck(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 0)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR0);
+	}
+
+	if (gQueryManager.GetStatus() == 0)
+	{
+		lua_pushinteger(L, 0);
+	}
+	else
+	{
+		lua_pushinteger(L, 1);
+	}
+
+	return 1;
+}
+
+int LuaSQLQuery(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	const char* aString = lua_tostring(L, 1);
+
+	if (gQueryManager.ExecQuery("%s", aString) == 0)
+	{
+		lua_pushinteger(L, 0);
+	}
+	else
+	{
+		lua_pushinteger(L, 1);
+	}
+
+	return 1;
+}
+
+int LuaSQLClose(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 0)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR0);
+	}
+
+	gQueryManager.Close();
+
+	return 1;
+}
+
+int LuaSQLFetch(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 0)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR0);
+	}
+
+	if (gQueryManager.Fetch() == SQL_NO_DATA)
+	{
+		lua_pushinteger(L, 0);
+	}
+	else
+	{
+		lua_pushinteger(L, 1);
+	}
+
+	return 1;
+}
+
+int LuaSQLGetResult(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aValue = lua_tointeger(L, 1);
+
+	int value = gQueryManager.GetResult(aValue);
+
+	lua_pushinteger(L, value);
+	return 1;
+}
+
+int LuaSQLGetNumber(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	const char* aString = lua_tostring(L, 1);
+
+	int value = gQueryManager.GetAsInteger((char*)aString);
+
+	lua_pushinteger(L, value);
+	return 1;
+}
+
+int LuaSQLGetSingle(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	const char* aString = lua_tostring(L, 1);
+
+	float value = gQueryManager.GetAsFloat((char*)aString);
+
+	lua_pushnumber(L, value);
+	return 1;
+}
+
+int LuaSQLGetString(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	const char* aString = lua_tostring(L, 1);
+
+	char value[256] = { 0 };
+
+	gQueryManager.GetAsString((char*)aString, value, sizeof(value));
+
+	lua_pushstring(L, value);
 	return 1;
 }
