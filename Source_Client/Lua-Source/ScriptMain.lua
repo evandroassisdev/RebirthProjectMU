@@ -9,4 +9,5 @@
 --############################################################################
 
 require('System\\ScriptCore')
-require('Warehouse')
+-- require('Warehouse')
+-- require('WarehouseIconTest')
