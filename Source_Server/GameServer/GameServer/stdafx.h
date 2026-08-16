@@ -94,6 +94,9 @@
 #include <winsock2.h>
 #include <mswSock.h>
 #include <commctrl.h>
+#include <sql.h>
+#include <sqltypes.h>
+#include <sqlext.h>
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>

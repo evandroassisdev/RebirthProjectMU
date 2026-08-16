@@ -9,4 +9,5 @@
 --############################################################################
 
 require('System\\ScriptCore')
+require('System\\ScriptDefine')
 require('Script\\WindowTitle')

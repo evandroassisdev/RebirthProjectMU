@@ -18,6 +18,7 @@
 #include "CrywolfSync.h"
 #include "CustomArena.h"
 #include "CustomAttack.h"
+#include "QueryManager.h"
 #include "ScriptLoader.h"
 #include "CustomBuyVip.h"
 #include "CustomCommandDescription.h"
@@ -731,6 +732,35 @@ void CServerInfo::ReadSkillInfo() // OK
 
 void CServerInfo::ReadScriptInfo() // OK
 {
+	// Only connect once - this runs again on /reload and "Recarregar: Script",
+	// and QueryManager has no "already connected" check of its own.
+	static bool s_SQLConnected = false;
+
+	if (s_SQLConnected == false)
+	{
+		char SQLODBC[32] = {0};
+		char SQLUSER[32] = {0};
+		char SQLPASS[32] = {0};
+
+		GetPrivateProfileString("SQL","ODBC","",SQLODBC,sizeof(SQLODBC),".\\GameServerSQL.ini");
+		GetPrivateProfileString("SQL","USER","",SQLUSER,sizeof(SQLUSER),".\\GameServerSQL.ini");
+		GetPrivateProfileString("SQL","PASS","",SQLPASS,sizeof(SQLPASS),".\\GameServerSQL.ini");
+
+		if (SQLODBC[0] != 0)
+		{
+			if (gQueryManager.Connect(SQLODBC,SQLUSER,SQLPASS) == 0)
+			{
+				LogAdd(LOG_RED,"[ServerInfo] Could not connect Lua SQL (see GameServerSQL.ini)");
+			}
+			else
+			{
+				LogAdd(LOG_BLUE,"[ServerInfo] Lua SQL connected successfully");
+			}
+		}
+
+		s_SQLConnected = true;
+	}
+
 	gScriptLoader.Load(gPath.GetFullPath("Script\\ScriptMain.lua"));
 
 	gScriptLoader.OnShutScript();
