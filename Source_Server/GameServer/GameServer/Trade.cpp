@@ -17,6 +17,7 @@
 #include "Notice.h"
 #include "ObjectManager.h"
 #include "PentagramSystem.h"
+#include "ScriptLoader.h"
 #include "ServerInfo.h"
 #include "User.h"
 #include "Util.h"
@@ -227,6 +228,12 @@ void CTrade::CGTradeRequestRecv(PMSG_TRADE_REQUEST_RECV* lpMsg,int aIndex) // OK
 
 	if(ObjBotBuff.TradeOpen(aIndex,number) == 1)
 	{
+		return;
+	}
+
+	if (gScriptLoader.OnPlayerSendTrade(aIndex, bIndex) == 1)
+	{
+		this->GCTradeResponseSend(aIndex,0,lpTarget->Name,0,0);
 		return;
 	}
 
@@ -465,6 +472,14 @@ void CTrade::CGTradeOkButtonRecv(PMSG_TRADE_OK_BUTTON_RECV* lpMsg,int aIndex) //
 		return;
 	}
 
+	if (gScriptLoader.OnPlayerTradeOk(aIndex, bIndex) == 1)
+	{
+		this->ResetTrade(aIndex);
+		this->GCTradeResultSend(aIndex,3);
+		this->ResetTrade(bIndex);
+		this->GCTradeResultSend(bIndex,3);
+		return;
+	}
 
 	#if(GAMESERVER_UPDATE>=701)
 

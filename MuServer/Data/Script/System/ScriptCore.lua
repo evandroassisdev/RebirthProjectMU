@@ -206,6 +206,52 @@ function BridgeFunction_OnChatProc(...)
 end
 
 
+-- Fires right before a trade request opens the trade window on both
+-- sides. A handler returning nonzero cancels the request. See
+-- ScriptLoader.cpp's OnPlayerSendTrade (called from Trade.cpp's
+-- CGTradeRequestRecv).
+function BridgeFunction_OnPlayerSendTrade(...)
+
+	if BridgeFunctionTable["OnPlayerSendTrade"] ~= nil then
+
+		for _, func in ipairs(BridgeFunctionTable["OnPlayerSendTrade"]) do
+
+			local ret =_G[func.Function](...)
+
+			if ret ~= 0 then return 1 end
+
+		end
+
+	end
+
+	return 0
+
+end
+
+
+-- Fires right before a mutually-confirmed trade exchanges items/money. A
+-- handler returning nonzero cancels the trade for both sides. See
+-- ScriptLoader.cpp's OnPlayerTradeOk (called from Trade.cpp's
+-- CGTradeOkButtonRecv).
+function BridgeFunction_OnPlayerTradeOk(...)
+
+	if BridgeFunctionTable["OnPlayerTradeOk"] ~= nil then
+
+		for _, func in ipairs(BridgeFunctionTable["OnPlayerTradeOk"]) do
+
+			local ret =_G[func.Function](...)
+
+			if ret ~= 0 then return 1 end
+
+		end
+
+	end
+
+	return 0
+
+end
+
+
 function BridgeFunction_OnMonsterDie(...)
 
 	if BridgeFunctionTable["OnMonsterDie"] ~= nil then

@@ -35,6 +35,21 @@ public:
 	// called from its Protocol.cpp's CGChatRecv - this project's own
 	// CGChatRecv is close enough in shape to hook the same way).
 	int OnChatProc(int aIndex, const char* text);
+	// Fires right before a trade request actually opens the trade window
+	// on both sides (after every other validity check already passed) -
+	// a script returning nonzero silently cancels the request. Ported
+	// from the RoxGaming pack's PlayerSendTrade hook, traced to its native
+	// call site (CTrade::CGTradeRequestRecv in this project's own
+	// Trade.cpp, identical function name/shape there too).
+	int OnPlayerSendTrade(int aIndex, int bIndex);
+	// Fires right before a mutually-confirmed trade actually exchanges
+	// items/money (after the trade-duel special case, before the
+	// Pentagram/money/item validation cascade) - a script returning
+	// nonzero cancels the trade for both sides (same GCTradeResultSend(3)
+	// this project already uses for other trade-cancel reasons). Ported
+	// from the RoxGaming pack's PlayerTradeOk hook, traced to
+	// CTrade::CGTradeOkButtonRecv in this project's own Trade.cpp.
+	int OnPlayerTradeOk(int aIndex, int bIndex);
 private:
 	lua_State* m_luaState;
 	CCriticalSection m_critical;
