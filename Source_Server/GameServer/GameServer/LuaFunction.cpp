@@ -203,6 +203,12 @@ void InitLuaFunction(lua_State* L) // OK
 	lua_register(L, "InventoryGetMainSize", LuaInventoryGetMainSize);
 	lua_register(L, "InventoryGetFullSize", LuaInventoryGetFullSize);
 	lua_register(L, "InventoryGetItemTable", LuaInventoryGetItemTable);
+	lua_register(L, "InventorySetItemOption", LuaInventorySetItemOption);
+	lua_register(L, "InventorySetItemDurability", LuaInventorySetItemDurability);
+	lua_register(L, "InventoryConvertItem", LuaInventoryConvertItem);
+	lua_register(L, "InventoryIsPeriodicItem", LuaInventoryIsPeriodicItem);
+	lua_register(L, "InventoryGetPeriodicItemTime", LuaInventoryGetPeriodicItemTime);
+	lua_register(L, "InventoryIsExcItem", LuaInventoryIsExcItem);
 	lua_register(L, "InventoryGetItemIndex", LuaInventoryGetItemIndex);
 	lua_register(L, "InventoryGetItemCount", LuaInventoryGetItemCount);
 	lua_register(L, "InventoryDelItemIndex", LuaInventoryDelItemIndex);
@@ -4051,6 +4057,236 @@ int LuaInventoryGetItemTable(lua_State* L) // OK
 	lua_pushnumber(L, gObj[aIndex].Inventory[aValue].m_SocketOptionBonus);
 	lua_settable(L, -3);
 
+	return 1;
+}
+
+// Write side + item-state checks for LuaInventoryGetItemTable above - see
+// LuaFunction.h for where this came from. "type" numbering for
+// LuaInventorySetItemOption matches the RoxGaming pack's own
+// setItemTable(slot, type, value): 1=NewOption, 2=Option1, 3=Option2,
+// 4=Option3, 5=SetOption, 6=JewelOfHarmonyOption, 7=ItemOptionEx,
+// 8=SocketOptionBonus, 9-13=SocketOption[0..4].
+int LuaInventorySetItemOption(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 4)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 4);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+	int aType = lua_tointeger(L, 3);
+	int aValue = lua_tointeger(L, 4);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Inventory[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	CItem* lpItem = &gObj[aIndex].Inventory[aSlot];
+
+	switch (aType)
+	{
+	case 1:
+		lpItem->m_NewOption = (BYTE)aValue;
+		break;
+	case 2:
+		lpItem->m_Option1 = (BYTE)aValue;
+		break;
+	case 3:
+		lpItem->m_Option2 = (BYTE)aValue;
+		break;
+	case 4:
+		lpItem->m_Option3 = (BYTE)aValue;
+		break;
+	case 5:
+		lpItem->m_SetOption = (BYTE)aValue;
+		break;
+	case 6:
+		lpItem->m_JewelOfHarmonyOption = (BYTE)aValue;
+		break;
+	case 7:
+		lpItem->m_ItemOptionEx = (BYTE)aValue;
+		break;
+	case 8:
+		lpItem->m_SocketOptionBonus = (BYTE)aValue;
+		break;
+	case 9:
+	case 10:
+	case 11:
+	case 12:
+	case 13:
+		lpItem->m_SocketOption[aType - 9] = (BYTE)aValue;
+		break;
+	default:
+		return 0;
+	}
+
+	return 1;
+}
+
+int LuaInventorySetItemDurability(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 3)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 3);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+	int aValue = lua_tointeger(L, 3);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Inventory[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].Inventory[aSlot].m_Durability = (float)aValue;
+
+	return 1;
+}
+
+// Recomputes an item's derived/cached stats (defense, damage, etc.) from
+// its current option fields - call after LuaInventorySetItemOption so the
+// item's displayed/effective stats actually reflect the new sockets/
+// options, same as this project's own item-modification code paths do
+// after changing options directly.
+int LuaInventoryConvertItem(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Inventory[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	CItem* lpItem = &gObj[aIndex].Inventory[aSlot];
+
+	lpItem->Convert(lpItem->m_Index, lpItem->m_Option1, lpItem->m_Option2, lpItem->m_Option3, lpItem->m_NewOption, lpItem->m_SetOption, lpItem->m_JewelOfHarmonyOption, lpItem->m_ItemOptionEx, lpItem->m_SocketOption, lpItem->m_SocketOptionBonus);
+
+	return 1;
+}
+
+int LuaInventoryIsPeriodicItem(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Inventory[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gObj[aIndex].Inventory[aSlot].m_IsPeriodicItem);
+	return 1;
+}
+
+int LuaInventoryGetPeriodicItemTime(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Inventory[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].Inventory[aSlot].m_PeriodicItemTime);
+	return 1;
+}
+
+int LuaInventoryIsExcItem(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Inventory[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gObj[aIndex].Inventory[aSlot].IsExcItem());
 	return 1;
 }
 

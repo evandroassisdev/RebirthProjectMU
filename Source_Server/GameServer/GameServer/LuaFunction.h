@@ -182,6 +182,18 @@ int LuaInventoryGetWearSize(lua_State* L);
 int LuaInventoryGetMainSize(lua_State* L);
 int LuaInventoryGetFullSize(lua_State* L);
 int LuaInventoryGetItemTable(lua_State* L);
+// The six below round out LuaInventoryGetItemTable (which already reads
+// every CItem option field into one table) with the write side and a
+// handful of item-state checks it doesn't cover - found by comparing this
+// project's item API against the "RoxGaming Main 5.2 - 60 FPS UPDATE"
+// source pack's LuaInventory.cpp (an OOP getX()/setX() wrapper over the
+// same CItem fields). See the README changelog entry for details.
+int LuaInventorySetItemOption(lua_State* L);
+int LuaInventorySetItemDurability(lua_State* L);
+int LuaInventoryConvertItem(lua_State* L);
+int LuaInventoryIsPeriodicItem(lua_State* L);
+int LuaInventoryGetPeriodicItemTime(lua_State* L);
+int LuaInventoryIsExcItem(lua_State* L);
 int LuaInventoryGetItemIndex(lua_State* L);
 int LuaInventoryGetItemCount(lua_State* L);
 int LuaInventoryDelItemIndex(lua_State* L);
