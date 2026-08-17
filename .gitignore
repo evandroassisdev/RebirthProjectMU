@@ -68,3 +68,10 @@ __pycache__/
 # Editor/OS cruft
 .vs/
 Thumbs.db
+
+# Working/scratch data, not tracked
+Imagens/
+Season 6 - LUA/
+Source_Client/Global Debug/Data/World1NEW/
+Source_Client/Global Debug/Data/Custom/MenuGrid/
+Source_Client/Global Debug/Screenshots/
