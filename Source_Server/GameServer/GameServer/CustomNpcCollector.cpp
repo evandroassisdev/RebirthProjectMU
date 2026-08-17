@@ -33,15 +33,15 @@ void CCustomNpcCollector::Load(char* path)
 
 	for(int n=0;n < MAX_ITEM_LIST;n++)
 	{
-		this->m_Data[this->m_count].m_Cat = -1;
+		this->m_Data[n].m_Cat = -1;
 
-		this->m_Data[this->m_count].m_Item = -1;
+		this->m_Data[n].m_Item = -1;
 
-		this->m_Data[this->m_count].m_Coin1 = 0;
+		this->m_Data[n].m_Coin1 = 0;
 
-		this->m_Data[this->m_count].m_Coin2 = 0;
+		this->m_Data[n].m_Coin2 = 0;
 
-		this->m_Data[this->m_count].m_Coin3 = 0;
+		this->m_Data[n].m_Coin3 = 0;
 	}
 
 	this->m_count = 0;
@@ -66,6 +66,17 @@ void CCustomNpcCollector::Load(char* path)
 						break;
 					}
 
+					// Real bug found+fixed 2026-08-17: this used to write to
+					// m_Data[m_count] with no bound check against
+					// MAX_ITEM_LIST - a data file with more entries than the
+					// array holds silently overran it (heap/stack
+					// corruption, intermittent crash depending on what
+					// memory layout put next to m_Data in a given build).
+					if(this->m_count >= MAX_ITEM_LIST)
+					{
+						break;
+					}
+
 					this->m_Data[this->m_count].m_Cat = lpMemScript->GetNumber();
 
 					this->m_Data[this->m_count].m_Item = lpMemScript->GetAsNumber();
@@ -77,6 +88,14 @@ void CCustomNpcCollector::Load(char* path)
 					this->m_Data[this->m_count].m_Coin3 = lpMemScript->GetAsNumber();
 
 					this->m_count++;
+				}
+				else
+				{
+					// Real bug found+fixed 2026-08-17: no else branch existed
+					// here, so a section id other than 0 spun this inner
+					// while(true) forever (never breaks, never advances the
+					// parser) instead of skipping to the next token/section.
+					break;
 				}
 			}
 		}
