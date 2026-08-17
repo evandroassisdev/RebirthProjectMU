@@ -227,6 +227,7 @@
     <ClCompile Include="source\ClientLuaFunction.cpp" />
     <ClCompile Include="source\ClientScriptLoader.cpp" />
     <ClCompile Include="source\LuaBMD.cpp" />
+    <ClCompile Include="source\LuaCharacter.cpp" />
     <ClCompile Include="source\CKANTURUDirection.cpp" />
     <ClCompile Include="source\CMVP1stDirection.cpp" />
     <ClCompile Include="source\CreditInfo.cpp" />
@@ -591,6 +592,7 @@
     <ClInclude Include="source\ClientLuaFunction.h" />
     <ClInclude Include="source\ClientScriptLoader.h" />
     <ClInclude Include="source\LuaBMD.h" />
+    <ClInclude Include="source\LuaCharacter.h" />
     <ClInclude Include="source\LuaStack.hpp" />
     <ClInclude Include="source\CKANTURUDirection.h" />
     <ClInclude Include="source\CMVP1stDirection.h" />
