@@ -87,6 +87,66 @@ int LuaGetObjectGensContribution(lua_State* L);
 int LuaGetObjectCSGuildSide(lua_State* L);
 int LuaGetObjectOfflineFlag(lua_State* L);
 int LuaGetObjectIndexByName(lua_State* L);
+// Getters/setters below expose OBJECTSTRUCT (User.h) fields that already
+// existed natively but had no Lua binding yet - ported from a survey of the
+// "RoxGaming Main 5.2 - 60 FPS UPDATE" source pack's LuaUser.cpp against
+// this project's real struct (see the README changelog entry for the full
+// field-by-field comparison). No gameplay call sites touched - these are
+// pure data accessors, same shape as every LuaGetObjectX/LuaSetObjectX
+// above.
+int LuaGetObjectDefense(lua_State* L);
+int LuaSetObjectDefense(lua_State* L);
+int LuaGetObjectDefensePvP(lua_State* L);
+int LuaSetObjectDefensePvP(lua_State* L);
+int LuaGetObjectMagicDamageMax(lua_State* L);
+int LuaSetObjectMagicDamageMax(lua_State* L);
+int LuaGetObjectMagicDamageMin(lua_State* L);
+int LuaSetObjectMagicDamageMin(lua_State* L);
+int LuaGetObjectPhysiDamageMaxLeft(lua_State* L);
+int LuaSetObjectPhysiDamageMaxLeft(lua_State* L);
+int LuaGetObjectPhysiDamageMinLeft(lua_State* L);
+int LuaSetObjectPhysiDamageMinLeft(lua_State* L);
+int LuaGetObjectPhysiDamageMaxRight(lua_State* L);
+int LuaSetObjectPhysiDamageMaxRight(lua_State* L);
+int LuaGetObjectPhysiDamageMinRight(lua_State* L);
+int LuaSetObjectPhysiDamageMinRight(lua_State* L);
+int LuaGetObjectPhysiSpeed(lua_State* L);
+int LuaSetObjectPhysiSpeed(lua_State* L);
+int LuaGetObjectMagicSpeed(lua_State* L);
+int LuaSetObjectMagicSpeed(lua_State* L);
+int LuaGetObjectWarehouseCount(lua_State* L);
+int LuaSetObjectWarehouseCount(lua_State* L);
+int LuaGetObjectReqWarehouseOpen(lua_State* L);
+int LuaSetObjectReqWarehouseOpen(lua_State* L);
+int LuaGetObjectExtInventory(lua_State* L);
+int LuaSetObjectExtInventory(lua_State* L);
+int LuaGetObjectExtWarehouse(lua_State* L);
+int LuaSetObjectExtWarehouse(lua_State* L);
+int LuaGetObjectPShopOpen(lua_State* L);
+int LuaSetObjectPShopOpen(lua_State* L);
+int LuaGetObjectPShopText(lua_State* L);
+int LuaSetObjectPShopText(lua_State* L);
+int LuaGetObjectSummonIndex(lua_State* L);
+int LuaSetObjectSummonIndex(lua_State* L);
+int LuaGetObjectDieRegen(lua_State* L);
+int LuaSetObjectDieRegen(lua_State* L);
+int LuaGetObjectRegenMapNumber(lua_State* L);
+int LuaSetObjectRegenMapNumber(lua_State* L);
+int LuaGetObjectRegenMapX(lua_State* L);
+int LuaSetObjectRegenMapX(lua_State* L);
+int LuaGetObjectRegenMapY(lua_State* L);
+int LuaSetObjectRegenMapY(lua_State* L);
+int LuaGetObjectRegenTime(lua_State* L);
+int LuaSetObjectRegenTime(lua_State* L);
+int LuaSetObjectBP(lua_State* L);
+int LuaSetObjectMaxBP(lua_State* L);
+int LuaSetObjectLife(lua_State* L);
+int LuaSetObjectMaxLife(lua_State* L);
+int LuaSetObjectMana(lua_State* L);
+int LuaSetObjectMaxMana(lua_State* L);
+int LuaSetObjectShield(lua_State* L);
+int LuaSetObjectMaxShield(lua_State* L);
+int LuaSetObjectAuthority(lua_State* L);
 int LuaSetObjectLevel(lua_State* L);
 int LuaSetObjectLevelUpPoint(lua_State* L);
 int LuaSetObjectMoney(lua_State* L);
