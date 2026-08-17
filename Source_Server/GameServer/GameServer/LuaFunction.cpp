@@ -23,6 +23,7 @@
 #include "Path.h"
 #include "QueryManager.h"
 #include "Quest.h"
+#include "QuestReward.h"
 #include "ServerInfo.h"
 #include "SetItemType.h"
 #include "Union.h"
@@ -242,6 +243,12 @@ void InitLuaFunction(lua_State* L) // OK
 	lua_register(L, "NoticeGlobalSend", LuaNoticeGlobalSend);
 	lua_register(L, "PartyGetMemberCount", LuaPartyGetMemberCount);
 	lua_register(L, "PartyGetMemberIndex", LuaPartyGetMemberIndex);
+	lua_register(L, "PartyCreate", LuaPartyCreate);
+	lua_register(L, "PartyDestroy", LuaPartyDestroy);
+	lua_register(L, "PartyAddMember", LuaPartyAddMember);
+	lua_register(L, "PartyIsLeader", LuaPartyIsLeader);
+	lua_register(L, "PartyIsMember", LuaPartyIsMember);
+	lua_register(L, "PartyIsParty", LuaPartyIsParty);
 	lua_register(L, "ObjectGetCoin", LuaObjectGetCoin);
 	lua_register(L, "ObjectAddCoin", LuaObjectAddCoin);
 	lua_register(L, "ObjectSubCoin", LuaObjectSubCoin);
@@ -251,6 +258,9 @@ void InitLuaFunction(lua_State* L) // OK
 	lua_register(L, "PKLevelSend", LuaPKLevelSend);
 	lua_register(L, "PostSend", LuaPostSend);
 	lua_register(L, "QuestStateCheck", LuaQuestStateCheck);
+	lua_register(L, "QuestAddList", LuaQuestAddList);
+	lua_register(L, "QuestInsertReward", LuaQuestInsertReward);
+	lua_register(L, "QuestInfoSend", LuaQuestInfoSend);
 	lua_register(L, "RandomGetNumber", LuaRandomGetNumber);
 	lua_register(L, "SkinChangeSend", LuaSkinChangeSend);
 	lua_register(L, "UserDisconnect", LuaUserDisconnect);
@@ -5251,6 +5261,107 @@ int LuaPartyGetMemberIndex(lua_State* L) // OK
 	return 1;
 }
 
+int LuaPartyCreate(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gParty.Create(aIndex));
+	return 1;
+}
+
+int LuaPartyDestroy(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aValue = lua_tointeger(L, 1);
+
+	lua_pushboolean(L, gParty.Destroy(aValue));
+	return 1;
+}
+
+int LuaPartyAddMember(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aValue = lua_tointeger(L, 1);
+	int bIndex = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(bIndex) == 0)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gParty.AddMember(aValue, bIndex));
+	return 1;
+}
+
+int LuaPartyIsLeader(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aValue = lua_tointeger(L, 1);
+	int bIndex = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(bIndex) == 0)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gParty.IsLeader(aValue, bIndex));
+	return 1;
+}
+
+int LuaPartyIsMember(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aValue = lua_tointeger(L, 1);
+	int bIndex = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(bIndex) == 0)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gParty.IsMember(aValue, bIndex));
+	return 1;
+}
+
+int LuaPartyIsParty(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aValue = lua_tointeger(L, 1);
+
+	lua_pushboolean(L, gParty.IsParty(aValue));
+	return 1;
+}
+
 int LuaObjectGetCoin(lua_State* L) // OK
 {
 	if (lua_gettop(L) != 1)
@@ -5523,6 +5634,80 @@ int LuaQuestStateCheck(lua_State* L) // OK
 	{
 		lua_pushinteger(L, 0);
 	}
+
+	return 1;
+}
+
+int LuaQuestAddList(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 3)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 3);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aQuestIndex = lua_tointeger(L, 2);
+	int aQuestState = lua_tointeger(L, 3);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gQuest.AddQuestList(&gObj[aIndex], aQuestIndex, aQuestState));
+	return 1;
+}
+
+int LuaQuestInsertReward(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aQuestIndex = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	gQuestReward.InsertQuestReward(&gObj[aIndex], aQuestIndex);
+
+	return 1;
+}
+
+int LuaQuestInfoSend(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	gQuest.GCQuestInfoSend(aIndex);
 
 	return 1;
 }

@@ -167,15 +167,38 @@ end
 function BridgeFunction_OnNpcTalk(...)
 
 	if BridgeFunctionTable["OnNpcTalk"] ~= nil then
-	
+
 		for _, func in ipairs(BridgeFunctionTable["OnNpcTalk"]) do
-		
+
 			local ret =_G[func.Function](...)
-			
+
 			if ret ~= 0 then return 1 end
-			
+
 		end
-		
+
+	end
+
+	return 0
+
+end
+
+
+-- Fires on every chat message (including "/commands"), before this
+-- server's own command dispatch/broadcast. Any attached handler returning
+-- nonzero silently drops the message for everyone. See ScriptLoader.cpp's
+-- OnChatProc (called from Protocol.cpp's CGChatRecv).
+function BridgeFunction_OnChatProc(...)
+
+	if BridgeFunctionTable["OnChatProc"] ~= nil then
+
+		for _, func in ipairs(BridgeFunctionTable["OnChatProc"]) do
+
+			local ret =_G[func.Function](...)
+
+			if ret ~= 0 then return 1 end
+
+		end
+
 	end
 
 	return 0

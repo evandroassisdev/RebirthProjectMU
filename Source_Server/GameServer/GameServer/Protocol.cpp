@@ -65,6 +65,7 @@
 #include "SocketManagerModern.h"
 #include "Quest.h"
 #include "QuestWorld.h"
+#include "ScriptLoader.h"
 #include "ServerInfo.h"
 #include "SkillManager.h"
 #include "Trade.h"
@@ -1168,6 +1169,11 @@ void CGChatRecv(PMSG_CHAT_RECV* lpMsg,int aIndex) // OK
 	lpMsg->message[(sizeof(lpMsg->message)-1)] = 0;
 
 	gLog.Output(LOG_CHAT,"[General][%s][%s] - (Message: %s)",lpObj->Account,lpObj->Name,lpMsg->message);
+
+	if (gScriptLoader.OnChatProc(aIndex, lpMsg->message) == 1)
+	{
+		return;
+	}
 
 	if(lpMsg->message[0] == '/')
 	{

@@ -227,6 +227,15 @@ int LuaNoticeSendToAll(lua_State* L);
 int LuaNoticeGlobalSend(lua_State* L);
 int LuaPartyGetMemberCount(lua_State* L);
 int LuaPartyGetMemberIndex(lua_State* L);
+// CParty (Party.h) already had Create/Destroy/AddMember natively, just no
+// Lua binding - found by comparing against the "RoxGaming Main 5.2 - 60
+// FPS UPDATE" source pack's LuaFunctions.cpp (see README changelog).
+int LuaPartyCreate(lua_State* L);
+int LuaPartyDestroy(lua_State* L);
+int LuaPartyAddMember(lua_State* L);
+int LuaPartyIsLeader(lua_State* L);
+int LuaPartyIsMember(lua_State* L);
+int LuaPartyIsParty(lua_State* L);
 int LuaObjectGetCoin(lua_State* L);
 int LuaObjectAddCoin(lua_State* L);
 int LuaObjectSubCoin(lua_State* L);
@@ -236,6 +245,11 @@ int LuaPermissionRemove(lua_State* L);
 int LuaPKLevelSend(lua_State* L);
 int LuaPostSend(lua_State* L);
 int LuaQuestStateCheck(lua_State* L);
+// CQuest/CQuestReward (Quest.h/QuestReward.h) already had these natively,
+// just no Lua binding - same survey as the Party functions above.
+int LuaQuestAddList(lua_State* L);
+int LuaQuestInsertReward(lua_State* L);
+int LuaQuestInfoSend(lua_State* L);
 int LuaRandomGetNumber(lua_State* L);
 int LuaSkinChangeSend(lua_State* L);
 int LuaUserDisconnect(lua_State* L);
