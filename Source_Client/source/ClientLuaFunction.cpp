@@ -14,6 +14,8 @@ void InitClientLuaFunction(lua_State* L) // OK
 	lua_register(L, "MousePosY", LuaMousePosY);
 	lua_register(L, "MouseClicked", LuaMouseClicked);
 	lua_register(L, "DrawText", LuaDrawText);
+	lua_register(L, "DrawTextCentered", LuaDrawTextCentered);
+	lua_register(L, "DrawTextBigCentered", LuaDrawTextBigCentered);
 	lua_register(L, "ChatMessage", LuaChatMessage);
 	lua_register(L, "SendCommand", LuaSendCommand);
 	lua_register(L, "IsWarehouseOpen", LuaIsWarehouseOpen);
@@ -25,6 +27,8 @@ void InitClientLuaFunction(lua_State* L) // OK
 	lua_register(L, "GetChatTime", LuaGetChatTime);
 	lua_register(L, "LoadImage", LuaLoadImage);
 	lua_register(L, "RenderImage", LuaRenderImage);
+	lua_register(L, "ScreenWidth", LuaGetScreenWidth);
+	lua_register(L, "ScreenHeight", LuaGetScreenHeight);
 }
 
 int LuaMousePosX(lua_State* L) // OK
@@ -65,6 +69,63 @@ int LuaDrawText(lua_State* L) // OK
 	g_pRenderText->SetTextColor((BYTE)r, (BYTE)g, (BYTE)b, (BYTE)a);
 	g_pRenderText->SetBgColor(0, 0, 0, 0);
 	g_pRenderText->RenderText(x, y, text);
+
+	return 0;
+}
+
+int LuaDrawTextCentered(lua_State* L) // OK
+{
+	// Same as DrawText(), but centered inside a box of width w starting at
+	// x - uses the engine's own RT3_SORT_CENTER layout (RenderText()'s
+	// iBoxWidth/iSort params, UIControls.h) instead of a guessed
+	// char-width heuristic, so it's exact for any font/string.
+	if (lua_gettop(L) != 8)
+	{
+		return luaL_error(L, "[8 arguments expected: x, y, w, text, r, g, b, a]");
+	}
+
+	int x = lua_tointeger(L, 1);
+	int y = lua_tointeger(L, 2);
+	int w = lua_tointeger(L, 3);
+	const char* text = lua_tostring(L, 4);
+	int r = lua_tointeger(L, 5);
+	int g = lua_tointeger(L, 6);
+	int b = lua_tointeger(L, 7);
+	int a = lua_tointeger(L, 8);
+
+	g_pRenderText->SetFont(g_hFont);
+	g_pRenderText->SetTextColor((BYTE)r, (BYTE)g, (BYTE)b, (BYTE)a);
+	g_pRenderText->SetBgColor(0, 0, 0, 0);
+	g_pRenderText->RenderText(x, y, text, w, 0, RT3_SORT_CENTER);
+
+	return 0;
+}
+
+int LuaDrawTextBigCentered(lua_State* L) // OK
+{
+	// Same as DrawTextCentered(), but uses g_hFontBig (Winmain.cpp - same
+	// Tahoma family, bold, 2x the normal g_hFont point size) instead of the
+	// regular UI font - for callers that want a few standout numbers/labels
+	// (e.g. a big selectable digit grid) without needing a whole new font
+	// resource.
+	if (lua_gettop(L) != 8)
+	{
+		return luaL_error(L, "[8 arguments expected: x, y, w, text, r, g, b, a]");
+	}
+
+	int x = lua_tointeger(L, 1);
+	int y = lua_tointeger(L, 2);
+	int w = lua_tointeger(L, 3);
+	const char* text = lua_tostring(L, 4);
+	int r = lua_tointeger(L, 5);
+	int g = lua_tointeger(L, 6);
+	int b = lua_tointeger(L, 7);
+	int a = lua_tointeger(L, 8);
+
+	g_pRenderText->SetFont(g_hFontBig);
+	g_pRenderText->SetTextColor((BYTE)r, (BYTE)g, (BYTE)b, (BYTE)a);
+	g_pRenderText->SetBgColor(0, 0, 0, 0);
+	g_pRenderText->RenderText(x, y, text, w, 0, RT3_SORT_CENTER);
 
 	return 0;
 }
@@ -420,7 +481,49 @@ int LuaRenderImage(lua_State* L) // OK
 		}
 	}
 
+	// RenderBitmap() (ZzzOpenglUtil.cpp) never touches GL_BLEND itself - a
+	// texture's alpha channel is silently ignored (drawn fully opaque)
+	// unless something upstream already left blending enabled. A prior
+	// session's commit message (a870875) claimed this was already wrapped
+	// here, but the actual diff never added it - confirmed by grepping this
+	// file for EnableAlphaTest/DisableAlphaBlend before this fix, both
+	// absent. Symptom this caused: any texture with real transparency (a
+	// rounded corner's outside-the-curve area, etc.) rendered its "should
+	// be see-through" pixels using their raw RGB instead - invisible for
+	// op1_back1.OZT-style native assets (their transparent areas happen to
+	// already be near-black, coincidentally close to the dark backdrop they
+	// sit over), but glaringly wrong for Panel9's corner art (transparent
+	// area is (0,0,0,0) - solid black square instead of the game world
+	// showing through). Same EnableAlphaTest()/DisableAlphaBlend() pair
+	// every native textured-UI Render() in this codebase already wraps
+	// itself in (e.g. NewUIWindowMenu.cpp::Render()).
+	EnableAlphaTest();
 	RenderBitmap(textureId, x, y, w, h, 0.f, 0.f, uWidth, vHeight);
+	DisableAlphaBlend();
 
 	return 0;
+}
+
+// RenderImage()/DrawPanel()/DrawText() (this file) all go through
+// RenderBitmap()/RenderColor() (ZzzOpenglUtil.cpp), which unconditionally
+// scale every x/y/w/h via ConvertX/Y ("x * WindowWidth / 640.f") - i.e. the
+// whole Lua rendering API works in a fixed 640x480 virtual canvas,
+// auto-stretched to the real resolution. MousePosX()/MousePosY() are
+// already converted back into that same 640x480 space for the same reason
+// (Winmain.cpp: "LOWORD(lParam) / g_fScreenRate_x"). These two return that
+// canvas size as fixed constants (not a real screen query - CInput::
+// GetScreenWidth()/Height() is real, unscaled pixels, a DIFFERENT space
+// used only by the native CWin/CSprite window system) so a script's own
+// centering math ((ScreenWidth() - w) / 2) lines up with where
+// RenderImage()/DrawPanel() actually draw, at any real resolution.
+int LuaGetScreenWidth(lua_State* L) // OK
+{
+	lua_pushinteger(L, 640);
+	return 1;
+}
+
+int LuaGetScreenHeight(lua_State* L) // OK
+{
+	lua_pushinteger(L, 480);
+	return 1;
 }

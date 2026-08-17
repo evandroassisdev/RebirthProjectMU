@@ -61,6 +61,10 @@ Source_Server/ConnectServer/Dependences/curl-master/
 *.VC.db
 *.VC.VC.opendb
 
+# Python build cache (Tools/*.py helper scripts)
+__pycache__/
+*.pyc
+
 # Editor/OS cruft
 .vs/
 Thumbs.db
