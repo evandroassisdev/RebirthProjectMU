@@ -233,6 +233,7 @@
     <ClCompile Include="source\LuaItemObject.cpp" />
     <ClCompile Include="source\LuaCloth.cpp" />
     <ClCompile Include="source\LuaEffectsNormal.cpp" />
+    <ClCompile Include="source\LuaInterface.cpp" />
     <ClCompile Include="source\CKANTURUDirection.cpp" />
     <ClCompile Include="source\CMVP1stDirection.cpp" />
     <ClCompile Include="source\CreditInfo.cpp" />
@@ -603,6 +604,7 @@
     <ClInclude Include="source\LuaItemObject.h" />
     <ClInclude Include="source\LuaCloth.h" />
     <ClInclude Include="source\LuaEffectsNormal.h" />
+    <ClInclude Include="source\LuaInterface.h" />
     <ClInclude Include="source\LuaStack.hpp" />
     <ClInclude Include="source\CKANTURUDirection.h" />
     <ClInclude Include="source\CMVP1stDirection.h" />

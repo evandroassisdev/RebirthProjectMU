@@ -13,6 +13,7 @@
 #include "LuaItemObject.h"
 #include "LuaCloth.h"
 #include "LuaEffectsNormal.h"
+#include "LuaInterface.h"
 
 // lua52.lib was built against an old (pre-UCRT) MSVC CRT that calls
 // __iob_func() to get at stdin/stdout/stderr. This toolset's
@@ -169,6 +170,7 @@ void CClientScriptLoader::Load(char* path)
 	InitLuaItemObject(lua);
 	InitLuaCloth(lua);
 	InitLuaEffectsNormal(lua);
+	InitLuaInterface(lua);
 
 	if (LoadScriptChunk(lua, path) != 0)
 	{
