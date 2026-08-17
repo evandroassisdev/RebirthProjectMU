@@ -333,10 +333,6 @@ namespace
 		return 0;
 	}
 
-	void LuaIsVisibleHPPet(int Key)
-	{
-		g_pItemEnduranceInfo->m_isVisibleHPBar = (Key != 0);
-	}
 }
 
 void InitLuaInterface(lua_State* L)
@@ -375,7 +371,6 @@ void InitLuaInterface(lua_State* L)
 	luaaa::LuaModule(L).fun("SetLockInterfaces", &LuaSetLockInterfaces);
 	luaaa::LuaModule(L).fun("SetUnlockInterfaces", &LuaSetUnlockInterfaces);
 	luaaa::LuaModule(L).fun("GetLanguage", &LuaGetLanguage);
-	luaaa::LuaModule(L).fun("VisibleHPPet", &LuaIsVisibleHPPet);
 
 	lua_register(L, "CheckClickClient", LuaCheckClickClient);
 	lua_register(L, "SetBlend", LuaSetBlend);
