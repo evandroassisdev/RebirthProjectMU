@@ -6,6 +6,15 @@
 #include "ClientScriptLoader.h"
 #include "./Utilities/Log/muConsoleDebug.h"
 #include "ClientLuaFunction.h"
+#include "LuaBMD.h"
+#include "LuaCharacter.h"
+#include "LuaUser.h"
+#include "LuaObject.h"
+#include "LuaItemObject.h"
+#include "LuaCloth.h"
+#include "LuaEffectsNormal.h"
+#include "LuaInterface.h"
+#include "LuaGlobal.h"
 
 // lua52.lib was built against an old (pre-UCRT) MSVC CRT that calls
 // __iob_func() to get at stdin/stdout/stderr. This toolset's
@@ -155,6 +164,15 @@ void CClientScriptLoader::Load(char* path)
 	lua_gc(lua, LUA_GCCOLLECT, 0);
 
 	InitClientLuaFunction(lua);
+	InitLuaBMD(lua);
+	InitLuaCharacter(lua);
+	InitLuaUser(lua);
+	InitLuaObject(lua);
+	InitLuaItemObject(lua);
+	InitLuaCloth(lua);
+	InitLuaEffectsNormal(lua);
+	InitLuaInterface(lua);
+	InitLuaGlobal(lua);
 
 	if (LoadScriptChunk(lua, path) != 0)
 	{
