@@ -4800,35 +4800,6 @@ void CObjectManager::CharacterLifeCheck(LPOBJ lpObj,LPOBJ lpTarget,int damage,in
 
 	if(lpTarget->Life <= 0 && lpTarget->Live != 0)
 	{
-		// A killing blow used to skip the damage packet entirely - only the
-		// "else" branch below (target survives) ever called GCDamageSend,
-		// so the floating damage number never showed up on a hitkill (only
-		// GCUserDieSend, further down, fired). Send it here too, mirroring
-		// the same DamageType dispatch as the survive branch, before the
-		// death-handling below runs.
-		if(DamageType == 0)
-		{
-			GCDamageSend(SummonIndex,lpTarget->Index,flag,damage,type,ShieldDamage);
-		}
-		else if(DamageType == 1)
-		{
-			GCMonsterDamageSend(lpTarget->Index,damage,ShieldDamage);
-		}
-		else if(DamageType == 2)
-		{
-			GCDamageSend(SummonIndex,lpTarget->Index,flag,damage,5,ShieldDamage);
-		}
-		else if(DamageType == 3)
-		{
-			GCDamageSend(SummonIndex,lpTarget->Index,flag,damage,6,ShieldDamage);
-		}
-		else if(DamageType == 4)
-		{
-			#if(GAMESERVER_UPDATE>=701)
-			GCElementalDamageSend(SummonIndex,lpTarget->Index,type,damage);
-			#endif
-		}
-
 		if(gObj[SummonIndex].Type == OBJECT_MONSTER)
 		{
 			lpTarget->KillerType = 1;
