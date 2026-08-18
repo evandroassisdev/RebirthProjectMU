@@ -2124,8 +2124,6 @@ bool CSkillManager::SkillDeathStab(int aIndex,int bIndex,CSkill* lpSkill,BYTE an
 		return 0;
 	}
 
-	this->GCSkillAttackSend(lpObj,lpSkill->m_index,bIndex,1);
-
 	gAttack.Attack(lpObj,lpTarget,lpSkill,1,0,0,0,combo);
 
 	if(combo != 0)

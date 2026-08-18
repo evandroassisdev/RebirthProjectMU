@@ -2401,6 +2401,8 @@ bool AttackStage(CHARACTER* c, OBJECT* o)
                 break;
             }
 
+			g_iLimitAttackTime = 15;
+
 			if ( 8 == c->AttackTime)
 			{
 				if (SceneFlag != LOG_IN_SCENE)
@@ -2477,17 +2479,21 @@ bool AttackStage(CHARACTER* c, OBJECT* o)
                 break;
             }
 
+			g_iLimitAttackTime = 15;
+
 			if ( 8 == c->AttackTime)
 			{
 				if (SceneFlag != LOG_IN_SCENE)
 					PlayBuffer(SOUND_SKILL_SWORD2);
-
-				// Wind-slash burst - dedicated visual for Death Stab, no longer
-				// borrowed from Blow Up's flying-spear effect (which only made
-				// sense for a spear-wielding caster).
-				vec3_t WindLight = { 0.6f, 0.8f, 1.0f };
-				CreateEffect(MODEL_WINDFOCE, o->Position, o->Angle, WindLight, 0, o, -1, 0, 0, 0, 1.0f);
 			}
+
+			// TODO: dedicated wind-slash visual still pending - tried MODEL_WINDFOCE
+			// (stationary aura, wrong shape), a BITMAP_GROUND_WIND multi-strand fan
+			// (wrong look), and MODEL_PIERCING2 (traveling piercing bolt + ripple
+			// waves, closest so far but still not confirmed correct). None matched
+			// the reference look yet. AttackTime timing itself is fixed (see
+			// g_iLimitAttackTime above) and the sound/hit-reaction below already
+			// fire correctly - only the visual is still open.
 
 
 			if ( c->AttackTime <= 8)
