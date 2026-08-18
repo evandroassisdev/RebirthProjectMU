@@ -1618,7 +1618,15 @@ bool SEASON3B::CNewUIMyInventory::InventoryProcess()
 				|| pPickItem->Type == ITEM_POTION + 160
 				|| pPickItem->Type == ITEM_POTION + 161
 #endif // LEM_ADD_LUCKYITEM
-				|| pPickItem->Type == ITEM_POTION + 252 // CustomJewel - Jewel of Full (gCustomJewel), test item
+				|| pPickItem->Type == ITEM_POTION + 244 // CustomJewel - Jewel of Level
+				|| pPickItem->Type == ITEM_POTION + 245 // CustomJewel - Jewel of Skill
+				|| pPickItem->Type == ITEM_POTION + 246 // CustomJewel - Jewel of Luck
+				|| pPickItem->Type == ITEM_POTION + 247 // CustomJewel - Jewel of Adicional
+				|| pPickItem->Type == ITEM_POTION + 248 // CustomJewel - Jewel of Excellent
+				|| pPickItem->Type == ITEM_POTION + 249 // CustomJewel - Jewel of Socket
+				|| pPickItem->Type == ITEM_POTION + 250 // CustomJewel - Jewel of Ancient 1
+				|| pPickItem->Type == ITEM_POTION + 251 // CustomJewel - Jewel of Ancient 2
+				|| pPickItem->Type == ITEM_POTION + 252 // CustomJewel - Jewel of Full
 				)
 			{
 				ITEM* pItem = m_pNewInventoryCtrl->FindItem(iTargetIndex);

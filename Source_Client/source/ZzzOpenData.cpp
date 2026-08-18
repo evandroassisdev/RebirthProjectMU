@@ -960,11 +960,24 @@ void OpenItems()
     gLoadData.AccessModel(MODEL_POTION+15,"Data\\Item\\","Gold",1);
     gLoadData.AccessModel(MODEL_POTION+16,"Data\\Item\\","Jewel",3);
 
-	// CustomJewel (gCustomJewel) - GET_ITEM(14,252) "Jewel of Full". Testing
-	// with just this one item first: reuses the exact same Jewel1.bmd model
-	// already proven working for Jewel of Bless (MODEL_POTION+13 above),
-	// instead of the Wizard Team EX301KOR model that rendered broken.
-	gLoadData.AccessModel(MODEL_POTION+252,"Data\\Item\\","Jewel",1);
+	// CustomJewel (gCustomJewel) - GET_ITEM(14,244-252), the 9 items applied
+	// to another item to add level/skill/luck/additional/excellent/socket/
+	// set. Real Wizard Team EX301KOR models where their embedded texture
+	// reference genuinely exists in their package (confirmed and copied
+	// in) - matches this project's own CustomJewel.txt ModelName field for
+	// each index. 249 (Socket) has no matching Wizard Team asset, reuses
+	// the proven-working Jewel of Bless model as a placeholder pending real
+	// art. 250/251 (Ancient 1/2) already had their own model file shipped
+	// in this project (Jewel187/188.bmd) - just never registered/textured.
+	gLoadData.AccessModel(MODEL_POTION+244,"Data\\Item\\","Jewel180");	// Level
+	gLoadData.AccessModel(MODEL_POTION+245,"Data\\Item\\","Jewel181");	// Skill
+	gLoadData.AccessModel(MODEL_POTION+246,"Data\\Item\\","Jewel182");	// Luck
+	gLoadData.AccessModel(MODEL_POTION+247,"Data\\Item\\","Jewel183");	// Adicional
+	gLoadData.AccessModel(MODEL_POTION+248,"Data\\Item\\","Jewel184");	// Excellent
+	gLoadData.AccessModel(MODEL_POTION+249,"Data\\Item\\","Jewel",1);	// Socket - placeholder
+	gLoadData.AccessModel(MODEL_POTION+250,"Data\\Item\\","Jewel187");	// Ancient 1
+	gLoadData.AccessModel(MODEL_POTION+251,"Data\\Item\\","Jewel188");	// Ancient 2
+	gLoadData.AccessModel(MODEL_POTION+252,"Data\\Item\\","Jewel186");	// Full
 
 	for(int i=0;i<3;i++)
 		gLoadData.AccessModel(MODEL_POTION+17+i,"Data\\Item\\","Devil",i);
@@ -1848,9 +1861,6 @@ void OpenItemTextures()
 	gLoadData.OpenTexture(MODEL_POTION+160, "Item\\LuckyItem\\" );
 	gLoadData.OpenTexture(MODEL_POTION+161, "Item\\LuckyItem\\" );
 
-	// CustomJewel - Jewel of Full (GET_ITEM(14,252)), test item.
-	gLoadData.OpenTexture(MODEL_POTION+252, "Item\\");
-
 	sprintf(szLuckySetPathName, "Player\\LuckyItem\\65\\InvenArmorMale40_luck.tga");
 	LoadBitmap(szLuckySetPathName, BITMAP_INVEN_ARMOR+6);
 	sprintf(szLuckySetPathName, "Player\\LuckyItem\\65\\InvenPantsMale40_luck.tga");
@@ -1861,6 +1871,20 @@ void OpenItemTextures()
 	LoadBitmap(szLuckySetPathName, BITMAP_INVEN_PANTS+7);
 #endif // LEM_ADD_LUCKYITEM
 
+	// CustomJewel - GET_ITEM(14,244-252). Must stay OUTSIDE the
+	// LEM_ADD_LUCKYITEM block above (that macro is never defined anywhere in
+	// this project - the whole block silently compiles out, which is why
+	// this call never actually ran the first time for index 252 and
+	// IndexTexture[0] stayed at the debug-heap 0xCDCDCDCD fill pattern).
+	gLoadData.OpenTexture(MODEL_POTION+244, "Item\\");
+	gLoadData.OpenTexture(MODEL_POTION+245, "Item\\");
+	gLoadData.OpenTexture(MODEL_POTION+246, "Item\\");
+	gLoadData.OpenTexture(MODEL_POTION+247, "Item\\");
+	gLoadData.OpenTexture(MODEL_POTION+248, "Item\\");
+	gLoadData.OpenTexture(MODEL_POTION+249, "Item\\");
+	gLoadData.OpenTexture(MODEL_POTION+250, "Item\\");
+	gLoadData.OpenTexture(MODEL_POTION+251, "Item\\");
+	gLoadData.OpenTexture(MODEL_POTION+252, "Item\\");
 }
 
 void DeleteNpcs()
