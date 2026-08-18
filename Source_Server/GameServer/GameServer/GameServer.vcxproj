@@ -192,6 +192,7 @@
     <ClInclude Include="CustomQuest.h" />
     <ClInclude Include="CustomQuiz.h" />
     <ClInclude Include="CustomRanking.h" />
+    <ClInclude Include="CustomJewelBank.h" />
     <ClInclude Include="CustomRankUser.h" />
     <ClInclude Include="CustomStartItem.h" />
     <ClInclude Include="CustomStore.h" />
@@ -454,6 +455,7 @@
     <ClCompile Include="CustomQuest.cpp" />
     <ClCompile Include="CustomQuiz.cpp" />
     <ClCompile Include="CustomRanking.cpp" />
+    <ClCompile Include="CustomJewelBank.cpp" />
     <ClCompile Include="CustomRankUser.cpp" />
     <ClCompile Include="CustomStartItem.cpp" />
     <ClCompile Include="CustomStore.cpp" />

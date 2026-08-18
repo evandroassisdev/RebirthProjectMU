@@ -825,6 +825,12 @@ void DataServerProtocolCore(int index,BYTE head,BYTE* lpMsg,int size) // OK
 				case 0x03:
 					GDStartItemSaveRecv((SDHP_STARTITEM_SAVE_RECV*)lpMsg);
 					break;
+				case 0x04:
+					GDJewelBankSaveRecv((SDHP_JEWELBANK_SAVE_RECV*)lpMsg);
+					break;
+				case 0x05:
+					GDJewelBankInfoRequestRecv((SDHP_JEWELBANK_INFO_REQUEST_RECV*)lpMsg,index);
+					break;
 			}
             break;
 	}
@@ -3299,6 +3305,95 @@ void GDCustomAttackSaveRecv(SDHP_CARESUME_SAVE_RECV* lpMsg)
 		gQueryManager.ExecQuery("Update CustomAttack SET Active = %d, Skill = %d, Map = %d, PosX = %d, PosY = %d, AutoBuff = %d, OffPvP = %d, AutoReset = %d, AutoAddStr = %d, AutoAddAgi = %d, AutoAddVit = %d, AutoAddEne = %d, AutoAddCmd = %d  WHERE Name = '%s'",lpMsg->active,lpMsg->skill,lpMsg->map,lpMsg->posx,lpMsg->posy,lpMsg->autobuff,lpMsg->offpvp,lpMsg->autoreset,lpMsg->autoaddstr,lpMsg->autoaddagi,lpMsg->autoaddvit,lpMsg->autoaddene,lpMsg->autoaddcmd,lpMsg->name);
 		gQueryManager.Close();
 	}
+}
+
+// JewelBank - ported from Wizard Team EX301KOR. Column order matches this project's own
+// CJewelMix type scheme (0=Bless,1=Soul,2=Life,3=Creation,4=Guardian,5=GemStone,6=Harmony,
+// 7=Chaos,8=LowStone,9=HighStone), NOT Wizard Team's own numbering.
+static const char* JewelBankColumnName(int type)
+{
+	switch (type)
+	{
+	case 0: return "Bless";
+	case 1: return "Soul";
+	case 2: return "Life";
+	case 3: return "Creation";
+	case 4: return "Guardian";
+	case 5: return "GemStone";
+	case 6: return "Harmony";
+	case 7: return "Chaos";
+	case 8: return "LowStone";
+	case 9: return "HighStone";
+	}
+
+	return NULL;
+}
+
+void GDJewelBankSaveRecv(SDHP_JEWELBANK_SAVE_RECV* lpMsg)
+{
+	const char* column = JewelBankColumnName(lpMsg->type);
+
+	if (column == NULL)
+	{
+		return;
+	}
+
+	if (gQueryManager.ExecQuery("SELECT AccountID FROM CustomJewelBank WHERE AccountID='%s'", lpMsg->account) == 0 || gQueryManager.Fetch() == SQL_NO_DATA)
+	{
+		gQueryManager.Close();
+		gQueryManager.ExecQuery("INSERT INTO CustomJewelBank (AccountID,%s) VALUES ('%s',%d)", column, lpMsg->account, lpMsg->count);
+		gQueryManager.Close();
+	}
+	else
+	{
+		gQueryManager.Close();
+		gQueryManager.ExecQuery("UPDATE CustomJewelBank SET %s = %s + %d WHERE AccountID='%s'", column, column, lpMsg->count, lpMsg->account);
+		gQueryManager.Close();
+	}
+}
+
+void GDJewelBankInfoRequestRecv(SDHP_JEWELBANK_INFO_REQUEST_RECV* lpMsg, int index)
+{
+	SDHP_JEWELBANK_INFO_SEND pMsg = { 0 };
+
+	pMsg.header.set(0xF6, sizeof(pMsg));
+
+	pMsg.index = lpMsg->index;
+
+	if (gQueryManager.ExecQuery("SELECT * FROM CustomJewelBank WHERE AccountID='%s'", lpMsg->account) == 0 || gQueryManager.Fetch() == SQL_NO_DATA)
+	{
+		gQueryManager.Close();
+		gQueryManager.ExecQuery("INSERT INTO CustomJewelBank (AccountID) VALUES ('%s')", lpMsg->account);
+		gQueryManager.Close();
+
+		pMsg.Bless = 0;
+		pMsg.Soul = 0;
+		pMsg.Life = 0;
+		pMsg.Creation = 0;
+		pMsg.Guardian = 0;
+		pMsg.GemStone = 0;
+		pMsg.Harmony = 0;
+		pMsg.Chaos = 0;
+		pMsg.LowStone = 0;
+		pMsg.HighStone = 0;
+	}
+	else
+	{
+		pMsg.Bless = gQueryManager.GetAsInteger("Bless");
+		pMsg.Soul = gQueryManager.GetAsInteger("Soul");
+		pMsg.Life = gQueryManager.GetAsInteger("Life");
+		pMsg.Creation = gQueryManager.GetAsInteger("Creation");
+		pMsg.Guardian = gQueryManager.GetAsInteger("Guardian");
+		pMsg.GemStone = gQueryManager.GetAsInteger("GemStone");
+		pMsg.Harmony = gQueryManager.GetAsInteger("Harmony");
+		pMsg.Chaos = gQueryManager.GetAsInteger("Chaos");
+		pMsg.LowStone = gQueryManager.GetAsInteger("LowStone");
+		pMsg.HighStone = gQueryManager.GetAsInteger("HighStone");
+
+		gQueryManager.Close();
+	}
+
+	gSocketManager.DataSend(index, (BYTE*)&pMsg, sizeof(pMsg));
 }
 
 void GDCustomNpcQuestSaveRecv(SDHP_CUSTOMNPCQUEST_SAVE_RECV* lpMsg) // OK

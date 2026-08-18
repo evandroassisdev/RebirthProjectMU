@@ -11,6 +11,7 @@
 #include "ChaosCastle.h"
 #include "CommandManager.h"
 #include "CustomBuyVip.h"
+#include "CustomJewelBank.h"
 #include "CustomCommandDescription.h"
 #include "CustomEventTime.h"
 #include "CustomExchangeCoin.h"
@@ -1014,6 +1015,12 @@ void ProtocolCore(BYTE head,BYTE* lpMsg,int size,int aIndex,int encrypt,int seri
 					break;
 				case 0xF1:
 					GCPingRecv(aIndex);
+					break;
+				case 0xF5:
+					gCustomJewelBank.JewelBankDepositRecv((PMSG_JEWELBANK_DEPOSIT_RECV*)lpMsg,aIndex);
+					break;
+				case 0xF6:
+					gCustomJewelBank.JewelBankWithdrawRecv((PMSG_JEWELBANK_WITHDRAW_RECV*)lpMsg,aIndex);
 					break;
 			}
 			break;

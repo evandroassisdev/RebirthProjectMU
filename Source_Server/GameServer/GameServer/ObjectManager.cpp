@@ -20,6 +20,7 @@
 #include "CrywolfSync.h"
 #include "CustomArena.h"
 #include "CustomAttack.h"
+#include "CustomJewelBank.h"
 #include "CustomDeathMessage.h"  
 #include "CustomJewel.h"
 #include "CustomMonster.h"
@@ -4751,6 +4752,8 @@ bool CObjectManager::CharacterInfoSet(BYTE* aRecv,int aIndex) // OK
 	gInventoryEquipment.InsertInventoryEquipment(lpObj);
 
 	GCWeatherSend(lpObj->Index,(gMap[lpObj->Map].GetWeather()/16));
+
+	gCustomJewelBank.RequestJewelBankInfo(aIndex);
 
 	GCMainCheckSend(aIndex);
 

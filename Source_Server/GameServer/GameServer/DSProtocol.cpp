@@ -8,6 +8,7 @@
 #include "ChaosBox.h"
 #include "CommandManager.h"
 #include "CustomAttack.h"
+#include "CustomJewelBank.h"
 #include "CustomNpcQuest.h"
 #include "CustomQuest.h"
 #include "CustomRanking.h"
@@ -603,6 +604,9 @@ void DataServerProtocolCore(BYTE head,BYTE* lpMsg,int size) // OK
 			break;
 		case 0xF5:
 			gCustomAttack.DGCustomAttackResumeRecv((SDHP_CARESUME_RECV*)lpMsg);
+			break;
+		case 0xF6:
+			gCustomJewelBank.JewelBankInfoRecv((SDHP_JEWELBANK_INFO_RECV*)lpMsg);
 			break;
 		case 0xF7:
 			switch(((lpMsg[0]==0xC1)?lpMsg[3]:lpMsg[4]))

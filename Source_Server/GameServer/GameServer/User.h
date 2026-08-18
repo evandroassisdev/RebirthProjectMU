@@ -1078,6 +1078,18 @@ struct OBJECTSTRUCT
 	int VipMoney;
 	WORD VipDays;
 	DWORD MarryTimeMsj; //marry system
+
+	// JewelBank - per-account jewel/gemstone storage, ported from Wizard Team EX301KOR
+	int JewelChaosCount;
+	int JewelLifeCount;
+	int JewelSoulCount;
+	int JewelBlessCount;
+	int JewelCreationCount;
+	int JewelGuardianCount;
+	int JewelHarmonyCount;
+	int JewelGemStoneCount;
+	int JewelLowStoneCount;
+	int JewelHighStoneCount;
 };
 
 enum ClassNumber {

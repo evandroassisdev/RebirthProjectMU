@@ -584,6 +584,43 @@ struct SDHP_CARESUME_SAVE_RECV
 	DWORD autoaddcmd;
 };
 
+// JewelBank - ported from Wizard Team EX301KOR, see GameServer/CustomJewelBank.h for the
+// GameServer-side "_SEND" structs this mirrors (same byte layout, received here as "_RECV").
+struct SDHP_JEWELBANK_SAVE_RECV
+{
+	PWMSG_HEAD header; // C2:F7 sub 0x04
+	BYTE subcode;
+	char account[11];
+	int type;
+	int count;
+};
+
+struct SDHP_JEWELBANK_INFO_REQUEST_RECV
+{
+	PWMSG_HEAD header; // C2:F7 sub 0x05
+	BYTE subcode;
+	int index;
+	char account[11];
+};
+
+// This is the reply DataServer sends back - byte layout must match GameServer's own
+// SDHP_JEWELBANK_INFO_RECV (CustomJewelBank.h) which parses it on the other end.
+struct SDHP_JEWELBANK_INFO_SEND
+{
+	PWMSG_HEAD header; // C2:F6
+	int index;
+	int Bless;
+	int Soul;
+	int Life;
+	int Creation;
+	int Guardian;
+	int GemStone;
+	int Harmony;
+	int Chaos;
+	int LowStone;
+	int HighStone;
+};
+
 struct SDHP_RANKING_TVT_EVENT_SAVE_RECV
 {
 	PBMSG_HEAD header; // C1:55
@@ -981,6 +1018,8 @@ void GDCustomQuestRecv(SDHP_CUSTOMQUEST_RECV* lpMsg,int index);
 void GDSetCoinRecv(SDHP_SETCOIN_RECV* lpMsg);
 void GDCustomRankingRecv(SDHP_CUSTOM_RANKING_RECV* lpMsg,int index);
 void GDCustomAttackResumeRecv(SDHP_CARESUME_RECV* lpMsg,int index);
+void GDJewelBankSaveRecv(SDHP_JEWELBANK_SAVE_RECV* lpMsg);
+void GDJewelBankInfoRequestRecv(SDHP_JEWELBANK_INFO_REQUEST_RECV* lpMsg, int index);
 void GDCustomAttackSaveRecv(SDHP_CARESUME_SAVE_RECV* lpMsg);
 void GDCustomNpcQuestSaveRecv(SDHP_CUSTOMNPCQUEST_SAVE_RECV* lpMsg);
 void GDCustomNpcQuestRecv(SDHP_CUSTOMNPCQUEST_RECV* lpMsg,int index);
