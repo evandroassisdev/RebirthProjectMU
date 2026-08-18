@@ -464,7 +464,7 @@ public:
 	bool SkillNova(int aIndex,int bIndex,CSkill* lpSkill,bool combo);
 	bool SkillTwistingSlash(int aIndex,int bIndex,CSkill* lpSkill,bool combo);
 	bool SkillRagefulBlow(int aIndex,int bIndex,CSkill* lpSkill,bool combo);
-	bool SkillDeathStab(int aIndex,int bIndex,CSkill* lpSkill,bool combo);
+	bool SkillDeathStab(int aIndex,int bIndex,CSkill* lpSkill,BYTE angle,bool combo);
 	bool SkillGreaterLife(int aIndex,int bIndex,CSkill* lpSkill);
 	bool SkillMonsterAreaAttack(int aIndex,int bIndex,CSkill* lpSkill);
 	bool SkillPowerSlash(int aIndex,int bIndex,CSkill* lpSkill,BYTE angle,bool combo);

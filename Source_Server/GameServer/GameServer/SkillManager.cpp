@@ -1094,7 +1094,7 @@ bool CSkillManager::RunningSkill(int aIndex,int bIndex,CSkill* lpSkill,BYTE x,BY
 		case SKILL_RAGEFUL_BLOW:
 			return this->SkillRagefulBlow(aIndex,bIndex,lpSkill,combo);
 		case SKILL_DEATH_STAB:
-			return this->SkillDeathStab(aIndex,bIndex,lpSkill,combo);
+			return this->SkillDeathStab(aIndex,bIndex,lpSkill,angle,combo);
 		case SKILL_CRESCENT_MOON_SLASH:
 			return this->SkillCastleSiege(aIndex,bIndex,lpSkill,combo);
 		case SKILL_MANA_GLAIVE:
@@ -2108,7 +2108,7 @@ bool CSkillManager::SkillRagefulBlow(int aIndex,int bIndex,CSkill* lpSkill,bool 
 	return 1;
 }
 
-bool CSkillManager::SkillDeathStab(int aIndex,int bIndex,CSkill* lpSkill,bool combo) // OK
+bool CSkillManager::SkillDeathStab(int aIndex,int bIndex,CSkill* lpSkill,BYTE angle,bool combo) // OK
 {
 	LPOBJ lpObj = &gObj[aIndex];
 
@@ -2133,6 +2133,10 @@ bool CSkillManager::SkillDeathStab(int aIndex,int bIndex,CSkill* lpSkill,bool co
 		this->GCSkillAttackSend(lpObj,SKILL_COMBO,bIndex,1);
 	}
 
+	int SkillFrustrumX[4],SkillFrustrumY[4];
+
+	this->GetSkillFrustrum(SkillFrustrumX,SkillFrustrumY,angle,lpObj->X,lpObj->Y,6.0f,6.0f,1.0f,0.0f);
+
 	int count = 0;
 
 	for(int n=0;n < MAX_VIEWPORT;n++)
@@ -2154,7 +2158,12 @@ bool CSkillManager::SkillDeathStab(int aIndex,int bIndex,CSkill* lpSkill,bool co
 			continue;
 		}
 
-		if(this->CheckSkillRadio(lpSkill->m_index,lpTarget->X,lpTarget->Y,gObj[index].X,gObj[index].Y) == 0)
+		if(this->CheckSkillRadio(lpSkill->m_index,lpObj->X,lpObj->Y,gObj[index].X,gObj[index].Y) == 0)
+		{
+			continue;
+		}
+
+		if(this->CheckSkillFrustrum(SkillFrustrumX,SkillFrustrumY,gObj[index].X,gObj[index].Y) == 0)
 		{
 			continue;
 		}
