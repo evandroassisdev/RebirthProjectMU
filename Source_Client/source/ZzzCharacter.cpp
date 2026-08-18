@@ -2393,7 +2393,6 @@ bool AttackStage(CHARACTER* c, OBJECT* o)
 	case AT_SKILL_BLOW_UP+2:
 	case AT_SKILL_BLOW_UP+3:
 	case AT_SKILL_BLOW_UP+4:
-	case AT_SKILL_ONETOONE:
 		{
 			BMD *b = &Models[o->Type];
 
@@ -2449,6 +2448,59 @@ bool AttackStage(CHARACTER* c, OBJECT* o)
 				CreateEffect( MODEL_SPEAR, Position, o->Angle, Light, 1, o);
 				CreateEffect( MODEL_SPEAR, Position, o->Angle, Light, 1, o);
 
+				if(c->TargetCharacter != -1)
+				{
+					CHARACTER *tc = &CharactersClient[c->TargetCharacter];
+					if ( c->TargetCharacter != -1)
+					{
+						OBJECT *to = &tc->Object;
+						if ( 10 <= c->AttackTime && to->Live)
+						{
+							//PlayBuffer( SOUND_THUNDER01);
+							to->m_byHurtByOneToOne = 35;
+						}
+					}
+				}
+			}
+			if ( c->AttackTime>=12 )
+			{
+				c->AttackTime = g_iLimitAttackTime;
+			}
+		}
+		break;
+	case AT_SKILL_ONETOONE:
+		{
+			BMD *b = &Models[o->Type];
+
+            if ( b->Bones[c->Weapon[Hand].LinkBone].Dummy || c->Weapon[Hand].LinkBone>=b->NumBones )
+            {
+                break;
+            }
+
+			if ( 8 == c->AttackTime)
+			{
+				if (SceneFlag != LOG_IN_SCENE)
+					PlayBuffer(SOUND_SKILL_SWORD2);
+
+				// Wind-slash burst - dedicated visual for Death Stab, no longer
+				// borrowed from Blow Up's flying-spear effect (which only made
+				// sense for a spear-wielding caster).
+				vec3_t WindLight = { 0.6f, 0.8f, 1.0f };
+				CreateEffect(MODEL_WINDFOCE, o->Position, o->Angle, WindLight, 0, o, -1, 0, 0, 0, 1.0f);
+			}
+
+
+			if ( c->AttackTime <= 8)
+			{	// 기 모일 곳 위치
+				vec3_t Position2 = { 0.0f, 0.0f, 0.0f};
+				b->TransformPosition(o->BoneTransform[c->Weapon[Hand].LinkBone],Position2,o->m_vPosSword,true);
+
+				float fDistance = 300.0f;
+				o->m_vPosSword[0] += fDistance * sinf( o->Angle[2]*Q_PI/180.0f);
+				o->m_vPosSword[1] += -fDistance * cosf( o->Angle[2]*Q_PI/180.0f);
+			}
+			if ( 6 <= c->AttackTime && c->AttackTime <= 12)
+			{
 				if(c->TargetCharacter != -1)
 				{
 					CHARACTER *tc = &CharactersClient[c->TargetCharacter];
