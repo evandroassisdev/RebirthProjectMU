@@ -11,5 +11,5 @@
 require('System\\ScriptCore')
 -- require('Warehouse')
 -- require('WarehouseIconTest')
-require('Panel9Demo')
-require('BauSelector')
+-- require('Panel9Demo')
+-- require('BauSelector')
