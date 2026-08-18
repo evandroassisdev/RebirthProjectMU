@@ -221,6 +221,27 @@ void InitLuaFunction(lua_State* L) // OK
 	lua_register(L, "InventoryGetFreeSlotCount", LuaInventoryGetFreeSlotCount);
 	lua_register(L, "InventoryCheckSpaceByItem", LuaInventoryCheckSpaceByItem);
 	lua_register(L, "InventoryCheckSpaceBySize", LuaInventoryCheckSpaceBySize);
+	lua_register(L, "TradeGetItemTable", LuaTradeGetItemTable);
+	lua_register(L, "TradeSetItemOption", LuaTradeSetItemOption);
+	lua_register(L, "TradeSetItemDurability", LuaTradeSetItemDurability);
+	lua_register(L, "TradeConvertItem", LuaTradeConvertItem);
+	lua_register(L, "TradeIsPeriodicItem", LuaTradeIsPeriodicItem);
+	lua_register(L, "TradeGetPeriodicItemTime", LuaTradeGetPeriodicItemTime);
+	lua_register(L, "TradeIsExcItem", LuaTradeIsExcItem);
+	lua_register(L, "WarehouseGetItemTable", LuaWarehouseGetItemTable);
+	lua_register(L, "WarehouseSetItemOption", LuaWarehouseSetItemOption);
+	lua_register(L, "WarehouseSetItemDurability", LuaWarehouseSetItemDurability);
+	lua_register(L, "WarehouseConvertItem", LuaWarehouseConvertItem);
+	lua_register(L, "WarehouseIsPeriodicItem", LuaWarehouseIsPeriodicItem);
+	lua_register(L, "WarehouseGetPeriodicItemTime", LuaWarehouseGetPeriodicItemTime);
+	lua_register(L, "WarehouseIsExcItem", LuaWarehouseIsExcItem);
+	lua_register(L, "ChaosBoxGetItemTable", LuaChaosBoxGetItemTable);
+	lua_register(L, "ChaosBoxSetItemOption", LuaChaosBoxSetItemOption);
+	lua_register(L, "ChaosBoxSetItemDurability", LuaChaosBoxSetItemDurability);
+	lua_register(L, "ChaosBoxConvertItem", LuaChaosBoxConvertItem);
+	lua_register(L, "ChaosBoxIsPeriodicItem", LuaChaosBoxIsPeriodicItem);
+	lua_register(L, "ChaosBoxGetPeriodicItemTime", LuaChaosBoxGetPeriodicItemTime);
+	lua_register(L, "ChaosBoxIsExcItem", LuaChaosBoxIsExcItem);
 	lua_register(L, "ItemDrop", LuaItemDrop);
 	lua_register(L, "ItemDropEx", LuaItemDropEx);
 	lua_register(L, "ItemGive", LuaItemGive);
@@ -4406,6 +4427,957 @@ int LuaInventoryIsExcItem(lua_State* L) // OK
 	}
 
 	lua_pushboolean(L, gObj[aIndex].Inventory[aSlot].IsExcItem());
+	return 1;
+}
+
+int LuaTradeGetItemTable(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Trade[aValue].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_newtable(L);
+
+	lua_pushstring(L, "Serial");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_Serial);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Index");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_Index);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Level");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_Level);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Durability");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_Durability);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Option1");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_Option1);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Option2");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_Option2);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Option3");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_Option3);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "NewOption");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_NewOption);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SetOption");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_SetOption);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "JoHOption");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_JewelOfHarmonyOption);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "380Option");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_ItemOptionEx);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption1");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_SocketOption[0]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption2");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_SocketOption[1]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption3");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_SocketOption[2]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption4");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_SocketOption[3]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption5");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_SocketOption[4]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOptionBonus");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_SocketOptionBonus);
+	lua_settable(L, -3);
+
+	return 1;
+}
+
+int LuaTradeSetItemOption(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 4)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 4);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+	int aType = lua_tointeger(L, 3);
+	int aValue = lua_tointeger(L, 4);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Trade[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	CItem* lpItem = &gObj[aIndex].Trade[aSlot];
+
+	switch (aType)
+	{
+	case 1:
+		lpItem->m_NewOption = (BYTE)aValue;
+		break;
+	case 2:
+		lpItem->m_Option1 = (BYTE)aValue;
+		break;
+	case 3:
+		lpItem->m_Option2 = (BYTE)aValue;
+		break;
+	case 4:
+		lpItem->m_Option3 = (BYTE)aValue;
+		break;
+	case 5:
+		lpItem->m_SetOption = (BYTE)aValue;
+		break;
+	case 6:
+		lpItem->m_JewelOfHarmonyOption = (BYTE)aValue;
+		break;
+	case 7:
+		lpItem->m_ItemOptionEx = (BYTE)aValue;
+		break;
+	case 8:
+		lpItem->m_SocketOptionBonus = (BYTE)aValue;
+		break;
+	case 9:
+	case 10:
+	case 11:
+	case 12:
+	case 13:
+		lpItem->m_SocketOption[aType - 9] = (BYTE)aValue;
+		break;
+	default:
+		return 0;
+	}
+
+	return 1;
+}
+
+int LuaTradeSetItemDurability(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 3)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 3);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+	int aValue = lua_tointeger(L, 3);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Trade[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].Trade[aSlot].m_Durability = (float)aValue;
+
+	return 1;
+}
+
+int LuaTradeConvertItem(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Trade[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	CItem* lpItem = &gObj[aIndex].Trade[aSlot];
+
+	lpItem->Convert(lpItem->m_Index, lpItem->m_Option1, lpItem->m_Option2, lpItem->m_Option3, lpItem->m_NewOption, lpItem->m_SetOption, lpItem->m_JewelOfHarmonyOption, lpItem->m_ItemOptionEx, lpItem->m_SocketOption, lpItem->m_SocketOptionBonus);
+
+	return 1;
+}
+
+int LuaTradeIsPeriodicItem(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Trade[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gObj[aIndex].Trade[aSlot].m_IsPeriodicItem);
+	return 1;
+}
+
+int LuaTradeGetPeriodicItemTime(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Trade[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].Trade[aSlot].m_PeriodicItemTime);
+	return 1;
+}
+
+int LuaTradeIsExcItem(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Trade[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gObj[aIndex].Trade[aSlot].IsExcItem());
+	return 1;
+}
+
+int LuaWarehouseGetItemTable(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Warehouse[aValue].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_newtable(L);
+
+	lua_pushstring(L, "Serial");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_Serial);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Index");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_Index);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Level");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_Level);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Durability");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_Durability);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Option1");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_Option1);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Option2");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_Option2);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Option3");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_Option3);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "NewOption");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_NewOption);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SetOption");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_SetOption);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "JoHOption");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_JewelOfHarmonyOption);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "380Option");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_ItemOptionEx);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption1");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_SocketOption[0]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption2");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_SocketOption[1]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption3");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_SocketOption[2]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption4");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_SocketOption[3]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption5");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_SocketOption[4]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOptionBonus");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_SocketOptionBonus);
+	lua_settable(L, -3);
+
+	return 1;
+}
+
+int LuaWarehouseSetItemOption(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 4)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 4);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+	int aType = lua_tointeger(L, 3);
+	int aValue = lua_tointeger(L, 4);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Warehouse[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	CItem* lpItem = &gObj[aIndex].Warehouse[aSlot];
+
+	switch (aType)
+	{
+	case 1:
+		lpItem->m_NewOption = (BYTE)aValue;
+		break;
+	case 2:
+		lpItem->m_Option1 = (BYTE)aValue;
+		break;
+	case 3:
+		lpItem->m_Option2 = (BYTE)aValue;
+		break;
+	case 4:
+		lpItem->m_Option3 = (BYTE)aValue;
+		break;
+	case 5:
+		lpItem->m_SetOption = (BYTE)aValue;
+		break;
+	case 6:
+		lpItem->m_JewelOfHarmonyOption = (BYTE)aValue;
+		break;
+	case 7:
+		lpItem->m_ItemOptionEx = (BYTE)aValue;
+		break;
+	case 8:
+		lpItem->m_SocketOptionBonus = (BYTE)aValue;
+		break;
+	case 9:
+	case 10:
+	case 11:
+	case 12:
+	case 13:
+		lpItem->m_SocketOption[aType - 9] = (BYTE)aValue;
+		break;
+	default:
+		return 0;
+	}
+
+	return 1;
+}
+
+int LuaWarehouseSetItemDurability(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 3)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 3);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+	int aValue = lua_tointeger(L, 3);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Warehouse[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].Warehouse[aSlot].m_Durability = (float)aValue;
+
+	return 1;
+}
+
+int LuaWarehouseConvertItem(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Warehouse[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	CItem* lpItem = &gObj[aIndex].Warehouse[aSlot];
+
+	lpItem->Convert(lpItem->m_Index, lpItem->m_Option1, lpItem->m_Option2, lpItem->m_Option3, lpItem->m_NewOption, lpItem->m_SetOption, lpItem->m_JewelOfHarmonyOption, lpItem->m_ItemOptionEx, lpItem->m_SocketOption, lpItem->m_SocketOptionBonus);
+
+	return 1;
+}
+
+int LuaWarehouseIsPeriodicItem(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Warehouse[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gObj[aIndex].Warehouse[aSlot].m_IsPeriodicItem);
+	return 1;
+}
+
+int LuaWarehouseGetPeriodicItemTime(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Warehouse[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].Warehouse[aSlot].m_PeriodicItemTime);
+	return 1;
+}
+
+int LuaWarehouseIsExcItem(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Warehouse[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gObj[aIndex].Warehouse[aSlot].IsExcItem());
+	return 1;
+}
+
+int LuaChaosBoxGetItemTable(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].ChaosBox[aValue].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_newtable(L);
+
+	lua_pushstring(L, "Serial");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_Serial);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Index");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_Index);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Level");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_Level);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Durability");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_Durability);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Option1");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_Option1);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Option2");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_Option2);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Option3");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_Option3);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "NewOption");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_NewOption);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SetOption");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_SetOption);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "JoHOption");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_JewelOfHarmonyOption);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "380Option");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_ItemOptionEx);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption1");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_SocketOption[0]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption2");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_SocketOption[1]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption3");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_SocketOption[2]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption4");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_SocketOption[3]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption5");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_SocketOption[4]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOptionBonus");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_SocketOptionBonus);
+	lua_settable(L, -3);
+
+	return 1;
+}
+
+int LuaChaosBoxSetItemOption(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 4)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 4);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+	int aType = lua_tointeger(L, 3);
+	int aValue = lua_tointeger(L, 4);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].ChaosBox[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	CItem* lpItem = &gObj[aIndex].ChaosBox[aSlot];
+
+	switch (aType)
+	{
+	case 1:
+		lpItem->m_NewOption = (BYTE)aValue;
+		break;
+	case 2:
+		lpItem->m_Option1 = (BYTE)aValue;
+		break;
+	case 3:
+		lpItem->m_Option2 = (BYTE)aValue;
+		break;
+	case 4:
+		lpItem->m_Option3 = (BYTE)aValue;
+		break;
+	case 5:
+		lpItem->m_SetOption = (BYTE)aValue;
+		break;
+	case 6:
+		lpItem->m_JewelOfHarmonyOption = (BYTE)aValue;
+		break;
+	case 7:
+		lpItem->m_ItemOptionEx = (BYTE)aValue;
+		break;
+	case 8:
+		lpItem->m_SocketOptionBonus = (BYTE)aValue;
+		break;
+	case 9:
+	case 10:
+	case 11:
+	case 12:
+	case 13:
+		lpItem->m_SocketOption[aType - 9] = (BYTE)aValue;
+		break;
+	default:
+		return 0;
+	}
+
+	return 1;
+}
+
+int LuaChaosBoxSetItemDurability(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 3)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 3);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+	int aValue = lua_tointeger(L, 3);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].ChaosBox[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].ChaosBox[aSlot].m_Durability = (float)aValue;
+
+	return 1;
+}
+
+int LuaChaosBoxConvertItem(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].ChaosBox[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	CItem* lpItem = &gObj[aIndex].ChaosBox[aSlot];
+
+	lpItem->Convert(lpItem->m_Index, lpItem->m_Option1, lpItem->m_Option2, lpItem->m_Option3, lpItem->m_NewOption, lpItem->m_SetOption, lpItem->m_JewelOfHarmonyOption, lpItem->m_ItemOptionEx, lpItem->m_SocketOption, lpItem->m_SocketOptionBonus);
+
+	return 1;
+}
+
+int LuaChaosBoxIsPeriodicItem(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].ChaosBox[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gObj[aIndex].ChaosBox[aSlot].m_IsPeriodicItem);
+	return 1;
+}
+
+int LuaChaosBoxGetPeriodicItemTime(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].ChaosBox[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].ChaosBox[aSlot].m_PeriodicItemTime);
+	return 1;
+}
+
+int LuaChaosBoxIsExcItem(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].ChaosBox[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gObj[aIndex].ChaosBox[aSlot].IsExcItem());
 	return 1;
 }
 

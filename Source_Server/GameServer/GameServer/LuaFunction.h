@@ -216,6 +216,32 @@ int LuaInventoryDelItemCount(lua_State* L);
 int LuaInventoryGetFreeSlotCount(lua_State* L);
 int LuaInventoryCheckSpaceByItem(lua_State* L);
 int LuaInventoryCheckSpaceBySize(lua_State* L);
+// Trade/Warehouse/ChaosBox mirror the same 7-function item API as Inventory
+// above. RoxGaming's LuaTrade.cpp, LuaWarehouse.cpp and LuaChaosBox.cpp are
+// literally the same OOP wrapper class copy-pasted over gObj[].Trade[],
+// .Warehouse[] and .ChaosBox[] instead of .Inventory[] - all three arrays
+// exist in this project's User.h, so the same free-function port applies.
+int LuaTradeGetItemTable(lua_State* L);
+int LuaTradeSetItemOption(lua_State* L);
+int LuaTradeSetItemDurability(lua_State* L);
+int LuaTradeConvertItem(lua_State* L);
+int LuaTradeIsPeriodicItem(lua_State* L);
+int LuaTradeGetPeriodicItemTime(lua_State* L);
+int LuaTradeIsExcItem(lua_State* L);
+int LuaWarehouseGetItemTable(lua_State* L);
+int LuaWarehouseSetItemOption(lua_State* L);
+int LuaWarehouseSetItemDurability(lua_State* L);
+int LuaWarehouseConvertItem(lua_State* L);
+int LuaWarehouseIsPeriodicItem(lua_State* L);
+int LuaWarehouseGetPeriodicItemTime(lua_State* L);
+int LuaWarehouseIsExcItem(lua_State* L);
+int LuaChaosBoxGetItemTable(lua_State* L);
+int LuaChaosBoxSetItemOption(lua_State* L);
+int LuaChaosBoxSetItemDurability(lua_State* L);
+int LuaChaosBoxConvertItem(lua_State* L);
+int LuaChaosBoxIsPeriodicItem(lua_State* L);
+int LuaChaosBoxGetPeriodicItemTime(lua_State* L);
+int LuaChaosBoxIsExcItem(lua_State* L);
 int LuaItemDrop(lua_State* L);
 int LuaItemDropEx(lua_State* L);
 int LuaItemGive(lua_State* L);
