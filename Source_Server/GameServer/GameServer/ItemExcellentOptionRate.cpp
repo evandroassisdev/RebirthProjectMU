@@ -82,6 +82,8 @@ void CItemExOptionRate::Load(char* path) // OK
 	}
 
 	delete lpMemScript;
+
+	LogAdd(LOG_BLUE,"[ItemExcellentOptionRate] Loaded %d entries from %s",(int)this->m_ItemExOptionRateInfo.size(),path);
 }
 
 bool CItemExOptionRate::GetExcellentOptionByRate(int ItemIndex, int NewOption, BYTE* OptionIndex) // OK
@@ -107,5 +109,8 @@ bool CItemExOptionRate::GetExcellentOptionByRate(int ItemIndex, int NewOption, B
 
 		RandomManager.AddElement(it->second.OptionIndex,it->second.OptionRate);
 	}
-	return RandomManager.GetRandomElement(OptionIndex);
+
+	bool bResult = RandomManager.GetRandomElement(OptionIndex);
+
+	return bResult;
 }
