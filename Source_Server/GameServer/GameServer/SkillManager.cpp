@@ -1470,7 +1470,7 @@ bool CSkillManager::SkillEvilSpirit(int aIndex,int bIndex,CSkill* lpSkill,bool c
 			continue;
 		}
 
-		gAttack.Attack(lpObj,&gObj[index],lpSkill,0,0,0,0,combo);
+		gAttack.Attack(lpObj,&gObj[index],lpSkill,1,0,0,0,combo);
 
 		if(combo != 0)
 		{
@@ -1893,7 +1893,7 @@ bool CSkillManager::SkillDecay(int aIndex,int bIndex,CSkill* lpSkill,BYTE x,BYTE
 			continue;
 		}
 
-		gAttack.Attack(lpObj,&gObj[index],lpSkill,0,0,0,0,combo);
+		gAttack.Attack(lpObj,&gObj[index],lpSkill,1,0,0,0,combo);
 
 		if(combo != 0)
 		{
@@ -1939,7 +1939,7 @@ bool CSkillManager::SkillIceStorm(int aIndex,int bIndex,CSkill* lpSkill,BYTE x,B
 			continue;
 		}
 
-		gAttack.Attack(lpObj,&gObj[index],lpSkill,0,0,0,0,combo);
+		gAttack.Attack(lpObj,&gObj[index],lpSkill,1,0,0,0,combo);
 
 		if(combo != 0)
 		{
@@ -2051,7 +2051,7 @@ bool CSkillManager::SkillTwistingSlash(int aIndex,int bIndex,CSkill* lpSkill,boo
 			continue;
 		}
 
-		gAttack.Attack(lpObj,&gObj[index],lpSkill,0,0,0,0,combo);
+		gAttack.Attack(lpObj,&gObj[index],lpSkill,1,0,0,0,combo);
 
 		if(combo != 0)
 		{
@@ -2126,7 +2126,7 @@ bool CSkillManager::SkillDeathStab(int aIndex,int bIndex,CSkill* lpSkill,bool co
 
 	this->GCSkillAttackSend(lpObj,lpSkill->m_index,bIndex,1);
 
-	gAttack.Attack(lpObj,lpTarget,lpSkill,0,0,0,0,combo);
+	gAttack.Attack(lpObj,lpTarget,lpSkill,1,0,0,0,combo);
 
 	if(combo != 0)
 	{
@@ -2159,7 +2159,7 @@ bool CSkillManager::SkillDeathStab(int aIndex,int bIndex,CSkill* lpSkill,bool co
 			continue;
 		}
 
-		gAttack.Attack(lpObj,&gObj[index],lpSkill,0,0,0,0,combo);
+		gAttack.Attack(lpObj,&gObj[index],lpSkill,1,0,0,0,combo);
 
 		if(combo != 0)
 		{
@@ -2321,7 +2321,7 @@ bool CSkillManager::SkillPowerSlash(int aIndex,int bIndex,CSkill* lpSkill,BYTE a
 			continue;
 		}
 
-		gAttack.Attack(lpObj,&gObj[index],lpSkill,0,0,0,0,combo);
+		gAttack.Attack(lpObj,&gObj[index],lpSkill,1,0,0,0,combo);
 
 		if(combo != 0)
 		{
@@ -2357,7 +2357,7 @@ bool CSkillManager::SkillForce(int aIndex,int bIndex,CSkill* lpSkill,bool combo)
 
 	if(lpObj->SkillLongSpearChange == 0)
 	{
-		gAttack.Attack(lpObj,lpTarget,lpSkill,0,0,0,0,combo);
+		gAttack.Attack(lpObj,lpTarget,lpSkill,1,0,0,0,combo);
 
 		if(combo != 0)
 		{
@@ -2390,7 +2390,7 @@ bool CSkillManager::SkillForce(int aIndex,int bIndex,CSkill* lpSkill,bool combo)
 			continue;
 		}
 
-		gAttack.Attack(lpObj,&gObj[index],lpSkill,0,0,0,0,combo);
+		gAttack.Attack(lpObj,&gObj[index],lpSkill,1,0,0,0,combo);
 
 		if(combo != 0)
 		{
@@ -2424,7 +2424,7 @@ bool CSkillManager::SkillFireBurst(int aIndex,int bIndex,CSkill* lpSkill,bool co
 
 	this->GCSkillAttackSend(lpObj,lpSkill->m_index,bIndex,1);
 
-	gAttack.Attack(lpObj,lpTarget,lpSkill,0,0,0,0,combo);
+	gAttack.Attack(lpObj,lpTarget,lpSkill,1,0,0,0,combo);
 
 	if(combo != 0)
 	{
@@ -2457,7 +2457,7 @@ bool CSkillManager::SkillFireBurst(int aIndex,int bIndex,CSkill* lpSkill,bool co
 			continue;
 		}
 
-		gAttack.Attack(lpObj,&gObj[index],lpSkill,0,0,0,0,combo);
+		gAttack.Attack(lpObj,&gObj[index],lpSkill,1,0,0,0,combo);
 
 		if(combo != 0)
 		{
@@ -2719,7 +2719,7 @@ bool CSkillManager::SkillCastleSiege(int aIndex,int bIndex,CSkill* lpSkill,bool 
 
 	if(lpSkill->m_skill == SKILL_CRESCENT_MOON_SLASH || lpSkill->m_skill == SKILL_SPIRAL_SLASH || lpSkill->m_skill == SKILL_MANA_RAYS)
 	{
-		gAttack.Attack(lpObj,&gObj[bIndex],lpSkill,0,0,0,0,combo);
+		gAttack.Attack(lpObj,&gObj[bIndex],lpSkill,1,0,0,0,combo);
 	}
 	else if(lpSkill->m_skill == SKILL_MANA_GLAIVE || lpSkill->m_skill == SKILL_FIRE_BLAST)
 	{
@@ -2735,7 +2735,7 @@ bool CSkillManager::SkillCastleSiege(int aIndex,int bIndex,CSkill* lpSkill,bool 
 	}
 	else if(lpSkill->m_skill == SKILL_CHARGE)
 	{
-		gAttack.Attack(lpObj,&gObj[bIndex],lpSkill,0,0,0,0,combo);
+		gAttack.Attack(lpObj,&gObj[bIndex],lpSkill,1,0,0,0,combo);
 	}
 
 	if(combo != 0)
