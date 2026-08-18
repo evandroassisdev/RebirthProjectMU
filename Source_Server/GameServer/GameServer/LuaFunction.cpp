@@ -188,6 +188,10 @@ void InitLuaFunction(lua_State* L) // OK
 	lua_register(L, "SetObjectMasterPoint", LuaSetObjectMasterPoint);
 	lua_register(L, "SetObjectWindowTitle", LuaSetObjectWindowTitle);
 	lua_register(L, "ChatTargetSend", LuaChatTargetSend);
+	lua_register(L, "DamageSend", LuaDamageSend);
+	lua_register(L, "RefreshCharacter", LuaRefreshCharacter);
+	lua_register(L, "LevelExperience", LuaLevelExperience);
+	lua_register(L, "TeleportMapRange", LuaTeleportMapRange);
 	lua_register(L, "CommandCheckGameMasterLevel", LuaCommandCheckGameMasterLevel);
 	lua_register(L, "CommandGetArgNumber", LuaCommandGetArgNumber);
 	lua_register(L, "CommandGetArgString", LuaCommandGetArgString);
@@ -3685,6 +3689,111 @@ int LuaChatTargetSend(lua_State* L) // OK
 			}
 		}
 	}
+
+	return 1;
+}
+
+int LuaDamageSend(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 6)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 6);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int bIndex = lua_tointeger(L, 2);
+	int aFlag = lua_tointeger(L, 3);
+	int aDamage = lua_tointeger(L, 4);
+	int aType = lua_tointeger(L, 5);
+	int aShieldDamage = lua_tointeger(L, 6);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (OBJECT_RANGE(bIndex) == 0)
+	{
+		return 0;
+	}
+
+	GCDamageSend(aIndex, bIndex, (BYTE)aFlag, aDamage, aType, aShieldDamage);
+
+	return 1;
+}
+
+int LuaRefreshCharacter(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	GCNewCharacterInfoSend(&gObj[aIndex]);
+
+	return 1;
+}
+
+int LuaLevelExperience(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aValue = lua_tointeger(L, 1);
+
+	if (aValue < 1 || aValue > MAX_CHARACTER_LEVEL)
+	{
+		return 0;
+	}
+
+	lua_pushnumber(L, gLevelExperience[aValue - 1]);
+
+	return 1;
+}
+
+int LuaTeleportMapRange(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 5)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 5);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aMap = lua_tointeger(L, 2);
+	int aX = lua_tointeger(L, 3);
+	int aY = lua_tointeger(L, 4);
+	int aRange = lua_tointeger(L, 5);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (MAP_RANGE(aMap) == 0)
+	{
+		return 0;
+	}
+
+	short aGetX = (short)aX;
+	short aGetY = (short)aY;
+
+	gMap[aMap].GetMapRandomPos(&aGetX, &aGetY, aRange);
+
+	gObjTeleport(aIndex, aMap, aGetX, aGetY);
 
 	return 1;
 }

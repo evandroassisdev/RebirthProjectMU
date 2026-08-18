@@ -166,6 +166,21 @@ int LuaSetObjectMasterLevel(lua_State* L);
 int LuaSetObjectMasterPoint(lua_State* L);
 int LuaSetObjectWindowTitle(lua_State* L);
 int LuaChatTargetSend(lua_State* L);
+// Found while finishing the survey of the RoxGaming pack's LuaFunctions.cpp
+// (the rest of it either has no equivalent function in this project under
+// any name we could find - e.g. gObjFindIndex/MoveObject/gObjDel/
+// SetPositionMonsterRand/GCFireworksSendCustom, a whole DeathSystem this
+// project doesn't have - or turned out to already be covered by this
+// project's own existing bindings above, just under different names:
+// AddMonster/SetMonster~MonsterCreate/MonsterSummonCreate,
+// AddEffect/DelEffect~EffectAdd/EffectDel, Teleport~MoveUserEx,
+// MoveGate~MoveUser, Fireworks~FireworksSend, PkLevelSend~PKLevelSend,
+// MoneySend~MoneySend, GetMapAttr~MapCheckAttr, ChatTargetSend~itself).
+// See the README changelog entry for the full breakdown.
+int LuaDamageSend(lua_State* L);
+int LuaRefreshCharacter(lua_State* L);
+int LuaLevelExperience(lua_State* L);
+int LuaTeleportMapRange(lua_State* L);
 int LuaCommandCheckGameMasterLevel(lua_State* L);
 int LuaCommandGetArgNumber(lua_State* L);
 int LuaCommandGetArgString(lua_State* L);
