@@ -2951,11 +2951,11 @@ void ReceiveAttackDamage( BYTE *ReceiveBuffer )
 		ProcessDamageCastle(Data);
 		return;
 	}
-	
+
 	int Key    = ((int)(Data->KeyH   )<<8) + Data->KeyL;
 	int Success = (Key>>15);
 	Key &= 0x7FFF;
-	
+
 	int Index = FindCharacterIndex(Key);
 	CHARACTER *c = &CharactersClient[Index];
 	OBJECT *o = &c->Object;
@@ -3734,9 +3734,9 @@ BOOL ReceiveMagic(BYTE *ReceiveBuffer,int Size, BOOL bEncrypted)
 	int SourceKey = ((int)(Data->SourceKeyH )<<8) + Data->SourceKeyL;
 	int TargetKey = ((int)(Data->TargetKeyH )<<8) + Data->TargetKeyL;
 	int Success = (TargetKey>>15);
-	
+
 	WORD MagicNumber = ((WORD)(Data->MagicH )<<8) + Data->MagicL;
-	
+
 	if(MagicNumber == AT_SKILL_ATTACK || MagicNumber == AT_SKILL_DEFENSE || (AT_SKILL_DEF_POWER_UP <= MagicNumber && MagicNumber <= AT_SKILL_DEF_POWER_UP+4) || (AT_SKILL_ATT_POWER_UP <= MagicNumber && MagicNumber <= AT_SKILL_ATT_POWER_UP+4))
 		{
 			if(Success == false)
