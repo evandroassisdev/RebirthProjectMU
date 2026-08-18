@@ -718,3 +718,138 @@ int CScriptLoader::OnUserItemMove(int aIndex, int aFlag, int aSlot, int bFlag, i
 	this->m_critical.unlock();
 	return value;
 }
+
+int CScriptLoader::OnPlayerSendTrade(int aIndex, int bIndex) // OK
+{
+	this->m_critical.lock();
+
+	if (this->m_luaState == 0)
+	{
+		this->m_critical.unlock();
+		return 0;
+	}
+
+	lua_getglobal(this->m_luaState, "BridgeFunction_OnPlayerSendTrade");
+
+	if (lua_isfunction(this->m_luaState, -1) == 0)
+	{
+		gLog.Output(LOG_GENERAL, "Error: Function 'OnPlayerSendTrade' is not defined.");
+		this->m_critical.unlock();
+		return 0;
+	}
+
+	lua_pushinteger(this->m_luaState, aIndex);
+
+	lua_pushinteger(this->m_luaState, bIndex);
+
+	if (lua_pcall(this->m_luaState, 2, 1, 0) != 0)
+	{
+		gLog.Output(LOG_GENERAL, "Error: %s", lua_tostring(this->m_luaState, -1));
+		this->m_critical.unlock();
+		return 0;
+	}
+
+	if (lua_isnumber(this->m_luaState, -1) == 0)
+	{
+		gLog.Output(LOG_GENERAL, "Error: 'OnPlayerSendTrade' must return a value.");
+		this->m_critical.unlock();
+		return 0;
+	}
+
+	int value = lua_tointeger(this->m_luaState, -1);
+
+	lua_pop(this->m_luaState, 1);
+
+	this->m_critical.unlock();
+	return value;
+}
+
+int CScriptLoader::OnPlayerTradeOk(int aIndex, int bIndex) // OK
+{
+	this->m_critical.lock();
+
+	if (this->m_luaState == 0)
+	{
+		this->m_critical.unlock();
+		return 0;
+	}
+
+	lua_getglobal(this->m_luaState, "BridgeFunction_OnPlayerTradeOk");
+
+	if (lua_isfunction(this->m_luaState, -1) == 0)
+	{
+		gLog.Output(LOG_GENERAL, "Error: Function 'OnPlayerTradeOk' is not defined.");
+		this->m_critical.unlock();
+		return 0;
+	}
+
+	lua_pushinteger(this->m_luaState, aIndex);
+
+	lua_pushinteger(this->m_luaState, bIndex);
+
+	if (lua_pcall(this->m_luaState, 2, 1, 0) != 0)
+	{
+		gLog.Output(LOG_GENERAL, "Error: %s", lua_tostring(this->m_luaState, -1));
+		this->m_critical.unlock();
+		return 0;
+	}
+
+	if (lua_isnumber(this->m_luaState, -1) == 0)
+	{
+		gLog.Output(LOG_GENERAL, "Error: 'OnPlayerTradeOk' must return a value.");
+		this->m_critical.unlock();
+		return 0;
+	}
+
+	int value = lua_tointeger(this->m_luaState, -1);
+
+	lua_pop(this->m_luaState, 1);
+
+	this->m_critical.unlock();
+	return value;
+}
+
+int CScriptLoader::OnChatProc(int aIndex, const char* text) // OK
+{
+	this->m_critical.lock();
+
+	if (this->m_luaState == 0)
+	{
+		this->m_critical.unlock();
+		return 0;
+	}
+
+	lua_getglobal(this->m_luaState, "BridgeFunction_OnChatProc");
+
+	if (lua_isfunction(this->m_luaState, -1) == 0)
+	{
+		gLog.Output(LOG_GENERAL, "Error: Function 'OnChatProc' is not defined.");
+		this->m_critical.unlock();
+		return 0;
+	}
+
+	lua_pushinteger(this->m_luaState, aIndex);
+
+	lua_pushstring(this->m_luaState, text);
+
+	if (lua_pcall(this->m_luaState, 2, 1, 0) != 0)
+	{
+		gLog.Output(LOG_GENERAL, "Error: %s", lua_tostring(this->m_luaState, -1));
+		this->m_critical.unlock();
+		return 0;
+	}
+
+	if (lua_isnumber(this->m_luaState, -1) == 0)
+	{
+		gLog.Output(LOG_GENERAL, "Error: 'OnChatProc' must return a value.");
+		this->m_critical.unlock();
+		return 0;
+	}
+
+	int value = lua_tointeger(this->m_luaState, -1);
+
+	lua_pop(this->m_luaState, 1);
+
+	this->m_critical.unlock();
+	return value;
+}

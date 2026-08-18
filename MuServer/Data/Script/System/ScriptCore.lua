@@ -167,15 +167,84 @@ end
 function BridgeFunction_OnNpcTalk(...)
 
 	if BridgeFunctionTable["OnNpcTalk"] ~= nil then
-	
+
 		for _, func in ipairs(BridgeFunctionTable["OnNpcTalk"]) do
-		
+
 			local ret =_G[func.Function](...)
-			
+
 			if ret ~= 0 then return 1 end
-			
+
 		end
-		
+
+	end
+
+	return 0
+
+end
+
+
+-- Fires on every chat message (including "/commands"), before this
+-- server's own command dispatch/broadcast. Any attached handler returning
+-- nonzero silently drops the message for everyone. See ScriptLoader.cpp's
+-- OnChatProc (called from Protocol.cpp's CGChatRecv).
+function BridgeFunction_OnChatProc(...)
+
+	if BridgeFunctionTable["OnChatProc"] ~= nil then
+
+		for _, func in ipairs(BridgeFunctionTable["OnChatProc"]) do
+
+			local ret =_G[func.Function](...)
+
+			if ret ~= 0 then return 1 end
+
+		end
+
+	end
+
+	return 0
+
+end
+
+
+-- Fires right before a trade request opens the trade window on both
+-- sides. A handler returning nonzero cancels the request. See
+-- ScriptLoader.cpp's OnPlayerSendTrade (called from Trade.cpp's
+-- CGTradeRequestRecv).
+function BridgeFunction_OnPlayerSendTrade(...)
+
+	if BridgeFunctionTable["OnPlayerSendTrade"] ~= nil then
+
+		for _, func in ipairs(BridgeFunctionTable["OnPlayerSendTrade"]) do
+
+			local ret =_G[func.Function](...)
+
+			if ret ~= 0 then return 1 end
+
+		end
+
+	end
+
+	return 0
+
+end
+
+
+-- Fires right before a mutually-confirmed trade exchanges items/money. A
+-- handler returning nonzero cancels the trade for both sides. See
+-- ScriptLoader.cpp's OnPlayerTradeOk (called from Trade.cpp's
+-- CGTradeOkButtonRecv).
+function BridgeFunction_OnPlayerTradeOk(...)
+
+	if BridgeFunctionTable["OnPlayerTradeOk"] ~= nil then
+
+		for _, func in ipairs(BridgeFunctionTable["OnPlayerTradeOk"]) do
+
+			local ret =_G[func.Function](...)
+
+			if ret ~= 0 then return 1 end
+
+		end
+
 	end
 
 	return 0

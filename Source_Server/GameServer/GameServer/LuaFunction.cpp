@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <cstring>
 #include "LuaFunction.h"
 #include "CommandManager.h"
 #include "CustomArena.h"
@@ -22,6 +23,7 @@
 #include "Path.h"
 #include "QueryManager.h"
 #include "Quest.h"
+#include "QuestReward.h"
 #include "ServerInfo.h"
 #include "SetItemType.h"
 #include "Union.h"
@@ -114,6 +116,59 @@ void InitLuaFunction(lua_State* L) // OK
 	lua_register(L, "GetObjectCSGuildSide", LuaGetObjectCSGuildSide);
 	lua_register(L, "GetObjectOfflineFlag", LuaGetObjectOfflineFlag);
 	lua_register(L, "GetObjectIndexByName", LuaGetObjectIndexByName);
+	lua_register(L, "GetObjectDefense", LuaGetObjectDefense);
+	lua_register(L, "SetObjectDefense", LuaSetObjectDefense);
+	lua_register(L, "GetObjectDefensePvP", LuaGetObjectDefensePvP);
+	lua_register(L, "SetObjectDefensePvP", LuaSetObjectDefensePvP);
+	lua_register(L, "GetObjectMagicDamageMax", LuaGetObjectMagicDamageMax);
+	lua_register(L, "SetObjectMagicDamageMax", LuaSetObjectMagicDamageMax);
+	lua_register(L, "GetObjectMagicDamageMin", LuaGetObjectMagicDamageMin);
+	lua_register(L, "SetObjectMagicDamageMin", LuaSetObjectMagicDamageMin);
+	lua_register(L, "GetObjectPhysiDamageMaxLeft", LuaGetObjectPhysiDamageMaxLeft);
+	lua_register(L, "SetObjectPhysiDamageMaxLeft", LuaSetObjectPhysiDamageMaxLeft);
+	lua_register(L, "GetObjectPhysiDamageMinLeft", LuaGetObjectPhysiDamageMinLeft);
+	lua_register(L, "SetObjectPhysiDamageMinLeft", LuaSetObjectPhysiDamageMinLeft);
+	lua_register(L, "GetObjectPhysiDamageMaxRight", LuaGetObjectPhysiDamageMaxRight);
+	lua_register(L, "SetObjectPhysiDamageMaxRight", LuaSetObjectPhysiDamageMaxRight);
+	lua_register(L, "GetObjectPhysiDamageMinRight", LuaGetObjectPhysiDamageMinRight);
+	lua_register(L, "SetObjectPhysiDamageMinRight", LuaSetObjectPhysiDamageMinRight);
+	lua_register(L, "GetObjectPhysiSpeed", LuaGetObjectPhysiSpeed);
+	lua_register(L, "SetObjectPhysiSpeed", LuaSetObjectPhysiSpeed);
+	lua_register(L, "GetObjectMagicSpeed", LuaGetObjectMagicSpeed);
+	lua_register(L, "SetObjectMagicSpeed", LuaSetObjectMagicSpeed);
+	lua_register(L, "GetObjectWarehouseCount", LuaGetObjectWarehouseCount);
+	lua_register(L, "SetObjectWarehouseCount", LuaSetObjectWarehouseCount);
+	lua_register(L, "GetObjectReqWarehouseOpen", LuaGetObjectReqWarehouseOpen);
+	lua_register(L, "SetObjectReqWarehouseOpen", LuaSetObjectReqWarehouseOpen);
+	lua_register(L, "GetObjectExtInventory", LuaGetObjectExtInventory);
+	lua_register(L, "SetObjectExtInventory", LuaSetObjectExtInventory);
+	lua_register(L, "GetObjectExtWarehouse", LuaGetObjectExtWarehouse);
+	lua_register(L, "SetObjectExtWarehouse", LuaSetObjectExtWarehouse);
+	lua_register(L, "GetObjectPShopOpen", LuaGetObjectPShopOpen);
+	lua_register(L, "SetObjectPShopOpen", LuaSetObjectPShopOpen);
+	lua_register(L, "GetObjectPShopText", LuaGetObjectPShopText);
+	lua_register(L, "SetObjectPShopText", LuaSetObjectPShopText);
+	lua_register(L, "GetObjectSummonIndex", LuaGetObjectSummonIndex);
+	lua_register(L, "SetObjectSummonIndex", LuaSetObjectSummonIndex);
+	lua_register(L, "GetObjectDieRegen", LuaGetObjectDieRegen);
+	lua_register(L, "SetObjectDieRegen", LuaSetObjectDieRegen);
+	lua_register(L, "GetObjectRegenMapNumber", LuaGetObjectRegenMapNumber);
+	lua_register(L, "SetObjectRegenMapNumber", LuaSetObjectRegenMapNumber);
+	lua_register(L, "GetObjectRegenMapX", LuaGetObjectRegenMapX);
+	lua_register(L, "SetObjectRegenMapX", LuaSetObjectRegenMapX);
+	lua_register(L, "GetObjectRegenMapY", LuaGetObjectRegenMapY);
+	lua_register(L, "SetObjectRegenMapY", LuaSetObjectRegenMapY);
+	lua_register(L, "GetObjectRegenTime", LuaGetObjectRegenTime);
+	lua_register(L, "SetObjectRegenTime", LuaSetObjectRegenTime);
+	lua_register(L, "SetObjectBP", LuaSetObjectBP);
+	lua_register(L, "SetObjectMaxBP", LuaSetObjectMaxBP);
+	lua_register(L, "SetObjectLife", LuaSetObjectLife);
+	lua_register(L, "SetObjectMaxLife", LuaSetObjectMaxLife);
+	lua_register(L, "SetObjectMana", LuaSetObjectMana);
+	lua_register(L, "SetObjectMaxMana", LuaSetObjectMaxMana);
+	lua_register(L, "SetObjectShield", LuaSetObjectShield);
+	lua_register(L, "SetObjectMaxShield", LuaSetObjectMaxShield);
+	lua_register(L, "SetObjectAuthority", LuaSetObjectAuthority);
 	lua_register(L, "SetObjectLevel", LuaSetObjectLevel);
 	lua_register(L, "SetObjectLevelUpPoint", LuaSetObjectLevelUpPoint);
 	lua_register(L, "SetObjectMoney", LuaSetObjectMoney);
@@ -133,6 +188,10 @@ void InitLuaFunction(lua_State* L) // OK
 	lua_register(L, "SetObjectMasterPoint", LuaSetObjectMasterPoint);
 	lua_register(L, "SetObjectWindowTitle", LuaSetObjectWindowTitle);
 	lua_register(L, "ChatTargetSend", LuaChatTargetSend);
+	lua_register(L, "DamageSend", LuaDamageSend);
+	lua_register(L, "RefreshCharacter", LuaRefreshCharacter);
+	lua_register(L, "LevelExperience", LuaLevelExperience);
+	lua_register(L, "TeleportMapRange", LuaTeleportMapRange);
 	lua_register(L, "CommandCheckGameMasterLevel", LuaCommandCheckGameMasterLevel);
 	lua_register(L, "CommandGetArgNumber", LuaCommandGetArgNumber);
 	lua_register(L, "CommandGetArgString", LuaCommandGetArgString);
@@ -149,6 +208,12 @@ void InitLuaFunction(lua_State* L) // OK
 	lua_register(L, "InventoryGetMainSize", LuaInventoryGetMainSize);
 	lua_register(L, "InventoryGetFullSize", LuaInventoryGetFullSize);
 	lua_register(L, "InventoryGetItemTable", LuaInventoryGetItemTable);
+	lua_register(L, "InventorySetItemOption", LuaInventorySetItemOption);
+	lua_register(L, "InventorySetItemDurability", LuaInventorySetItemDurability);
+	lua_register(L, "InventoryConvertItem", LuaInventoryConvertItem);
+	lua_register(L, "InventoryIsPeriodicItem", LuaInventoryIsPeriodicItem);
+	lua_register(L, "InventoryGetPeriodicItemTime", LuaInventoryGetPeriodicItemTime);
+	lua_register(L, "InventoryIsExcItem", LuaInventoryIsExcItem);
 	lua_register(L, "InventoryGetItemIndex", LuaInventoryGetItemIndex);
 	lua_register(L, "InventoryGetItemCount", LuaInventoryGetItemCount);
 	lua_register(L, "InventoryDelItemIndex", LuaInventoryDelItemIndex);
@@ -156,6 +221,27 @@ void InitLuaFunction(lua_State* L) // OK
 	lua_register(L, "InventoryGetFreeSlotCount", LuaInventoryGetFreeSlotCount);
 	lua_register(L, "InventoryCheckSpaceByItem", LuaInventoryCheckSpaceByItem);
 	lua_register(L, "InventoryCheckSpaceBySize", LuaInventoryCheckSpaceBySize);
+	lua_register(L, "TradeGetItemTable", LuaTradeGetItemTable);
+	lua_register(L, "TradeSetItemOption", LuaTradeSetItemOption);
+	lua_register(L, "TradeSetItemDurability", LuaTradeSetItemDurability);
+	lua_register(L, "TradeConvertItem", LuaTradeConvertItem);
+	lua_register(L, "TradeIsPeriodicItem", LuaTradeIsPeriodicItem);
+	lua_register(L, "TradeGetPeriodicItemTime", LuaTradeGetPeriodicItemTime);
+	lua_register(L, "TradeIsExcItem", LuaTradeIsExcItem);
+	lua_register(L, "WarehouseGetItemTable", LuaWarehouseGetItemTable);
+	lua_register(L, "WarehouseSetItemOption", LuaWarehouseSetItemOption);
+	lua_register(L, "WarehouseSetItemDurability", LuaWarehouseSetItemDurability);
+	lua_register(L, "WarehouseConvertItem", LuaWarehouseConvertItem);
+	lua_register(L, "WarehouseIsPeriodicItem", LuaWarehouseIsPeriodicItem);
+	lua_register(L, "WarehouseGetPeriodicItemTime", LuaWarehouseGetPeriodicItemTime);
+	lua_register(L, "WarehouseIsExcItem", LuaWarehouseIsExcItem);
+	lua_register(L, "ChaosBoxGetItemTable", LuaChaosBoxGetItemTable);
+	lua_register(L, "ChaosBoxSetItemOption", LuaChaosBoxSetItemOption);
+	lua_register(L, "ChaosBoxSetItemDurability", LuaChaosBoxSetItemDurability);
+	lua_register(L, "ChaosBoxConvertItem", LuaChaosBoxConvertItem);
+	lua_register(L, "ChaosBoxIsPeriodicItem", LuaChaosBoxIsPeriodicItem);
+	lua_register(L, "ChaosBoxGetPeriodicItemTime", LuaChaosBoxGetPeriodicItemTime);
+	lua_register(L, "ChaosBoxIsExcItem", LuaChaosBoxIsExcItem);
 	lua_register(L, "ItemDrop", LuaItemDrop);
 	lua_register(L, "ItemDropEx", LuaItemDropEx);
 	lua_register(L, "ItemGive", LuaItemGive);
@@ -182,6 +268,12 @@ void InitLuaFunction(lua_State* L) // OK
 	lua_register(L, "NoticeGlobalSend", LuaNoticeGlobalSend);
 	lua_register(L, "PartyGetMemberCount", LuaPartyGetMemberCount);
 	lua_register(L, "PartyGetMemberIndex", LuaPartyGetMemberIndex);
+	lua_register(L, "PartyCreate", LuaPartyCreate);
+	lua_register(L, "PartyDestroy", LuaPartyDestroy);
+	lua_register(L, "PartyAddMember", LuaPartyAddMember);
+	lua_register(L, "PartyIsLeader", LuaPartyIsLeader);
+	lua_register(L, "PartyIsMember", LuaPartyIsMember);
+	lua_register(L, "PartyIsParty", LuaPartyIsParty);
 	lua_register(L, "ObjectGetCoin", LuaObjectGetCoin);
 	lua_register(L, "ObjectAddCoin", LuaObjectAddCoin);
 	lua_register(L, "ObjectSubCoin", LuaObjectSubCoin);
@@ -191,6 +283,9 @@ void InitLuaFunction(lua_State* L) // OK
 	lua_register(L, "PKLevelSend", LuaPKLevelSend);
 	lua_register(L, "PostSend", LuaPostSend);
 	lua_register(L, "QuestStateCheck", LuaQuestStateCheck);
+	lua_register(L, "QuestAddList", LuaQuestAddList);
+	lua_register(L, "QuestInsertReward", LuaQuestInsertReward);
+	lua_register(L, "QuestInfoSend", LuaQuestInfoSend);
 	lua_register(L, "RandomGetNumber", LuaRandomGetNumber);
 	lua_register(L, "SkinChangeSend", LuaSkinChangeSend);
 	lua_register(L, "UserDisconnect", LuaUserDisconnect);
@@ -1961,6 +2056,1163 @@ int LuaGetObjectIndexByName(lua_State* L) // OK
 	return 1;
 }
 
+// The block below exposes OBJECTSTRUCT (User.h) fields that already
+// existed natively but had no Lua binding yet - see LuaFunction.h for
+// where this came from. No Type != OBJECT_USER guard on the combat-stat
+// pairs (Defense/MagicDamage*/PhysiDamage*/PhysiSpeed/MagicSpeed) or the
+// Life/Mana/BP/Shield setters, matching the existing unguarded getters for
+// those same fields (LuaGetObjectLife/BP/Shield above) - they're usable on
+// any gObj[] entry, not just OBJECT_USER ones.
+
+int LuaGetObjectDefense(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].Defense);
+	return 1;
+}
+
+int LuaSetObjectDefense(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].Defense = aValue;
+
+	return 1;
+}
+
+int LuaGetObjectDefensePvP(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].DefensePvP);
+	return 1;
+}
+
+int LuaSetObjectDefensePvP(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].DefensePvP = aValue;
+
+	return 1;
+}
+
+int LuaGetObjectMagicDamageMax(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].MagicDamageMax);
+	return 1;
+}
+
+int LuaSetObjectMagicDamageMax(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].MagicDamageMax = aValue;
+
+	return 1;
+}
+
+int LuaGetObjectMagicDamageMin(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].MagicDamageMin);
+	return 1;
+}
+
+int LuaSetObjectMagicDamageMin(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].MagicDamageMin = aValue;
+
+	return 1;
+}
+
+int LuaGetObjectPhysiDamageMaxLeft(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].PhysiDamageMaxLeft);
+	return 1;
+}
+
+int LuaSetObjectPhysiDamageMaxLeft(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].PhysiDamageMaxLeft = aValue;
+
+	return 1;
+}
+
+int LuaGetObjectPhysiDamageMinLeft(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].PhysiDamageMinLeft);
+	return 1;
+}
+
+int LuaSetObjectPhysiDamageMinLeft(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].PhysiDamageMinLeft = aValue;
+
+	return 1;
+}
+
+int LuaGetObjectPhysiDamageMaxRight(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].PhysiDamageMaxRight);
+	return 1;
+}
+
+int LuaSetObjectPhysiDamageMaxRight(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].PhysiDamageMaxRight = aValue;
+
+	return 1;
+}
+
+int LuaGetObjectPhysiDamageMinRight(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].PhysiDamageMinRight);
+	return 1;
+}
+
+int LuaSetObjectPhysiDamageMinRight(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].PhysiDamageMinRight = aValue;
+
+	return 1;
+}
+
+int LuaGetObjectPhysiSpeed(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].PhysiSpeed);
+	return 1;
+}
+
+int LuaSetObjectPhysiSpeed(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].PhysiSpeed = aValue;
+
+	return 1;
+}
+
+int LuaGetObjectMagicSpeed(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].MagicSpeed);
+	return 1;
+}
+
+int LuaSetObjectMagicSpeed(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].MagicSpeed = aValue;
+
+	return 1;
+}
+
+int LuaGetObjectWarehouseCount(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].WarehouseCount);
+	return 1;
+}
+
+int LuaSetObjectWarehouseCount(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].WarehouseCount = (char)aValue;
+
+	return 1;
+}
+
+int LuaGetObjectReqWarehouseOpen(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].ReqWarehouseOpen);
+	return 1;
+}
+
+int LuaSetObjectReqWarehouseOpen(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].ReqWarehouseOpen = (BYTE)aValue;
+
+	return 1;
+}
+
+int LuaGetObjectExtInventory(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].ExtInventory);
+	return 1;
+}
+
+int LuaSetObjectExtInventory(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].ExtInventory = aValue;
+
+	return 1;
+}
+
+int LuaGetObjectExtWarehouse(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].ExtWarehouse);
+	return 1;
+}
+
+int LuaSetObjectExtWarehouse(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].ExtWarehouse = aValue;
+
+	return 1;
+}
+
+int LuaGetObjectPShopOpen(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gObj[aIndex].PShopOpen);
+	return 1;
+}
+
+int LuaSetObjectPShopOpen(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_toboolean(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].PShopOpen = (aValue != 0);
+
+	return 1;
+}
+
+int LuaGetObjectPShopText(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	lua_pushstring(L, gObj[aIndex].PShopText);
+	return 1;
+}
+
+int LuaSetObjectPShopText(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	const char* aString = lua_tostring(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	size_t aLen = strlen(aString);
+
+	if (aLen >= sizeof(gObj[aIndex].PShopText))
+	{
+		aLen = sizeof(gObj[aIndex].PShopText) - 1;
+	}
+
+	memcpy(gObj[aIndex].PShopText, aString, aLen);
+	gObj[aIndex].PShopText[aLen] = '\0';
+
+	return 1;
+}
+
+int LuaGetObjectSummonIndex(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].SummonIndex);
+	return 1;
+}
+
+int LuaSetObjectSummonIndex(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].SummonIndex = aValue;
+
+	return 1;
+}
+
+int LuaGetObjectDieRegen(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].DieRegen);
+	return 1;
+}
+
+int LuaSetObjectDieRegen(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].DieRegen = (char)aValue;
+
+	return 1;
+}
+
+int LuaGetObjectRegenMapNumber(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].RegenMapNumber);
+	return 1;
+}
+
+int LuaSetObjectRegenMapNumber(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].RegenMapNumber = (BYTE)aValue;
+
+	return 1;
+}
+
+int LuaGetObjectRegenMapX(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].RegenMapX);
+	return 1;
+}
+
+int LuaSetObjectRegenMapX(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].RegenMapX = (BYTE)aValue;
+
+	return 1;
+}
+
+int LuaGetObjectRegenMapY(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].RegenMapY);
+	return 1;
+}
+
+int LuaSetObjectRegenMapY(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].RegenMapY = (BYTE)aValue;
+
+	return 1;
+}
+
+int LuaGetObjectRegenTime(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].RegenTime);
+	return 1;
+}
+
+int LuaSetObjectRegenTime(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].RegenTime = (DWORD)aValue;
+
+	return 1;
+}
+
+int LuaSetObjectBP(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].BP = aValue;
+
+	return 1;
+}
+
+int LuaSetObjectMaxBP(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].MaxBP = aValue;
+
+	return 1;
+}
+
+int LuaSetObjectLife(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].Life = (float)aValue;
+
+	return 1;
+}
+
+int LuaSetObjectMaxLife(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].MaxLife = (float)aValue;
+
+	return 1;
+}
+
+int LuaSetObjectMana(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].Mana = (float)aValue;
+
+	return 1;
+}
+
+int LuaSetObjectMaxMana(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].MaxMana = (float)aValue;
+
+	return 1;
+}
+
+int LuaSetObjectShield(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].Shield = aValue;
+
+	return 1;
+}
+
+int LuaSetObjectMaxShield(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].MaxShield = aValue;
+
+	return 1;
+}
+
+int LuaSetObjectAuthority(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].Authority = (DWORD)aValue;
+
+	return 1;
+}
+
 int LuaSetObjectLevel(lua_State* L) // OK
 {
 	if (lua_gettop(L) != 2)
@@ -2462,6 +3714,111 @@ int LuaChatTargetSend(lua_State* L) // OK
 	return 1;
 }
 
+int LuaDamageSend(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 6)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 6);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int bIndex = lua_tointeger(L, 2);
+	int aFlag = lua_tointeger(L, 3);
+	int aDamage = lua_tointeger(L, 4);
+	int aType = lua_tointeger(L, 5);
+	int aShieldDamage = lua_tointeger(L, 6);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (OBJECT_RANGE(bIndex) == 0)
+	{
+		return 0;
+	}
+
+	GCDamageSend(aIndex, bIndex, (BYTE)aFlag, aDamage, aType, aShieldDamage);
+
+	return 1;
+}
+
+int LuaRefreshCharacter(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	GCNewCharacterInfoSend(&gObj[aIndex]);
+
+	return 1;
+}
+
+int LuaLevelExperience(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aValue = lua_tointeger(L, 1);
+
+	if (aValue < 1 || aValue > MAX_CHARACTER_LEVEL)
+	{
+		return 0;
+	}
+
+	lua_pushnumber(L, gLevelExperience[aValue - 1]);
+
+	return 1;
+}
+
+int LuaTeleportMapRange(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 5)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 5);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aMap = lua_tointeger(L, 2);
+	int aX = lua_tointeger(L, 3);
+	int aY = lua_tointeger(L, 4);
+	int aRange = lua_tointeger(L, 5);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (MAP_RANGE(aMap) == 0)
+	{
+		return 0;
+	}
+
+	short aGetX = (short)aX;
+	short aGetY = (short)aY;
+
+	gMap[aMap].GetMapRandomPos(&aGetX, &aGetY, aRange);
+
+	gObjTeleport(aIndex, aMap, aGetX, aGetY);
+
+	return 1;
+}
+
 int LuaCommandCheckGameMasterLevel(lua_State* L) // OK
 {
 	if (lua_gettop(L) != 2)
@@ -2840,6 +4197,1187 @@ int LuaInventoryGetItemTable(lua_State* L) // OK
 	lua_pushnumber(L, gObj[aIndex].Inventory[aValue].m_SocketOptionBonus);
 	lua_settable(L, -3);
 
+	return 1;
+}
+
+// Write side + item-state checks for LuaInventoryGetItemTable above - see
+// LuaFunction.h for where this came from. "type" numbering for
+// LuaInventorySetItemOption matches the RoxGaming pack's own
+// setItemTable(slot, type, value): 1=NewOption, 2=Option1, 3=Option2,
+// 4=Option3, 5=SetOption, 6=JewelOfHarmonyOption, 7=ItemOptionEx,
+// 8=SocketOptionBonus, 9-13=SocketOption[0..4].
+int LuaInventorySetItemOption(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 4)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 4);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+	int aType = lua_tointeger(L, 3);
+	int aValue = lua_tointeger(L, 4);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Inventory[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	CItem* lpItem = &gObj[aIndex].Inventory[aSlot];
+
+	switch (aType)
+	{
+	case 1:
+		lpItem->m_NewOption = (BYTE)aValue;
+		break;
+	case 2:
+		lpItem->m_Option1 = (BYTE)aValue;
+		break;
+	case 3:
+		lpItem->m_Option2 = (BYTE)aValue;
+		break;
+	case 4:
+		lpItem->m_Option3 = (BYTE)aValue;
+		break;
+	case 5:
+		lpItem->m_SetOption = (BYTE)aValue;
+		break;
+	case 6:
+		lpItem->m_JewelOfHarmonyOption = (BYTE)aValue;
+		break;
+	case 7:
+		lpItem->m_ItemOptionEx = (BYTE)aValue;
+		break;
+	case 8:
+		lpItem->m_SocketOptionBonus = (BYTE)aValue;
+		break;
+	case 9:
+	case 10:
+	case 11:
+	case 12:
+	case 13:
+		lpItem->m_SocketOption[aType - 9] = (BYTE)aValue;
+		break;
+	default:
+		return 0;
+	}
+
+	return 1;
+}
+
+int LuaInventorySetItemDurability(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 3)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 3);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+	int aValue = lua_tointeger(L, 3);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Inventory[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].Inventory[aSlot].m_Durability = (float)aValue;
+
+	return 1;
+}
+
+// Recomputes an item's derived/cached stats (defense, damage, etc.) from
+// its current option fields - call after LuaInventorySetItemOption so the
+// item's displayed/effective stats actually reflect the new sockets/
+// options, same as this project's own item-modification code paths do
+// after changing options directly.
+int LuaInventoryConvertItem(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Inventory[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	CItem* lpItem = &gObj[aIndex].Inventory[aSlot];
+
+	lpItem->Convert(lpItem->m_Index, lpItem->m_Option1, lpItem->m_Option2, lpItem->m_Option3, lpItem->m_NewOption, lpItem->m_SetOption, lpItem->m_JewelOfHarmonyOption, lpItem->m_ItemOptionEx, lpItem->m_SocketOption, lpItem->m_SocketOptionBonus);
+
+	return 1;
+}
+
+int LuaInventoryIsPeriodicItem(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Inventory[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gObj[aIndex].Inventory[aSlot].m_IsPeriodicItem);
+	return 1;
+}
+
+int LuaInventoryGetPeriodicItemTime(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Inventory[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].Inventory[aSlot].m_PeriodicItemTime);
+	return 1;
+}
+
+int LuaInventoryIsExcItem(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Inventory[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gObj[aIndex].Inventory[aSlot].IsExcItem());
+	return 1;
+}
+
+int LuaTradeGetItemTable(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Trade[aValue].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_newtable(L);
+
+	lua_pushstring(L, "Serial");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_Serial);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Index");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_Index);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Level");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_Level);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Durability");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_Durability);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Option1");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_Option1);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Option2");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_Option2);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Option3");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_Option3);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "NewOption");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_NewOption);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SetOption");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_SetOption);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "JoHOption");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_JewelOfHarmonyOption);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "380Option");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_ItemOptionEx);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption1");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_SocketOption[0]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption2");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_SocketOption[1]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption3");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_SocketOption[2]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption4");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_SocketOption[3]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption5");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_SocketOption[4]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOptionBonus");
+	lua_pushnumber(L, gObj[aIndex].Trade[aValue].m_SocketOptionBonus);
+	lua_settable(L, -3);
+
+	return 1;
+}
+
+int LuaTradeSetItemOption(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 4)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 4);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+	int aType = lua_tointeger(L, 3);
+	int aValue = lua_tointeger(L, 4);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Trade[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	CItem* lpItem = &gObj[aIndex].Trade[aSlot];
+
+	switch (aType)
+	{
+	case 1:
+		lpItem->m_NewOption = (BYTE)aValue;
+		break;
+	case 2:
+		lpItem->m_Option1 = (BYTE)aValue;
+		break;
+	case 3:
+		lpItem->m_Option2 = (BYTE)aValue;
+		break;
+	case 4:
+		lpItem->m_Option3 = (BYTE)aValue;
+		break;
+	case 5:
+		lpItem->m_SetOption = (BYTE)aValue;
+		break;
+	case 6:
+		lpItem->m_JewelOfHarmonyOption = (BYTE)aValue;
+		break;
+	case 7:
+		lpItem->m_ItemOptionEx = (BYTE)aValue;
+		break;
+	case 8:
+		lpItem->m_SocketOptionBonus = (BYTE)aValue;
+		break;
+	case 9:
+	case 10:
+	case 11:
+	case 12:
+	case 13:
+		lpItem->m_SocketOption[aType - 9] = (BYTE)aValue;
+		break;
+	default:
+		return 0;
+	}
+
+	return 1;
+}
+
+int LuaTradeSetItemDurability(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 3)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 3);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+	int aValue = lua_tointeger(L, 3);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Trade[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].Trade[aSlot].m_Durability = (float)aValue;
+
+	return 1;
+}
+
+int LuaTradeConvertItem(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Trade[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	CItem* lpItem = &gObj[aIndex].Trade[aSlot];
+
+	lpItem->Convert(lpItem->m_Index, lpItem->m_Option1, lpItem->m_Option2, lpItem->m_Option3, lpItem->m_NewOption, lpItem->m_SetOption, lpItem->m_JewelOfHarmonyOption, lpItem->m_ItemOptionEx, lpItem->m_SocketOption, lpItem->m_SocketOptionBonus);
+
+	return 1;
+}
+
+int LuaTradeIsPeriodicItem(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Trade[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gObj[aIndex].Trade[aSlot].m_IsPeriodicItem);
+	return 1;
+}
+
+int LuaTradeGetPeriodicItemTime(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Trade[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].Trade[aSlot].m_PeriodicItemTime);
+	return 1;
+}
+
+int LuaTradeIsExcItem(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Trade[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gObj[aIndex].Trade[aSlot].IsExcItem());
+	return 1;
+}
+
+int LuaWarehouseGetItemTable(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Warehouse[aValue].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_newtable(L);
+
+	lua_pushstring(L, "Serial");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_Serial);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Index");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_Index);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Level");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_Level);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Durability");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_Durability);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Option1");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_Option1);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Option2");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_Option2);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Option3");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_Option3);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "NewOption");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_NewOption);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SetOption");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_SetOption);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "JoHOption");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_JewelOfHarmonyOption);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "380Option");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_ItemOptionEx);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption1");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_SocketOption[0]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption2");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_SocketOption[1]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption3");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_SocketOption[2]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption4");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_SocketOption[3]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption5");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_SocketOption[4]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOptionBonus");
+	lua_pushnumber(L, gObj[aIndex].Warehouse[aValue].m_SocketOptionBonus);
+	lua_settable(L, -3);
+
+	return 1;
+}
+
+int LuaWarehouseSetItemOption(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 4)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 4);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+	int aType = lua_tointeger(L, 3);
+	int aValue = lua_tointeger(L, 4);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Warehouse[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	CItem* lpItem = &gObj[aIndex].Warehouse[aSlot];
+
+	switch (aType)
+	{
+	case 1:
+		lpItem->m_NewOption = (BYTE)aValue;
+		break;
+	case 2:
+		lpItem->m_Option1 = (BYTE)aValue;
+		break;
+	case 3:
+		lpItem->m_Option2 = (BYTE)aValue;
+		break;
+	case 4:
+		lpItem->m_Option3 = (BYTE)aValue;
+		break;
+	case 5:
+		lpItem->m_SetOption = (BYTE)aValue;
+		break;
+	case 6:
+		lpItem->m_JewelOfHarmonyOption = (BYTE)aValue;
+		break;
+	case 7:
+		lpItem->m_ItemOptionEx = (BYTE)aValue;
+		break;
+	case 8:
+		lpItem->m_SocketOptionBonus = (BYTE)aValue;
+		break;
+	case 9:
+	case 10:
+	case 11:
+	case 12:
+	case 13:
+		lpItem->m_SocketOption[aType - 9] = (BYTE)aValue;
+		break;
+	default:
+		return 0;
+	}
+
+	return 1;
+}
+
+int LuaWarehouseSetItemDurability(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 3)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 3);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+	int aValue = lua_tointeger(L, 3);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Warehouse[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].Warehouse[aSlot].m_Durability = (float)aValue;
+
+	return 1;
+}
+
+int LuaWarehouseConvertItem(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Warehouse[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	CItem* lpItem = &gObj[aIndex].Warehouse[aSlot];
+
+	lpItem->Convert(lpItem->m_Index, lpItem->m_Option1, lpItem->m_Option2, lpItem->m_Option3, lpItem->m_NewOption, lpItem->m_SetOption, lpItem->m_JewelOfHarmonyOption, lpItem->m_ItemOptionEx, lpItem->m_SocketOption, lpItem->m_SocketOptionBonus);
+
+	return 1;
+}
+
+int LuaWarehouseIsPeriodicItem(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Warehouse[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gObj[aIndex].Warehouse[aSlot].m_IsPeriodicItem);
+	return 1;
+}
+
+int LuaWarehouseGetPeriodicItemTime(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Warehouse[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].Warehouse[aSlot].m_PeriodicItemTime);
+	return 1;
+}
+
+int LuaWarehouseIsExcItem(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Warehouse[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gObj[aIndex].Warehouse[aSlot].IsExcItem());
+	return 1;
+}
+
+int LuaChaosBoxGetItemTable(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aValue = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].ChaosBox[aValue].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_newtable(L);
+
+	lua_pushstring(L, "Serial");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_Serial);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Index");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_Index);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Level");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_Level);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Durability");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_Durability);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Option1");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_Option1);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Option2");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_Option2);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Option3");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_Option3);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "NewOption");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_NewOption);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SetOption");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_SetOption);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "JoHOption");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_JewelOfHarmonyOption);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "380Option");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_ItemOptionEx);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption1");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_SocketOption[0]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption2");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_SocketOption[1]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption3");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_SocketOption[2]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption4");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_SocketOption[3]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOption5");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_SocketOption[4]);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "SocketOptionBonus");
+	lua_pushnumber(L, gObj[aIndex].ChaosBox[aValue].m_SocketOptionBonus);
+	lua_settable(L, -3);
+
+	return 1;
+}
+
+int LuaChaosBoxSetItemOption(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 4)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 4);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+	int aType = lua_tointeger(L, 3);
+	int aValue = lua_tointeger(L, 4);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].ChaosBox[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	CItem* lpItem = &gObj[aIndex].ChaosBox[aSlot];
+
+	switch (aType)
+	{
+	case 1:
+		lpItem->m_NewOption = (BYTE)aValue;
+		break;
+	case 2:
+		lpItem->m_Option1 = (BYTE)aValue;
+		break;
+	case 3:
+		lpItem->m_Option2 = (BYTE)aValue;
+		break;
+	case 4:
+		lpItem->m_Option3 = (BYTE)aValue;
+		break;
+	case 5:
+		lpItem->m_SetOption = (BYTE)aValue;
+		break;
+	case 6:
+		lpItem->m_JewelOfHarmonyOption = (BYTE)aValue;
+		break;
+	case 7:
+		lpItem->m_ItemOptionEx = (BYTE)aValue;
+		break;
+	case 8:
+		lpItem->m_SocketOptionBonus = (BYTE)aValue;
+		break;
+	case 9:
+	case 10:
+	case 11:
+	case 12:
+	case 13:
+		lpItem->m_SocketOption[aType - 9] = (BYTE)aValue;
+		break;
+	default:
+		return 0;
+	}
+
+	return 1;
+}
+
+int LuaChaosBoxSetItemDurability(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 3)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 3);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+	int aValue = lua_tointeger(L, 3);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].ChaosBox[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	gObj[aIndex].ChaosBox[aSlot].m_Durability = (float)aValue;
+
+	return 1;
+}
+
+int LuaChaosBoxConvertItem(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].ChaosBox[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	CItem* lpItem = &gObj[aIndex].ChaosBox[aSlot];
+
+	lpItem->Convert(lpItem->m_Index, lpItem->m_Option1, lpItem->m_Option2, lpItem->m_Option3, lpItem->m_NewOption, lpItem->m_SetOption, lpItem->m_JewelOfHarmonyOption, lpItem->m_ItemOptionEx, lpItem->m_SocketOption, lpItem->m_SocketOptionBonus);
+
+	return 1;
+}
+
+int LuaChaosBoxIsPeriodicItem(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].ChaosBox[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gObj[aIndex].ChaosBox[aSlot].m_IsPeriodicItem);
+	return 1;
+}
+
+int LuaChaosBoxGetPeriodicItemTime(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].ChaosBox[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, gObj[aIndex].ChaosBox[aSlot].m_PeriodicItemTime);
+	return 1;
+}
+
+int LuaChaosBoxIsExcItem(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aSlot = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].ChaosBox[aSlot].IsItem() == 0)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gObj[aIndex].ChaosBox[aSlot].IsExcItem());
 	return 1;
 }
 
@@ -3804,6 +6342,107 @@ int LuaPartyGetMemberIndex(lua_State* L) // OK
 	return 1;
 }
 
+int LuaPartyCreate(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gParty.Create(aIndex));
+	return 1;
+}
+
+int LuaPartyDestroy(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aValue = lua_tointeger(L, 1);
+
+	lua_pushboolean(L, gParty.Destroy(aValue));
+	return 1;
+}
+
+int LuaPartyAddMember(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aValue = lua_tointeger(L, 1);
+	int bIndex = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(bIndex) == 0)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gParty.AddMember(aValue, bIndex));
+	return 1;
+}
+
+int LuaPartyIsLeader(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aValue = lua_tointeger(L, 1);
+	int bIndex = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(bIndex) == 0)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gParty.IsLeader(aValue, bIndex));
+	return 1;
+}
+
+int LuaPartyIsMember(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aValue = lua_tointeger(L, 1);
+	int bIndex = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(bIndex) == 0)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gParty.IsMember(aValue, bIndex));
+	return 1;
+}
+
+int LuaPartyIsParty(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aValue = lua_tointeger(L, 1);
+
+	lua_pushboolean(L, gParty.IsParty(aValue));
+	return 1;
+}
+
 int LuaObjectGetCoin(lua_State* L) // OK
 {
 	if (lua_gettop(L) != 1)
@@ -4076,6 +6715,80 @@ int LuaQuestStateCheck(lua_State* L) // OK
 	{
 		lua_pushinteger(L, 0);
 	}
+
+	return 1;
+}
+
+int LuaQuestAddList(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 3)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 3);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aQuestIndex = lua_tointeger(L, 2);
+	int aQuestState = lua_tointeger(L, 3);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	lua_pushboolean(L, gQuest.AddQuestList(&gObj[aIndex], aQuestIndex, aQuestState));
+	return 1;
+}
+
+int LuaQuestInsertReward(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 2)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 2);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+	int aQuestIndex = lua_tointeger(L, 2);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	gQuestReward.InsertQuestReward(&gObj[aIndex], aQuestIndex);
+
+	return 1;
+}
+
+int LuaQuestInfoSend(lua_State* L) // OK
+{
+	if (lua_gettop(L) != 1)
+	{
+		return luaL_error(L, LUA_SCRIPT_CODE_ERROR1, 1);
+	}
+
+	int aIndex = lua_tointeger(L, 1);
+
+	if (OBJECT_RANGE(aIndex) == 0)
+	{
+		return 0;
+	}
+
+	if (gObj[aIndex].Type != OBJECT_USER)
+	{
+		return 0;
+	}
+
+	gQuest.GCQuestInfoSend(aIndex);
 
 	return 1;
 }
