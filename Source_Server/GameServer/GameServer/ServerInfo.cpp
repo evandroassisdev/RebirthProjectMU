@@ -584,7 +584,7 @@ void CServerInfo::ReadItemInfo() // OK
 
 	#endif
 
-	//gItemExOptionRate.Load(gPath.GetFullPath("Item\\ExcellentOptionRate.txt"));
+	gItemExOptionRate.Load(gPath.GetFullPath("Item\\ExcellentOptionRate.txt"));
 
 	LogAdd(LOG_BLUE,"[ServerInfo] Item loaded successfully");
 }

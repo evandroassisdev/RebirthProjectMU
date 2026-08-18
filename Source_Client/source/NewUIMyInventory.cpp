@@ -1260,7 +1260,7 @@ void SEASON3B::CNewUIMyInventory::RenderEquippedItem()
 			int iLevel = (pEquipmentItemSlot->Level>>3)&15;
 			int iMaxDurability = calcMaxDurability(pEquipmentItemSlot, pItemAttr, iLevel);
 			
-			// ¿ë»ç/Àü»çÀÇ¹ÝÁö ¿¹¿ÜÃ³¸®
+			// ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½Ç¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½
 			if( i == EQUIPMENT_RING_LEFT || i == EQUIPMENT_RING_RIGHT)
 			{
 				if( pEquipmentItemSlot->Type == ITEM_HELPER+20 && iLevel == 1 
@@ -1618,6 +1618,7 @@ bool SEASON3B::CNewUIMyInventory::InventoryProcess()
 				|| pPickItem->Type == ITEM_POTION + 160
 				|| pPickItem->Type == ITEM_POTION + 161
 #endif // LEM_ADD_LUCKYITEM
+				|| pPickItem->Type == ITEM_POTION + 252 // CustomJewel - Jewel of Full (gCustomJewel), test item
 				)
 			{
 				ITEM* pItem = m_pNewInventoryCtrl->FindItem(iTargetIndex);
@@ -2504,7 +2505,7 @@ void SEASON3B::CNewUIMyInventory::LockMyShopButtonOpen()
 	m_BtnMyShop.ChangeImgColor(BUTTON_STATE_UP, RGBA(100, 100, 100, 255));
 	m_BtnMyShop.ChangeTextColor(RGBA(100, 100, 100, 255));
 	m_BtnMyShop.Lock();
-	// 1125 "°³ÀÎ»óÁ¡¿­±â(S)"
+	// 1125 "ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(S)"
 	m_BtnMyShop.ChangeToolTipText(GlobalText[1125], true);	
 }
 
@@ -2513,13 +2514,13 @@ void SEASON3B::CNewUIMyInventory::UnlockMyShopButtonOpen()
 	m_BtnMyShop.ChangeImgColor(BUTTON_STATE_UP, RGBA(255, 255, 255, 255));
 	m_BtnMyShop.ChangeTextColor(RGBA(255, 255, 255, 255));
 	m_BtnMyShop.UnLock();
-	// 1125 "°³ÀÎ»óÁ¡¿­±â(S)"	
+	// 1125 "ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(S)"	
 	m_BtnMyShop.ChangeToolTipText(GlobalText[1125], true);	
 }
 
 void SEASON3B::CNewUIMyInventory::ToggleRepairMode()
 {
-	//. Åä±Û ¼ö¸®¸ðµå
+	//. ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if(m_RepairMode == REPAIR_MODE_OFF)
 	{
 		SetRepairMode(true);

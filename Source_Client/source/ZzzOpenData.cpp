@@ -960,6 +960,12 @@ void OpenItems()
     gLoadData.AccessModel(MODEL_POTION+15,"Data\\Item\\","Gold",1);
     gLoadData.AccessModel(MODEL_POTION+16,"Data\\Item\\","Jewel",3);
 
+	// CustomJewel (gCustomJewel) - GET_ITEM(14,252) "Jewel of Full". Testing
+	// with just this one item first: reuses the exact same Jewel1.bmd model
+	// already proven working for Jewel of Bless (MODEL_POTION+13 above),
+	// instead of the Wizard Team EX301KOR model that rendered broken.
+	gLoadData.AccessModel(MODEL_POTION+252,"Data\\Item\\","Jewel",1);
+
 	for(int i=0;i<3;i++)
 		gLoadData.AccessModel(MODEL_POTION+17+i,"Data\\Item\\","Devil",i);
 
@@ -1841,6 +1847,9 @@ void OpenItemTextures()
 	
 	gLoadData.OpenTexture(MODEL_POTION+160, "Item\\LuckyItem\\" );
 	gLoadData.OpenTexture(MODEL_POTION+161, "Item\\LuckyItem\\" );
+
+	// CustomJewel - Jewel of Full (GET_ITEM(14,252)), test item.
+	gLoadData.OpenTexture(MODEL_POTION+252, "Item\\");
 
 	sprintf(szLuckySetPathName, "Player\\LuckyItem\\65\\InvenArmorMale40_luck.tga");
 	LoadBitmap(szLuckySetPathName, BITMAP_INVEN_ARMOR+6);
