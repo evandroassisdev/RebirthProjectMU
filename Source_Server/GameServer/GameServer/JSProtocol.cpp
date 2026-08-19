@@ -125,7 +125,7 @@ void JGMapServerMoveRecv(SDHP_MAP_SERVER_MOVE_RECV* lpMsg) // OK
 	if(lpMsg->result == 0 && gObj[lpMsg->index].MapMoveDisable != 1)
 	{
 		gNotice.GCNoticeSend(lpMsg->index,0,0,0,0,0,0,gMessage.GetMessage(259));
-		GJMapServerMoveSend(lpMsg->index,gServerInfo.m_ServerCode,0,125,125);
+		GJMapServerMoveSend(lpMsg->index,(WORD)gServerInfo.m_ServerCode,0,125,125);
 		return;
 	}
 

@@ -75,4 +75,6 @@ bool TextureScriptParsing::parsingTScript(char* filename)
             }
         }
     }
+
+    return m_bBeScript;
 }

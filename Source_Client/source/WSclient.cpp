@@ -2813,13 +2813,13 @@ void ReceiveDamage( BYTE *ReceiveBuffer )
 {
 	LPPRECEIVE_DAMAGE Data = (LPPRECEIVE_DAMAGE)ReceiveBuffer;
 	int Damage = ((int)(Data->DamageH)<<8) + Data->DamageL;
-	if(CharacterAttribute->Life >= Damage)
+	if(CharacterAttribute->Life >= (DWORD)Damage)
 		CharacterAttribute->Life -= Damage;
 	else
 		CharacterAttribute->Life = 0;
-	
+
 	int ShieldDamage = ((int)(Data->ShieldDamageH)<<8) + Data->ShieldDamageL;
-	if(CharacterAttribute->Shield >= ShieldDamage)
+	if(CharacterAttribute->Shield >= (DWORD)ShieldDamage)
 		CharacterAttribute->Shield = ShieldDamage;
 	else
 		CharacterAttribute->Shield = 0;

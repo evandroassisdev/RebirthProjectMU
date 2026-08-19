@@ -591,11 +591,11 @@ bool CGlobalBitmap::OpenJpeg(GLuint uiBitmapIndex, const std::string& filename, 
 	if (cinfo.output_width <= MAX_WIDTH && cinfo.output_height <= MAX_HEIGHT)
 	{
 		int Width = 1, Height = 1;
-		while (Width < cinfo.output_width)
+		while ((JDIMENSION)Width < cinfo.output_width)
 		{
 			Width <<= 1;
 		}
-		while (Height < cinfo.output_height)
+		while ((JDIMENSION)Height < cinfo.output_height)
 		{
 			Height <<= 1;
 		}
