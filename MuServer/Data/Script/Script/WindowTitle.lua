@@ -1,9 +1,10 @@
 --############################################################################
 -- WindowTitle - test script for the Lua scripting engine
 -- Sets the client window title to show the character's nick, level and
--- reset count. Refreshed on login and again immediately on every level up
--- (there's no separate "reset" hook - resets also go through a level
--- change, so this covers it too).
+-- reset count. Refreshed on login and again immediately on every level up.
+-- Reset/master reset also fire OnUserLevelUp (server-side, in
+-- DGCommandResetRecv / DGCommandMasterResetRecv) even though they don't
+-- go through the normal level-up path, specifically so this stays in sync.
 --############################################################################
 
 BridgeFunctionAttach('OnCharacterEntry','WindowTitle_Update')

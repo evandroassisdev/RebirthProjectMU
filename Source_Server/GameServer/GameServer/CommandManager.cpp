@@ -2049,6 +2049,8 @@ void CCommandManager::DGCommandResetRecv(SDHP_COMMAND_RESET_RECV* lpMsg) // OK
 
 	this->CommandAddPointAutoProc(lpObj);
 
+	gScriptLoader.OnUserLevelUp(lpObj->Index); // reset changes Level/Reset directly, bypassing the normal level-up path that would otherwise fire this - refreshes the window title (WindowTitle.lua) among anything else hooked on it
+
 	gLog.Output(LOG_COMMAND,"[CommandReset][%s][%s] - (Reset: %d)",lpObj->Account,lpObj->Name,lpObj->Reset);
 }
 
@@ -2231,6 +2233,8 @@ void CCommandManager::DGCommandMasterResetRecv(SDHP_COMMAND_MASTER_RESET_RECV* l
 				break;
 		}
 	}
+
+	gScriptLoader.OnUserLevelUp(lpObj->Index); // same fix as CommandReset above - master reset also sets Level/Reset directly and never fired this hook
 
 	gLog.Output(LOG_COMMAND,"[CommandMasterReset][%s][%s] - (MasterReset: %d)",lpObj->Account,lpObj->Name,lpObj->MasterReset);
 }
