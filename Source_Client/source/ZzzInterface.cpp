@@ -3172,9 +3172,9 @@ void Action(CHARACTER *c,OBJECT *o,bool Now)
 				if( o->CurrentAction >= PLAYER_ATTACK_FIST && o->CurrentAction <= PLAYER_RIDE_SKILL 
 					&& o->CurrentAction != PLAYER_STOP_RIDE_HORSE
 					&& o->CurrentAction != PLAYER_STOP_TWO_HAND_SWORD_TWO
-					&& o->CurrentAction == PLAYER_FENRIR_SKILL_ONE_RIGHT
+					&& o->CurrentAction != PLAYER_FENRIR_SKILL_ONE_RIGHT
 #ifdef PBG_ADD_NEWCHAR_MONK_ANI
-					&& o->CurrentAction == PLAYER_RAGE_FENRIR_ONE_RIGHT
+					&& o->CurrentAction != PLAYER_RAGE_FENRIR_ONE_RIGHT
 #endif //PBG_ADD_NEWCHAR_MONK_ANI
 					)
 					break;
