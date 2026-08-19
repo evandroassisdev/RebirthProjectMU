@@ -2066,7 +2066,7 @@ bool SkillWarrior(CHARACTER *c,ITEM *p)
 		}
 		int iMana, iSkillMana;
 		gSkillManager.GetSkillInformation( Skill, 1, NULL, &iMana, NULL, &iSkillMana);
-		if(CharacterAttribute->Mana < iMana)
+		if(CharacterAttribute->Mana < (DWORD)iMana)
 		{
 			int Index = g_pMyInventory->FindManaItemIndex();
 			
@@ -2076,7 +2076,7 @@ bool SkillWarrior(CHARACTER *c,ITEM *p)
 			}
 			return false;
 		}
-		if(iSkillMana > CharacterAttribute->SkillMana)
+		if((DWORD)iSkillMana > CharacterAttribute->SkillMana)
 		{
 			return false;
 		}
@@ -2098,7 +2098,7 @@ bool SkillWarrior(CHARACTER *c,ITEM *p)
 		{
 			int iMana;
 			gSkillManager.GetSkillInformation( p->Special[i], 1, NULL, &iMana, NULL);
-			if(CharacterAttribute->Mana < iMana)
+			if(CharacterAttribute->Mana < (DWORD)iMana)
 			{
 				int Index = g_pMyInventory->FindManaItemIndex();
 				
@@ -2143,7 +2143,7 @@ bool SkillWarrior(CHARACTER *c,ITEM *p)
 	{
 		int iMana;
 		gSkillManager.GetSkillInformation( CharacterAttribute->Skill[Hero->CurrentSkill], 1, NULL, &iMana, NULL);
-		if(CharacterAttribute->Mana < iMana)
+		if(CharacterAttribute->Mana < (DWORD)iMana)
 		{
 			int Index = g_pMyInventory->FindManaItemIndex();
 			
@@ -2799,7 +2799,7 @@ void AttackRagefighter(CHARACTER *pCha, int nSkill, float fDistance)
 
 	g_ConsoleDebug->Write(MCD_RECEIVE, "AttackRagefighter ID : %d, Dis : %.2f | %d %d / %d | %d", nSkill, fDistance, iMana, iSkillMana, CharacterAttribute->Mana, gSkillManager.CheckSkillDelay(Hero->CurrentSkill));
 
-	if(CharacterAttribute->Mana < iMana)
+	if(CharacterAttribute->Mana < (DWORD)iMana)
 	{
 		int Index = g_pMyInventory->FindManaItemIndex();
 		
@@ -2809,7 +2809,7 @@ void AttackRagefighter(CHARACTER *pCha, int nSkill, float fDistance)
 		return;
 	}
 
-	if(iSkillMana > CharacterAttribute->SkillMana)
+	if((DWORD)iSkillMana > CharacterAttribute->SkillMana)
 		return;
 
 	/*if (!gSkillManager.CheckSkillDelay(Hero->CurrentSkill)) {
@@ -3060,7 +3060,7 @@ bool SkillElf(CHARACTER *c,ITEM *p)
 			if( g_isCharacterBuff(o, eBuff_InfinityArrow) ) 
 				iMana += CharacterMachine->InfinityArrowAdditionalMana;
 			
-			if(CharacterAttribute->Mana <= iMana)
+			if(CharacterAttribute->Mana <= (DWORD)iMana)
 			{
 				int Index = g_pMyInventory->FindManaItemIndex();
 				
@@ -3071,7 +3071,7 @@ bool SkillElf(CHARACTER *c,ITEM *p)
 				continue;
 			}
 
-			if(iSkillMana > CharacterAttribute->SkillMana)
+			if((DWORD)iSkillMana > CharacterAttribute->SkillMana)
 			{
 				return ( FALSE);
 			}
@@ -4808,7 +4808,7 @@ void AttackElf(CHARACTER *c, int Skill, float Distance)
 	gSkillManager.GetSkillInformation( Skill, 1, NULL, &iMana, NULL, &iSkillMana);
 	if( g_isCharacterBuff(o, eBuff_InfinityArrow) ) 
 		iMana += CharacterMachine->InfinityArrowAdditionalMana;
-	if(iMana > CharacterAttribute->Mana)
+	if((DWORD)iMana > CharacterAttribute->Mana)
 	{
 		int Index = g_pMyInventory->FindManaItemIndex();
 
@@ -4819,7 +4819,7 @@ void AttackElf(CHARACTER *c, int Skill, float Distance)
 		return;
 	}
 
-	if(iSkillMana > CharacterAttribute->SkillMana)
+	if((DWORD)iSkillMana > CharacterAttribute->SkillMana)
 	{
 		return;
 	}
@@ -5265,7 +5265,7 @@ void AttackKnight(CHARACTER *c, int Skill, float Distance)
 			}
 		}
 		
-		if ( iMana>CharacterAttribute->Mana )
+		if ( (DWORD)iMana>CharacterAttribute->Mana )
 		{
 			int Index = g_pMyInventory->FindManaItemIndex();
 			if(Index != -1)
@@ -5274,7 +5274,7 @@ void AttackKnight(CHARACTER *c, int Skill, float Distance)
 			}
 			Success = false;
 		}
-		if ( Success && iSkillMana>CharacterAttribute->SkillMana )
+		if ( Success && (DWORD)iSkillMana>CharacterAttribute->SkillMana )
 		{
 			Success = false;
 		}
@@ -5839,7 +5839,7 @@ void AttackWizard(CHARACTER *c, int Skill, float Distance)
 		return;
 	}
 	
-	if(iMana > CharacterAttribute->Mana)
+	if((DWORD)iMana > CharacterAttribute->Mana)
 	{
 		int Index = g_pMyInventory->FindManaItemIndex();
 		if(Index != -1)
@@ -5849,7 +5849,7 @@ void AttackWizard(CHARACTER *c, int Skill, float Distance)
 		return;
 	}
 
-	if(iSkillMana > CharacterAttribute->SkillMana)
+	if((DWORD)iSkillMana > CharacterAttribute->SkillMana)
 	{
 		if ( Skill==AT_SKILL_BLAST_HELL_BEGIN || Skill==AT_SKILL_BLAST_HELL )
         {
@@ -6523,7 +6523,7 @@ void AttackCommon(CHARACTER *c, int Skill, float Distance)
     {
 		bool Success = true;
 		
-		if ( iMana>CharacterAttribute->Mana )
+		if ( (DWORD)iMana>CharacterAttribute->Mana )
 		{
 			int Index = g_pMyInventory->FindManaItemIndex();
 			if(Index != -1)
@@ -6532,7 +6532,7 @@ void AttackCommon(CHARACTER *c, int Skill, float Distance)
 			}
 			Success = false;
 		}
-		if ( Success && iSkillMana>CharacterAttribute->SkillMana )
+		if ( Success && (DWORD)iSkillMana>CharacterAttribute->SkillMana )
 		{
 			Success = false;
 		}

@@ -257,7 +257,7 @@ void CExceptionHandler::SetProcessInfoHeader(DMPPROCESSINFOHEADER* pProcessInfoH
 			if (Module32First(hModuleSnap, &ModuleEntry)) {
 				do {
 					// Only add module info if there is enough space
-					if (NumOfModules < MaxModules) {
+					if (NumOfModules < (DWORD)MaxModules) {
 						DMPMODULEINFO* pModuleInfo = (DMPMODULEINFO*)((*ppModuleInfo) + NumOfModules);
 						lstrcpyn(pModuleInfo->szModuleBaseName, ModuleEntry.szModule, 128);
 						lstrcpyn(pModuleInfo->szModulePath, ModuleEntry.szExePath, 256);

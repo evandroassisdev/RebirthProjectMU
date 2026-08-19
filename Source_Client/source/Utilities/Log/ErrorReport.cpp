@@ -206,7 +206,7 @@ void CErrorReport::HexWrite(void* pBuffer, int iSize)
 	DWORD_PTR ptr = reinterpret_cast<DWORD_PTR>(pBuffer);
 	offset += sprintf(szLine, "0x%08X:", ptr);
 	for (int i = 0; i < iSize; i++) {
-		offset += sprintf(szLine + offset, "%02X", ((BYTE)pBuffer + i));
+		offset += sprintf(szLine + offset, "%02X", ((BYTE*)pBuffer)[i]);
 		if (i > 0 && i < iSize - 1) {
 			if (i % 16 == 15) { //. new line
 				offset += sprintf(szLine + offset, "\r\n");

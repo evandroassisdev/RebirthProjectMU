@@ -1622,7 +1622,7 @@ namespace MUHelper
 
 	int CMuHelper::SimulateComboAttack()
 	{
-		for (int i = 0; i < m_config.aiSkill.size(); i++)
+		for (int i = 0; i < (int)m_config.aiSkill.size(); i++)
 		{
 			if (m_config.aiSkill[i] == 0)
 			{
@@ -1770,7 +1770,7 @@ namespace MUHelper
 
 	bool CMuHelper::HasAssignedBuffSkill()
 	{
-		for (int i = 0; i < m_config.aiBuff.size(); i++)
+		for (int i = 0; i < (int)m_config.aiBuff.size(); i++)
 		{
 			if (m_config.aiBuff[i] != 0)
 			{
@@ -1793,7 +1793,7 @@ namespace MUHelper
 			AT_SKILL_HEALING
 		};
 
-		for (int i = 0; i < aiHealingSkills.size(); i++)
+		for (int i = 0; i < (int)aiHealingSkills.size(); i++)
 		{
 			int iSkillIndex = g_pSkillList->GetSkillIndex(aiHealingSkills[i]);
 			if (iSkillIndex != -1)
@@ -1817,7 +1817,7 @@ namespace MUHelper
 			AT_SKILL_ALICE_DRAINLIFE,
 		};
 
-		for (int i = 0; i < aiDrainLifeSkills.size(); i++)
+		for (int i = 0; i < (int)aiDrainLifeSkills.size(); i++)
 		{
 			int iSkillIndex = g_pSkillList->GetSkillIndex(aiDrainLifeSkills[i]);
 			if (iSkillIndex != -1)
