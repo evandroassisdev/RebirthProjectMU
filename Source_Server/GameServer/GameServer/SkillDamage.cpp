@@ -97,8 +97,6 @@ bool CSkillDamage::GetInfo(int index,SKILLDAMAGE_INFO* lpInfo) // OK
 
 int CSkillDamage::GetSkillDamage(LPOBJ lpObj,int index,int type) // OK
 {
-	SKILLDAMAGE_INFO SkillDamageInfo;
-
 	for(std::map<int,SKILLDAMAGE_INFO>::iterator it=this->m_SkillDamageInfo.begin();it != this->m_SkillDamageInfo.end();it++)
 	{
 		if(it->second.Skill == index)

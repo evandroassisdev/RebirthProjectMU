@@ -5635,7 +5635,7 @@ int LuaItemDropEx(lua_State* L) // OK
 		return 0;
 	}
 
-	BYTE ItemSocketOption[MAX_SOCKET_OPTION] = { ((nValue == 0) ? 255 : nValue),((oValue == 0) ? 255 : oValue),((pValue == 0) ? 255 : pValue),((qValue == 0) ? 255 : qValue),((rValue == 0) ? 255 : rValue) };
+	BYTE ItemSocketOption[MAX_SOCKET_OPTION] = { (BYTE)((nValue == 0) ? 255 : nValue),(BYTE)((oValue == 0) ? 255 : oValue),(BYTE)((pValue == 0) ? 255 : pValue),(BYTE)((qValue == 0) ? 255 : qValue),(BYTE)((rValue == 0) ? 255 : rValue) };
 
 	GDCreateItemSend(aIndex, aValue, bValue, cValue, dValue, eValue, fValue, gValue, hValue, iValue, ((uValue == 0) ? aIndex : uValue), jValue, kValue, lValue, mValue, ItemSocketOption, ((sValue == 0) ? 255 : sValue), ((tValue > 0) ? ((DWORD)time(0) + tValue) : 0));
 
@@ -5693,7 +5693,7 @@ int LuaItemGiveEx(lua_State* L) // OK
 		return 0;
 	}
 
-	BYTE ItemSocketOption[MAX_SOCKET_OPTION] = { ((kValue == 0) ? 255 : kValue),((lValue == 0) ? 255 : lValue),((mValue == 0) ? 255 : mValue),((nValue == 0) ? 255 : nValue),((oValue == 0) ? 255 : oValue) };
+	BYTE ItemSocketOption[MAX_SOCKET_OPTION] = { (BYTE)((kValue == 0) ? 255 : kValue),(BYTE)((lValue == 0) ? 255 : lValue),(BYTE)((mValue == 0) ? 255 : mValue),(BYTE)((nValue == 0) ? 255 : nValue),(BYTE)((oValue == 0) ? 255 : oValue) };
 
 	GDCreateItemSend(aIndex, 0xEB, 0, 0, aValue, bValue, cValue, dValue, eValue, fValue, -1, gValue, hValue, iValue, jValue, ItemSocketOption, ((pValue == 0) ? 255 : pValue), ((qValue > 0) ? ((DWORD)time(0) + qValue) : 0));
 

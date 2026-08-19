@@ -70,9 +70,9 @@ bool CGameMaster::CheckGameMasterLevel(LPOBJ lpObj, int level) // OK
 	{
 		if (strcmp(it->second.Account, lpObj->Account) == 0 && strcmp(it->second.Name, lpObj->Name) == 0)
 		{
-			return it->second.Level;
+			return (it->second.Level >= level);
 		}
 	}
 
-	return -1;
+	return false;
 }
