@@ -811,11 +811,14 @@ void SetAttackSpeed()
 	// Evan reproduced this exactly (Penetration/Elf bow skills: visible at
 	// 20k Dexterity, gone at 30k) - matches a community-verified safe cap
 	// of AttackSpeed<=400 for this same action group in a sibling MU pack.
+	// Bisected empirically against this client/engine by Evan: 400 and 500
+	// both stay smooth, 550 and 600 already glitch again - 500 is the
+	// confirmed safe value here (not just reused from the other pack).
 	// Clamped here instead of via their binary ASM patch since we compile
 	// from source - below the cap this changes nothing (same PlaySpeed as
 	// before); above it, the animation would've been invisible anyway, so
 	// clamping only keeps it visible instead of vanishing.
-	float BowAttackSpeed1 = (CharacterAttribute->AttackSpeed > 400) ? (400 * 0.004f) : AttackSpeed1;
+	float BowAttackSpeed1 = (CharacterAttribute->AttackSpeed > 500) ? (500 * 0.004f) : AttackSpeed1;
 
 	for(int i=PLAYER_ATTACK_BOW;i<=PLAYER_ATTACK_FLY_CROSSBOW;i++)
 		Models[MODEL_PLAYER].Actions[i].PlaySpeed = 0.30f + BowAttackSpeed1;
