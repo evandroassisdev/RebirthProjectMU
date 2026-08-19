@@ -1852,11 +1852,32 @@ int CCastleSiege::CheckSync()
 
 	if(iEVENT_END_DATE_NUM <= iTODAY_DATE_NUM)
 	{
-		this->m_bFixCastleCycleStartDate = FALSE;
+		// The DB-persisted cycle already ended (happens after any downtime
+		// longer than one m_iCastleSiegeCycle, or on a stale/never-updated
+		// seed row - e.g. a leftover 2018 test date). This used to just bail
+		// out here, which meant Init() failed and Castle Siege never started
+		// for the rest of the session, every session, forever. Catch up one
+		// cycle at a time instead, same GetNextDay()/GS_GDReqSiegeDateChange
+		// pattern SetState_ENDCYCLE() already uses for a normal end-of-cycle
+		// transition, until the window covers "today" again. Since the cycle
+		// length divides evenly into a week for a weekly schedule, this keeps
+		// the original day-of-week (e.g. Sunday) - it only advances whole
+		// cycles, never a partial one.
+		while(iEVENT_END_DATE_NUM <= iTODAY_DATE_NUM)
+		{
+			GetNextDay(&this->m_tmStartDate, this->m_iCastleSiegeCycle, 0, 0, 0);
+			GetNextDay(&this->m_tmEndDate, this->m_iCastleSiegeCycle, 0, 0, 0);
 
-		//MessageBox(0,"teste","Error",MB_OK | MB_ICONERROR | MB_SYSTEMMODAL);
-		//ErrorMessageBox("[CastleSiege] CCastleSiege::CheckSync() - iEVENT_END_DATE_NUM (%04d-%02d-%02d) <= iTODAY_DATE_NUM (%04d-%02d-%02d)",this->m_tmEndDate.wYear,this->m_tmEndDate.wMonth,this->m_tmEndDate.wDay,tmToDay.wYear,tmToDay.wMonth,tmToDay.wDay);
-		return false;
+			iEVENT_END_DATE_NUM = MACRO2(( MACRO1(m_tmEndDate.wDay) | MACRO1(m_tmEndDate.wMonth) << 8 ) & 0xFFFF ) | MACRO2(m_tmEndDate.wYear) << 16;
+		}
+
+		this->m_tmSiegeEndSchedule = this->m_tmEndDate;
+
+		LogAdd(LOG_YELLOW,"[CastleSiege] CCastleSiege::CheckSync() - stale cycle caught up to (%04d-%02d-%02d)-(%04d-%02d-%02d)", this->m_tmStartDate.wYear, this->m_tmStartDate.wMonth, this->m_tmStartDate.wDay, this->m_tmEndDate.wYear, this->m_tmEndDate.wMonth, this->m_tmEndDate.wDay);
+
+		GS_GDReqSiegeDateChange(this->m_iMapSvrGroup, -1, this->m_tmStartDate.wYear, (BYTE)this->m_tmStartDate.wMonth, (BYTE)this->m_tmStartDate.wDay, this->m_tmEndDate.wYear, (BYTE)this->m_tmEndDate.wMonth, (BYTE)this->m_tmEndDate.wDay);
+		GS_GDReqResetRegSiegeInfo(this->m_iMapSvrGroup);
+		GS_GDReqResetSiegeGuildInfo(this->m_iMapSvrGroup);
 	}
 
 	 if(this->m_bFixCastleCycleStartDate != FALSE)
