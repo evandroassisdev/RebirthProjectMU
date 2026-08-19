@@ -5,12 +5,12 @@
 #include "stdafx.h"
 #include "MemScript.h"
 
-// ¡Construction!
+// ï¿½Construction!
 CMemScript::CMemScript() : m_buff(nullptr), m_size(0), m_path{} {
 	SetLastError(0);
 }
 
-// !Destruction¡
+// !Destructionï¿½
 CMemScript::~CMemScript() {
 	delete[] m_buff;
 }
@@ -178,7 +178,7 @@ eTokenResult CMemScript::GetTokenNumber(char ch) // OK
 	}
 	else
 	{
-		this->m_number = atof(this->m_string);
+		this->m_number = (float)atof(this->m_string);
 	}
 
 	this->m_string[count] = '\0';

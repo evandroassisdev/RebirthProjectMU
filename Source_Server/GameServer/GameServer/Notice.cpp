@@ -89,7 +89,7 @@ void CNotice::MainProc() // OK
 
 	for (std::vector<NOTICE_INFO>::iterator it = this->m_NoticeInfo.begin(); it != this->m_NoticeInfo.end(); it++)
 	{
-		if ((GetTickCount() - it->LastTime) >= it->RepeatTime)
+		if ((GetTickCount() - it->LastTime) >= (DWORD)it->RepeatTime)
 		{
 			it->LastTime = GetTickCount();
 			this->GCNoticeSendToAll(it->Type, 0, 0, 0, 0, 0, "%s", it->Message[0]);

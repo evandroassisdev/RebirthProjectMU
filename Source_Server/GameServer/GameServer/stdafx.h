@@ -1,5 +1,15 @@
 #pragma once
 
+// Silences MSVC deprecation warnings (C4996) for the legacy CRT string
+// functions (strncpy/sprintf/vsprintf/_strlwr) and legacy Winsock API
+// (inet_addr/inet_ntoa/gethostbyname/WSAAsyncSelect/WSASocketA) used
+// throughout this codebase - these are all real, working calls, just
+// against APIs newer alternatives exist for. Not silencing anything new;
+// switching every call site to the "safe"/modern variant would be a much
+// larger, riskier change to touch across this whole legacy pack.
+#define _CRT_SECURE_NO_WARNINGS
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+
 #define WIN32_LEAN_AND_MEAN
 
 #define _WIN32_WINNT _WIN32_WINNT_WINXP
