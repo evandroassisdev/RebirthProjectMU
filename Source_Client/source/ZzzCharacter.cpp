@@ -803,10 +803,24 @@ void SetAttackSpeed()
 
 	Models[MODEL_PLAYER].Actions[PLAYER_ATTACK_TWO_HAND_SWORD_TWO].PlaySpeed = 0.25f + AttackSpeed1;
 
+	// Known community bug ("Bug Skill 65k" / visual Agility bug): at very
+	// high AttackSpeed, the resulting PlaySpeed becomes so large the bow
+	// animation's frames get advanced past the whole clip within a single
+	// render tick, so it's never actually visible - the attack/skill still
+	// lands (damage isn't gated by animation), only the swing disappears.
+	// Evan reproduced this exactly (Penetration/Elf bow skills: visible at
+	// 20k Dexterity, gone at 30k) - matches a community-verified safe cap
+	// of AttackSpeed<=400 for this same action group in a sibling MU pack.
+	// Clamped here instead of via their binary ASM patch since we compile
+	// from source - below the cap this changes nothing (same PlaySpeed as
+	// before); above it, the animation would've been invisible anyway, so
+	// clamping only keeps it visible instead of vanishing.
+	float BowAttackSpeed1 = (CharacterAttribute->AttackSpeed > 400) ? (400 * 0.004f) : AttackSpeed1;
+
 	for(int i=PLAYER_ATTACK_BOW;i<=PLAYER_ATTACK_FLY_CROSSBOW;i++)
-		Models[MODEL_PLAYER].Actions[i].PlaySpeed = 0.30f + AttackSpeed1;
+		Models[MODEL_PLAYER].Actions[i].PlaySpeed = 0.30f + BowAttackSpeed1;
 	for(int i=PLAYER_ATTACK_RIDE_BOW;i<=PLAYER_ATTACK_RIDE_CROSSBOW;i++)
-		Models[MODEL_PLAYER].Actions[i].PlaySpeed = 0.30f + AttackSpeed1;
+		Models[MODEL_PLAYER].Actions[i].PlaySpeed = 0.30f + BowAttackSpeed1;
 
 	Models[MODEL_PLAYER].Actions[PLAYER_SKILL_ELF1].PlaySpeed = 0.25f + MagicSpeed1;
 
