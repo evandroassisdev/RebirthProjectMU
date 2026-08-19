@@ -10091,7 +10091,7 @@ void RenderCharacter(CHARACTER *c,OBJECT *o,int Select)
 	else {
 		for (int i = 0; i < 2; i++) {
 			if (c->Weapon[i].Type == MODEL_SWORD+35) {
-				if (c->Weapon[i].AnimationFrame != 0.f);
+				if (c->Weapon[i].AnimationFrame != 0.f)
 					PlayBuffer(SOUND_EMPIREGUARDIAN_DEFENDER_ATTACK02);
 				c->Weapon[i].CurrentAction = 0;
 				c->Weapon[i].AnimationFrame = 0;
