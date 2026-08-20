@@ -1650,8 +1650,10 @@ bool MoveMainCamera()
 	if(CameraTopViewEnable)
 	{
 		CameraViewFar = 3200.f;
-		CameraPosition[0] = Hero->Object.Position[0];
-		CameraPosition[1] = Hero->Object.Position[1];
+		vec3_t vHeroRenderPos;  // Phase 2: interpolated, matches Hero's rendered mesh position
+		GetHeroRenderPosition(vHeroRenderPos);
+		CameraPosition[0] = vHeroRenderPos[0];
+		CameraPosition[1] = vHeroRenderPos[1];
 		CameraPosition[2] = CameraViewFar;
 	}
 	else

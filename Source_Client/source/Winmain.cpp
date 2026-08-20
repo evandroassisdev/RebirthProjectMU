@@ -1400,6 +1400,12 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance,
 {
 	MSG msg;
 
+	// Request 1ms Windows timer/Sleep() precision for this process - without this the OS
+	// default (~15.6ms granularity) makes Sleep(16) in the render-cap loop (MainScene(),
+	// ZzzScene.cpp) actually take longer than requested, capping real FPS well below 60
+	// even with an empty scene. Matched with timeEndPeriod(1) at exit, below.
+	timeBeginPeriod(1);
+
 	leaf::AttachExceptionHandler(ExceptionCallback);
 
 	char lpszExeVersion[256] = "unknown";
@@ -1761,6 +1767,8 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance,
     } // while( 1 )
 
 	DestroyWindow();
+
+	timeEndPeriod(1);
 
     return msg.wParam;
 }

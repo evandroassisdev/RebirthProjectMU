@@ -11066,6 +11066,29 @@ void RenderCharacter(CHARACTER *c,OBJECT *o,int Select)
 // before, and let it go out of scope immediately after, a single RenderCharacter(...) call -
 // do not widen its scope to cover more code than that. Never touches CurrentAction/
 // PriorAction/PriorAnimationFrame - the existing action-transition blend is untouched.
+// Phase 2: Hero's smoothed render-time position (same lerp formula as
+// CCharacterRenderInterpGuard, read-only, does NOT mutate Hero->Object.Position). Used by
+// the camera-follow code (NewUICatapultWindow.cpp) so the camera and Hero's rendered mesh
+// always agree - reading the raw tick-only position here while the mesh renders
+// interpolated caused a visible camera/character desync ("o andar parece travando").
+void GetHeroRenderPosition(vec3_t out)
+{
+	OBJECT *o = &Hero->Object;
+	if (o->m_iInterpSnapshotTick != MoveSceneFrame - 1)
+	{
+		VectorCopy(o->Position, out);
+		return;
+	}
+
+	float fAlpha = g_fTickAlpha;
+	if (fAlpha < 0.f) fAlpha = 0.f;
+	if (fAlpha > 1.f) fAlpha = 1.f;
+
+	out[0] = o->m_v3PrePos1[0] + (o->Position[0] - o->m_v3PrePos1[0]) * fAlpha;
+	out[1] = o->m_v3PrePos1[1] + (o->Position[1] - o->m_v3PrePos1[1]) * fAlpha;
+	out[2] = o->m_v3PrePos1[2] + (o->Position[2] - o->m_v3PrePos1[2]) * fAlpha;
+}
+
 class CCharacterRenderInterpGuard
 {
 public:
@@ -11073,6 +11096,7 @@ public:
 	{
 		VectorCopy(o->Position, m_RealPosition);
 		m_fRealAnimationFrame = o->AnimationFrame;
+
 
 		// No valid previous-tick snapshot (freshly spawned/respawned this tick, or this
 		// character wasn't ticked last tick) -> render the real values untouched, no lerp.

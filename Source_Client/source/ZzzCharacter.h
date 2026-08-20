@@ -22,6 +22,7 @@ void RenderCharactersServer();
 void RenderCharactersShadow();
 void MoveCharacterClient(CHARACTER *cc);
 void SnapshotCharacterInterpState(OBJECT *o);
+void GetHeroRenderPosition(vec3_t out);
 void MoveCharactersClient();
 void MoveCharactersServer();
 
