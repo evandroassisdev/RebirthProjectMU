@@ -1305,6 +1305,9 @@ bool CSkillManager::MultiSkillAttack(int aIndex,int bIndex,CSkill* lpSkill,bool 
 			case SKILL_IMPALE:
 				this->BasicSkillAttack(aIndex,bIndex,lpSkill,combo);
 				break;
+			case SKILL_PENETRATION:
+				this->BasicSkillAttack(aIndex,bIndex,lpSkill,combo);
+				break;
 			case SKILL_FIRE_SLASH:
 				this->BasicSkillAttack(aIndex,bIndex,lpSkill,combo);
 				break;
