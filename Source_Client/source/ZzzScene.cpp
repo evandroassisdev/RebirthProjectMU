@@ -2309,6 +2309,10 @@ bool RenderMainScene()
 }
 
 int TimeRemain;
+float g_fTickAlpha = 0.0f;   // Phase 2: 0..1 fraction of the way from the last completed 40ms
+                              // tick to the next one. Recomputed once per MainScene() call from
+                              // the tick loop's leftover Remain. Render-time-only; simulation
+                              // never reads it.
 extern int ChatTime;
 extern int WaterTextureNumber;
 
@@ -2382,6 +2386,12 @@ void MainScene(HDC hDC)
 		WaterTextureNumber %= 32;
 		MoveSceneFrame++;
 	}
+
+	// Phase 2: Remain is the tick loop's real leftover ms (0-39), not yet enough for
+	// another 40ms tick - exactly the fractional tick-progress render interpolation needs.
+	// Must be computed after the loop (where Remain holds its final "leftover" meaning)
+	// and before RenderMainScene() below.
+	g_fTickAlpha = (float)Remain / 40.0f;
 
 	if (Destroy) {
 		return;

@@ -7318,7 +7318,11 @@ void MoveHero()
 {
 	CHARACTER *c = Hero;
 	OBJECT *o = &c->Object;
-	
+	SnapshotCharacterInterpState(o);  // Phase 2: Hero's position can mutate below, before
+	                                   // MoveCharacterClient() runs its own (later) snapshot call
+	                                   // for every other character this same tick - must snapshot
+	                                   // here first, or Hero would never get interpolated.
+
 	if(o->CurrentAction == PLAYER_CHANGE_UP)
 	{
 		return;

@@ -21,6 +21,7 @@ void RenderCharactersClient();
 void RenderCharactersServer();
 void RenderCharactersShadow();
 void MoveCharacterClient(CHARACTER *cc);
+void SnapshotCharacterInterpState(OBJECT *o);
 void MoveCharactersClient();
 void MoveCharactersServer();
 

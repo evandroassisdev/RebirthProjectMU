@@ -108,6 +108,7 @@ void OBJECT::Initialize()
 	AI = 0;
 	CurrentAction = 0;
 	PriorAction = 0;
+	m_iInterpSnapshotTick = -1;  // Phase 2: never snapshotted yet - forces a hard-snap on first render
 
 	ExtState = 0;
 	Teleport = 0;

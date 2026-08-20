@@ -9,6 +9,7 @@ extern unsigned int WindowHeight;
 extern vec3_t CollisionPosition;
 extern float  FPS;
 extern float  DeltaT;  // real elapsed seconds since last render call (ZzzAI.cpp CalcFPS()) - use to scale any render-time-only animation so it stays FPS-independent
+extern float  g_fTickAlpha;  // Phase 2: 0..1 fraction between the last completed tick and the next - see ZzzScene.cpp MainScene()
 #if defined(LDS_FOR_DEVELOPMENT_TESTMODE) || defined(LDS_UNFIXED_FIXEDFRAME_FORDEBUG)		// 실FPS.(고정 20FPS 상황에서 추정용.)
 extern float g_fFrameEstimate;		
 #endif // defined(LDS_FOR_DEVELOPMENT_TESTMODE) || defined(LDS_UNFIXED_FIXEDFRAME_FORDEBUG)
