@@ -4223,7 +4223,7 @@ void CUISlideHelp::Render(BOOL bForceFadeOut)
 
 	BYTE byAlpha = m_dwSlideTextColor >> 24;
 	byAlpha = (float)byAlpha * ((m_iAlphaRate > 180 ? m_iAlphaRate : (m_iAlphaRate - 25 < 0 ? 0 : m_iAlphaRate - 25)) + 50) / 255.0f;
-	if (m_bBlink == TRUE && g_iNoticeInverse % 10 < 5) byAlpha /= 2;
+	if (m_bBlink == TRUE && ((int)(WorldTime/200.f))%2==0) byAlpha /= 2; // WorldTime-based (real ms), not g_iNoticeInverse's per-render-call count - keeps blink rate constant regardless of render FPS
 
 	g_pRenderText->SetTextColor(g_pRenderText->GetTextColor() + (byAlpha << 24));
 	g_pRenderText->SetBgColor(0);

@@ -232,8 +232,16 @@ public:
 
 public:
 	BOOL		m_bpcroom;
-	vec3_t		m_v3PrePos1;
-	vec3_t		m_v3PrePos2;
+	vec3_t		m_v3PrePos1;      // Phase 2: repurposed (was dead) - Position snapshot taken once
+	                              // per tick, before that tick's movement. See ZzzCharacter.cpp
+	                              // SnapshotCharacterInterpState()/CCharacterRenderInterpGuard.
+	vec3_t		m_v3PrePos2;      // still unused/dead - not touched by Phase 2.
+
+	float		m_fPreAnimationFrame;   // Phase 2: AnimationFrame snapshot, same cadence as above.
+	unsigned short	m_wPreAction;       // Phase 2: CurrentAction snapshot, same cadence.
+	int		m_iInterpSnapshotTick;      // Phase 2: MoveSceneFrame value at last snapshot - also
+	                                    // doubles as the "do we have a valid previous-tick
+	                                    // snapshot" flag (-1 sentinel = never snapshotted).
 
 	CInterpolateContainer	m_Interpolates;
 };

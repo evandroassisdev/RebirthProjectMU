@@ -1650,8 +1650,10 @@ bool MoveMainCamera()
 	if(CameraTopViewEnable)
 	{
 		CameraViewFar = 3200.f;
-		CameraPosition[0] = Hero->Object.Position[0];
-		CameraPosition[1] = Hero->Object.Position[1];
+		vec3_t vHeroRenderPos;  // Phase 2: interpolated, matches Hero's rendered mesh position
+		GetHeroRenderPosition(vHeroRenderPos);
+		CameraPosition[0] = vHeroRenderPos[0];
+		CameraPosition[1] = vHeroRenderPos[1];
 		CameraPosition[2] = CameraViewFar;
 	}
 	else
@@ -2309,6 +2311,10 @@ bool RenderMainScene()
 }
 
 int TimeRemain;
+float g_fTickAlpha = 0.0f;   // Phase 2: 0..1 fraction of the way from the last completed 40ms
+                              // tick to the next one. Recomputed once per MainScene() call from
+                              // the tick loop's leftover Remain. Render-time-only; simulation
+                              // never reads it.
 extern int ChatTime;
 extern int WaterTextureNumber;
 
@@ -2325,7 +2331,9 @@ void MainScene(HDC hDC)
 	
 	int32_t Remain = 0;
 
-	for (int Remain = TimeRemain; Remain >= 40; Remain -= 40)
+	// Fixed 40ms game-logic tick (25 ticks/sec) - independent of render rate below.
+	// DO NOT change this 40; it's the gameplay-speed clock, not the FPS cap.
+	for (Remain = TimeRemain; Remain >= 40; Remain -= 40)
 	{
 		g_pNewKeyInput->ScanAsyncKeyState();
 
@@ -2380,6 +2388,12 @@ void MainScene(HDC hDC)
 		WaterTextureNumber %= 32;
 		MoveSceneFrame++;
 	}
+
+	// Phase 2: Remain is the tick loop's real leftover ms (0-39), not yet enough for
+	// another 40ms tick - exactly the fractional tick-progress render interpolation needs.
+	// Must be computed after the loop (where Remain holds its final "leftover" meaning)
+	// and before RenderMainScene() below.
+	g_fTickAlpha = (float)Remain / 40.0f;
 
 	if (Destroy) {
 		return;
@@ -2511,17 +2525,22 @@ void MainScene(HDC hDC)
 		SwapBuffers(hDC);
 	}
 
+	// Render-rate cap (~60fps). Independent of the 40ms game-logic tick above -
+	// DifTimer here just measures/normalizes real elapsed time per render call,
+	// which accumulates into TimeRemain and feeds the tick loop's own 40ms clock.
+	const int32_t RENDER_FRAME_MS = 16;
+
 	int32_t DifTimer = 0;
 	uint32_t LastTimeCurrent = TimePrior;
 	TimePrior = GetTickCount();
 	DifTimer = TimePrior - LastTimeCurrent;
 
-	if (DifTimer < 40)
+	if (DifTimer < RENDER_FRAME_MS)
 	{
-		int32_t dwMilliseconds = 40 - DifTimer;
+		int32_t dwMilliseconds = RENDER_FRAME_MS - DifTimer;
 		Sleep(dwMilliseconds);
 		TimePrior += dwMilliseconds;
-		DifTimer = 40;
+		DifTimer = RENDER_FRAME_MS;
 	}
 
 	DifTimer += Remain;

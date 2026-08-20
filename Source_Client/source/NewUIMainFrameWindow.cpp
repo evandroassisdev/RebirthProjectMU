@@ -2057,7 +2057,10 @@ bool SEASON3B::CNewUISkillList::Render()
 	{
 		m_pNewUI3DRenderMng->RenderUI2DEffect(INVENTORY_CAMERA_Z_ORDER, UI2DEffectCallback, this, 0, 0);
 
-		m_bRenderSkillInfo = false;
+		// Do NOT reset m_bRenderSkillInfo here - UpdateMouseEvent() (tick-rate, 25Hz)
+		// already recomputes it fresh every tick. Resetting it here at render-rate
+		// (up to 60Hz) made the tooltip strobe on/off between ticks once render
+		// started running faster than the tick.
 	}
 
 	return true;

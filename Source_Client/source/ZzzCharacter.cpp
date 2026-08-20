@@ -6322,11 +6322,29 @@ void MoveMonsterClient(CHARACTER *c,OBJECT *o)
 	}
 }
 
+// Phase 2: snapshot Position/AnimationFrame/CurrentAction for render-time interpolation.
+// Must run exactly once per tick, per character, strictly before ANY of this tick's
+// position/animation mutation for that character. Idempotent via m_iInterpSnapshotTick so
+// it is safe to call from more than one call site (Hero's position is mutated earlier in
+// the tick, by MoveHero(), than MoveCharacterClient() runs for everyone else).
+void SnapshotCharacterInterpState(OBJECT *o)
+{
+	if (o->m_iInterpSnapshotTick == MoveSceneFrame)
+	{
+		return; // already snapshotted this tick (e.g. Hero, via MoveHero())
+	}
+	VectorCopy(o->Position, o->m_v3PrePos1);
+	o->m_fPreAnimationFrame  = o->AnimationFrame;
+	o->m_wPreAction          = o->CurrentAction;
+	o->m_iInterpSnapshotTick = MoveSceneFrame;
+}
+
 void MoveCharacterClient(CHARACTER *cc)
 {
 	OBJECT    *co = &cc->Object;
 	if(co->Live)
 	{
+		SnapshotCharacterInterpState(co);  // Phase 2: no-op if MoveHero() already did it this tick
 #ifndef PJH_NEW_SERVER_SELECT_MAP
 		if (World == WD_77NEW_LOGIN_SCENE)
 		{
@@ -6727,7 +6745,7 @@ void RenderLinkObject(float x,float y,float z,CHARACTER *c,PART_t *f,int Type,in
 		if( !g_isCharacterBuff(o, eDeBuff_Stun) && !g_isCharacterBuff(o, eDeBuff_Sleep) )
         {
 			float bAnif = f->AnimationFrame;
-			b->PlayAnimation(&f->AnimationFrame,&f->PriorAnimationFrame,&f->PriorAction,f->PlaySpeed,Position,Object->Angle);
+			b->PlayAnimation(&f->AnimationFrame,&f->PriorAnimationFrame,&f->PriorAction,f->PlaySpeed*(DeltaT*25.f),Position,Object->Angle); // DeltaT-scaled: this call lives in the RENDER chain (RenderLinkObject), not the tick chain, so it must not assume a fixed 40ms/call rate now that render runs faster than the game-logic tick
 //#ifdef PBG_ADD_NEWCHAR_MONK_ITEM
 //			if (Type == MODEL_SWORD_35_WING && f->PlaySpeed) {
 //				if (c->SafeZone == false) {
@@ -11040,6 +11058,90 @@ void RenderCharacter(CHARACTER *c,OBJECT *o,int Select)
 	}
 }
 
+// Phase 2: render-time-only interpolation guard. Temporarily overwrites o->Position and
+// o->AnimationFrame with values interpolated between the last two completed simulation
+// ticks, for the lifetime of this object; unconditionally restores the real, tick-owned
+// values in the destructor - including on early return/continue from the caller's scope,
+// since restoration is not a manual call that could be skipped. Construct this immediately
+// before, and let it go out of scope immediately after, a single RenderCharacter(...) call -
+// do not widen its scope to cover more code than that. Never touches CurrentAction/
+// PriorAction/PriorAnimationFrame - the existing action-transition blend is untouched.
+// Phase 2: Hero's smoothed render-time position (same lerp formula as
+// CCharacterRenderInterpGuard, read-only, does NOT mutate Hero->Object.Position). Used by
+// the camera-follow code (NewUICatapultWindow.cpp) so the camera and Hero's rendered mesh
+// always agree - reading the raw tick-only position here while the mesh renders
+// interpolated caused a visible camera/character desync ("o andar parece travando").
+void GetHeroRenderPosition(vec3_t out)
+{
+	OBJECT *o = &Hero->Object;
+	if (o->m_iInterpSnapshotTick != MoveSceneFrame - 1)
+	{
+		VectorCopy(o->Position, out);
+		return;
+	}
+
+	float fAlpha = g_fTickAlpha;
+	if (fAlpha < 0.f) fAlpha = 0.f;
+	if (fAlpha > 1.f) fAlpha = 1.f;
+
+	out[0] = o->m_v3PrePos1[0] + (o->Position[0] - o->m_v3PrePos1[0]) * fAlpha;
+	out[1] = o->m_v3PrePos1[1] + (o->Position[1] - o->m_v3PrePos1[1]) * fAlpha;
+	out[2] = o->m_v3PrePos1[2] + (o->Position[2] - o->m_v3PrePos1[2]) * fAlpha;
+}
+
+class CCharacterRenderInterpGuard
+{
+public:
+	explicit CCharacterRenderInterpGuard(OBJECT *o) : m_o(o)
+	{
+		VectorCopy(o->Position, m_RealPosition);
+		m_fRealAnimationFrame = o->AnimationFrame;
+
+
+		// No valid previous-tick snapshot (freshly spawned/respawned this tick, or this
+		// character wasn't ticked last tick) -> render the real values untouched, no lerp.
+		if (o->m_iInterpSnapshotTick != MoveSceneFrame - 1)
+		{
+			return;
+		}
+
+		float fAlpha = g_fTickAlpha;
+		if (fAlpha < 0.f) fAlpha = 0.f;
+		if (fAlpha > 1.f) fAlpha = 1.f;
+
+		vec3_t vInterp;
+		vInterp[0] = o->m_v3PrePos1[0] + (m_RealPosition[0] - o->m_v3PrePos1[0]) * fAlpha;
+		vInterp[1] = o->m_v3PrePos1[1] + (m_RealPosition[1] - o->m_v3PrePos1[1]) * fAlpha;
+		vInterp[2] = o->m_v3PrePos1[2] + (m_RealPosition[2] - o->m_v3PrePos1[2]) * fAlpha;
+		VectorCopy(vInterp, o->Position);
+
+		// Only interpolate the frame number if (a) no action change happened this tick, and
+		// (b) the frame didn't wrap (looping actions periodically count back down) - either
+		// case means the two raw numbers aren't comparable; fall back to the real, current
+		// value (i.e. alpha=1.0 for the frame only - Position above is unaffected).
+		bool bSameAction = (o->CurrentAction == o->m_wPreAction);
+		bool bNoWrap     = (m_fRealAnimationFrame >= o->m_fPreAnimationFrame);
+		if (bSameAction && bNoWrap)
+		{
+			o->AnimationFrame = o->m_fPreAnimationFrame + (m_fRealAnimationFrame - o->m_fPreAnimationFrame) * fAlpha;
+		}
+	}
+
+	~CCharacterRenderInterpGuard()
+	{
+		VectorCopy(m_RealPosition, m_o->Position);
+		m_o->AnimationFrame = m_fRealAnimationFrame;
+	}
+
+	CCharacterRenderInterpGuard(const CCharacterRenderInterpGuard&) = delete;
+	CCharacterRenderInterpGuard& operator=(const CCharacterRenderInterpGuard&) = delete;
+
+private:
+	OBJECT *m_o;
+	vec3_t  m_RealPosition;
+	float   m_fRealAnimationFrame;
+};
+
 void RenderCharactersClient()
 {
 	for ( int i=0; i<MAX_CHARACTERS_CLIENT; ++i )
@@ -11101,9 +11203,15 @@ void RenderCharactersClient()
 			if ( o->Visible )
 			{
 				if ( i!=SelectedCharacter && i!=SelectedNpc )
+				{
+					CCharacterRenderInterpGuard InterpGuard(o);  // Phase 2
      				RenderCharacter ( c, o );
+				}
 				else
+				{
+					CCharacterRenderInterpGuard InterpGuard(o);  // Phase 2
      				RenderCharacter ( c, o, true );
+				}
 
                 if ( o->Type==MODEL_PLAYER )
                     battleCastle::CreateBattleCastleCharacter_Visual ( c, o );
@@ -11374,6 +11482,7 @@ void CreateCharacterPointer(CHARACTER *c,int Type,unsigned char PositionX,unsign
 	}
     o->AnimationFrame = 0.002f;
 	o->PriorAnimationFrame   = 0;
+	o->m_iInterpSnapshotTick = -1;  // Phase 2: fresh spawn/respawn - never snapshotted, force hard-snap
 	c->JumpTime         = 0;
 	o->HiddenMesh       = -1;
 	c->MoveSpeed        = 10;

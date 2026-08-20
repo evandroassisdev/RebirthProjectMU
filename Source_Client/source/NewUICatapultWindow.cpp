@@ -448,7 +448,7 @@ void SEASON3B::CNewUICatapultWindow::GetCameraPos(vec3_t& vPos)
     }
     else
     {
-        VectorCopy(Hero->Object.Position, vPos);
+        GetHeroRenderPosition(vPos);  // Phase 2: interpolated, matches Hero's rendered mesh position
     }
 }
 

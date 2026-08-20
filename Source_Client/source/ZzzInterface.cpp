@@ -567,7 +567,7 @@ void RenderNotices()
 		if(n->Color==0)
 		{
 			g_pRenderText->SetBgColor(0, 0, 0, 128);
-			if(NoticeInverse%10 < 5)
+			if(((int)(WorldTime/200.f))%2==0) // WorldTime-based (real ms), not NoticeInverse's per-render-call count - keeps blink rate constant regardless of render FPS
 			{
 				g_pRenderText->SetTextColor(255, 200, 80, 128);
 			}
@@ -7318,7 +7318,11 @@ void MoveHero()
 {
 	CHARACTER *c = Hero;
 	OBJECT *o = &c->Object;
-	
+	SnapshotCharacterInterpState(o);  // Phase 2: Hero's position can mutate below, before
+	                                   // MoveCharacterClient() runs its own (later) snapshot call
+	                                   // for every other character this same tick - must snapshot
+	                                   // here first, or Hero would never get interpolated.
+
 	if(o->CurrentAction == PLAYER_CHANGE_UP)
 	{
 		return;

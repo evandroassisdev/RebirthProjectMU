@@ -7247,7 +7247,7 @@ void RenderPartObjectBody(BMD *b,OBJECT *o,int Type,float Alpha,int RenderType)
 		float PlaySpeed = 0.f;
 		PlaySpeed = b->Actions[b->CurrentAction].PlaySpeed; 
 
-		b->PlayAnimation(&o->AnimationFrame,&o->PriorAnimationFrame,&o->PriorAction,2.f/7.f,o->Position,o->Angle);
+		b->PlayAnimation(&o->AnimationFrame,&o->PriorAnimationFrame,&o->PriorAction,(2.f/7.f)*(DeltaT*25.f),o->Position,o->Angle); // DeltaT-scaled: render-chain call (RenderPartObjectBody), not tick-chain
 		b->RenderBody(RenderType,Alpha,o->BlendMesh,o->BlendMeshLight*1.5f,o->BlendMeshTexCoordU,o->BlendMeshTexCoordV);
 		b->RenderBody(RENDER_TEXTURE|RENDER_BRIGHT,Alpha,o->BlendMesh,o->BlendMeshLight/4.0f,WorldTime*0.005f,-WorldTime*0.005f,0);
 
