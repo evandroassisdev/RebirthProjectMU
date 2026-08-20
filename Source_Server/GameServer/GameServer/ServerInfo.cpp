@@ -3280,6 +3280,8 @@ void CServerInfo::ReadCommonInfo(char* section,char* path) // OK
 
 	this->m_MonsterLifeRate = GetPrivateProfileInt(section,"MonsterLifeRate",0,path);
 
+	this->m_MonsterDamageRate = GetPrivateProfileInt(section,"MonsterDamageRate",100,path);
+
 	#if(GAMESERVER_UPDATE<=603)
 
 	this->m_MonsterHealthBarSwitch = GetPrivateProfileInt(section,"MonsterHealthBarSwitch",0,path);
