@@ -567,7 +567,7 @@ void RenderNotices()
 		if(n->Color==0)
 		{
 			g_pRenderText->SetBgColor(0, 0, 0, 128);
-			if(NoticeInverse%10 < 5)
+			if(((int)(WorldTime/200.f))%2==0) // WorldTime-based (real ms), not NoticeInverse's per-render-call count - keeps blink rate constant regardless of render FPS
 			{
 				g_pRenderText->SetTextColor(255, 200, 80, 128);
 			}

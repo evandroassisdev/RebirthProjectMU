@@ -6727,7 +6727,7 @@ void RenderLinkObject(float x,float y,float z,CHARACTER *c,PART_t *f,int Type,in
 		if( !g_isCharacterBuff(o, eDeBuff_Stun) && !g_isCharacterBuff(o, eDeBuff_Sleep) )
         {
 			float bAnif = f->AnimationFrame;
-			b->PlayAnimation(&f->AnimationFrame,&f->PriorAnimationFrame,&f->PriorAction,f->PlaySpeed,Position,Object->Angle);
+			b->PlayAnimation(&f->AnimationFrame,&f->PriorAnimationFrame,&f->PriorAction,f->PlaySpeed*(DeltaT*25.f),Position,Object->Angle); // DeltaT-scaled: this call lives in the RENDER chain (RenderLinkObject), not the tick chain, so it must not assume a fixed 40ms/call rate now that render runs faster than the game-logic tick
 //#ifdef PBG_ADD_NEWCHAR_MONK_ITEM
 //			if (Type == MODEL_SWORD_35_WING && f->PlaySpeed) {
 //				if (c->SafeZone == false) {

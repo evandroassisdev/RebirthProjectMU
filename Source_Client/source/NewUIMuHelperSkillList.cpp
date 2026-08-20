@@ -165,6 +165,11 @@ void SEASON3B::CNewUIMuHelperSkillList::PrepareSkillsToRender()
 
 bool SEASON3B::CNewUIMuHelperSkillList::Update()
 {
+    // Producer (tick-rate, 25Hz) owns clearing this flag every tick now that
+    // Render() (render-rate, up to 60Hz) no longer resets it after consuming it -
+    // otherwise a stale `true` from a previous hover would render forever.
+    m_bRenderSkillInfo = false;
+
     for (const auto& [skillId, icon] : m_skillIconMap)
     {
         if (!icon.isVisible)
@@ -234,7 +239,8 @@ bool SEASON3B::CNewUIMuHelperSkillList::Render()
     if (m_bRenderSkillInfo && m_pNewUI3DRenderMng)
     {
         m_pNewUI3DRenderMng->RenderUI2DEffect(INVENTORY_CAMERA_Z_ORDER, UI2DEffectCallback, this, 0, 0);
-        m_bRenderSkillInfo = false;
+        // Do NOT reset m_bRenderSkillInfo here - Update() (tick-rate) now owns
+        // clearing it every tick; see the comment there.
     }
 
     return true;

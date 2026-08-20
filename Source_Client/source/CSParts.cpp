@@ -180,7 +180,7 @@ void CSParts::IRender ( CHARACTER* c )
 	b->CurrentAction = m_pObj.CurrentAction;
 
 	float fSpeed = m_pObj.Velocity;
-	b->PlayAnimation ( &m_pObj.AnimationFrame, &m_pObj.PriorAnimationFrame, &m_pObj.PriorAction, fSpeed, m_pObj.Position, m_pObj.Angle );
+	b->PlayAnimation ( &m_pObj.AnimationFrame, &m_pObj.PriorAnimationFrame, &m_pObj.PriorAction, fSpeed*(DeltaT*25.f), m_pObj.Position, m_pObj.Angle ); // DeltaT-scaled: render-chain call (CSParts::IRender, only called from RenderParts), not tick-chain
 
     Vector ( 1.f, 1.f, 1.f, b->BodyLight );
     RenderObject ( &m_pObj, true );

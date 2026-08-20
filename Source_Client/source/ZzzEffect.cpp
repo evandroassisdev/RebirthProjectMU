@@ -18310,7 +18310,7 @@ void RenderEffects(bool bRenderBlendMesh)
 				{
 					BMD* b = &Models[o->Type];
 					Vector(1.f, 1.f, 1.f, b->BodyLight);
-					b->PlayAnimation(&o->AnimationFrame, &o->PriorAnimationFrame, &o->PriorAction, o->Velocity / 6.f, o->Position, o->Angle);
+					b->PlayAnimation(&o->AnimationFrame, &o->PriorAnimationFrame, &o->PriorAction, (o->Velocity / 6.f)*(DeltaT*25.f), o->Position, o->Angle); // DeltaT-scaled: render-chain call (RenderEffects), not tick-chain
 					RenderObject(o);
 				}
 				break;
@@ -19112,7 +19112,7 @@ void RenderEffects(bool bRenderBlendMesh)
 				{
 					BMD* b = &Models[o->Type];
 					b->CurrentAction = o->CurrentAction;
-					b->PlayAnimation(&o->AnimationFrame, &o->PriorAnimationFrame, &o->PriorAction, o->Velocity / 6.f, o->Position, o->Angle);
+					b->PlayAnimation(&o->AnimationFrame, &o->PriorAnimationFrame, &o->PriorAction, (o->Velocity / 6.f)*(DeltaT*25.f), o->Position, o->Angle); // DeltaT-scaled: render-chain call (RenderEffects), not tick-chain
 					RenderObject(o);
 				}
 				break;

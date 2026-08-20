@@ -2325,7 +2325,9 @@ void MainScene(HDC hDC)
 	
 	int32_t Remain = 0;
 
-	for (int Remain = TimeRemain; Remain >= 40; Remain -= 40)
+	// Fixed 40ms game-logic tick (25 ticks/sec) - independent of render rate below.
+	// DO NOT change this 40; it's the gameplay-speed clock, not the FPS cap.
+	for (Remain = TimeRemain; Remain >= 40; Remain -= 40)
 	{
 		g_pNewKeyInput->ScanAsyncKeyState();
 
@@ -2511,17 +2513,22 @@ void MainScene(HDC hDC)
 		SwapBuffers(hDC);
 	}
 
+	// Render-rate cap (~60fps). Independent of the 40ms game-logic tick above -
+	// DifTimer here just measures/normalizes real elapsed time per render call,
+	// which accumulates into TimeRemain and feeds the tick loop's own 40ms clock.
+	const int32_t RENDER_FRAME_MS = 16;
+
 	int32_t DifTimer = 0;
 	uint32_t LastTimeCurrent = TimePrior;
 	TimePrior = GetTickCount();
 	DifTimer = TimePrior - LastTimeCurrent;
 
-	if (DifTimer < 40)
+	if (DifTimer < RENDER_FRAME_MS)
 	{
-		int32_t dwMilliseconds = 40 - DifTimer;
+		int32_t dwMilliseconds = RENDER_FRAME_MS - DifTimer;
 		Sleep(dwMilliseconds);
 		TimePrior += dwMilliseconds;
-		DifTimer = 40;
+		DifTimer = RENDER_FRAME_MS;
 	}
 
 	DifTimer += Remain;
