@@ -93,6 +93,7 @@ public:
 	int m_MonsterDamageRate;
 	int m_MonsterDefenseRate;
 	int m_MonsterAttackRate;
+	int m_MonsterDefenseCapPercent;
 	int m_MonsterHealthBarSwitch;
 	int m_UserHealthBarSwitch;
 	int m_NonPK;
