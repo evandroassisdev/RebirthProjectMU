@@ -944,7 +944,7 @@ void CSItemOption::CheckItemSetOptions()
 			continue;
 		}
 
-		if ((i == EQUIPMENT_WEAPON_LEFT || i == EQUIPMENT_RING_LEFT) && itemTmp->Type == ip->Type && itemTmp->ExtOption == (ip->ExtOption % 0x04))
+		if ((i == EQUIPMENT_WEAPON_LEFT || i == EQUIPMENT_RING_LEFT) && itemTmp != NULL && itemTmp->Type == ip->Type && itemTmp->ExtOption == (ip->ExtOption % 0x04))
 		{
 			continue;
 		}
@@ -988,7 +988,7 @@ void CSItemOption::CheckItemSetOptions()
 			continue;
 		}
 
-		if (((i == EQUIPMENT_WEAPON_LEFT || i == EQUIPMENT_RING_LEFT) && itemTmp->Type == ip->Type && itemTmp->ExtOption == (ip->ExtOption % 0x04)))
+		if (((i == EQUIPMENT_WEAPON_LEFT || i == EQUIPMENT_RING_LEFT) && itemTmp != NULL && itemTmp->Type == ip->Type && itemTmp->ExtOption == (ip->ExtOption % 0x04)))
 		{
 			continue;
 		}
