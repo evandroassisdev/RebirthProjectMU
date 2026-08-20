@@ -1,9 +1,26 @@
 ///////////////////////////////////////////////////////////////////////////////
-// 케릭터 관련 함수
-// 케릭터 랜더링, 움직임등을 처리
+// Character-related functions
+// Handles character rendering, movement, etc.
 //
-// *** 함수 레벨: 3
+// *** Function level: 3
 ///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+// !!! WARNING: this file still has Korean monster/NPC names in strcpy(c->ID, "...")
+// calls below, stored in their ORIGINAL CP949/EUC-KR byte encoding.
+//
+// DO NOT edit those strcpy() name lines (or anything else in this file) with a
+// tool/editor that silently re-encodes the whole file to UTF-8 on save. That has
+// broken this exact file twice: every Korean byte gets replaced by a 3-byte
+// UTF-8 replacement char, overflowing the fixed 11-byte CHARACTER::ID buffer
+// (MAX_ID_SIZE=10, _struct.h) on strcpy - real memory corruption, not just
+// garbled comments. See PR #33/#34 (github.com/evandroassisdev/RebirthProjectMU).
+//
+// Before touching this file: run `file <path>` first. If it does not report
+// plain ASCII/UTF-8, use a raw-byte-safe substitution (open in binary mode,
+// exact ASCII-only old/new byte replace, write back in binary mode) instead
+// of a normal text-editor save.
+///////////////////////////////////////////////////////////////////////////////
+
 
 #include "stdafx.h"
 #include "_enum.h"
@@ -181,7 +198,7 @@ void SetPlayerStop(CHARACTER *c)
 		{
 	
 #ifdef PBG_ADD_NEWCHAR_MONK_ANI
-			if(gCharacterManager.GetBaseClass(c->Class) == CLASS_RAGEFIGHTER)//레이지파이터이면
+			if(gCharacterManager.GetBaseClass(c->Class) == CLASS_RAGEFIGHTER)//if Rage Fighter
 			{
 				if(c->Weapon[0].Type != -1 && c->Weapon[1].Type != -1)
 					SetAction(&c->Object, PLAYER_RAGE_FENRIR_STAND_TWO_SWORD);
@@ -195,13 +212,13 @@ void SetPlayerStop(CHARACTER *c)
 			else
 			{
 #endif //PBG_ADD_NEWCHAR_MONK_ANI
-			if(c->Weapon[0].Type != -1 && c->Weapon[1].Type != -1)	// 양손무기
+			if(c->Weapon[0].Type != -1 && c->Weapon[1].Type != -1)	// two-handed weapon
 				SetAction(&c->Object, PLAYER_FENRIR_STAND_TWO_SWORD);
-			else if(c->Weapon[0].Type != -1 && c->Weapon[1].Type == -1) // 오른손 무기
+			else if(c->Weapon[0].Type != -1 && c->Weapon[1].Type == -1) // right-hand weapon
 				SetAction(&c->Object, PLAYER_FENRIR_STAND_ONE_RIGHT);
-			else if(c->Weapon[0].Type == -1 && c->Weapon[1].Type != -1) // 왼손 무기
+			else if(c->Weapon[0].Type == -1 && c->Weapon[1].Type != -1) // left-hand weapon
 				SetAction(&c->Object, PLAYER_FENRIR_STAND_ONE_LEFT);
- 			else	// 맨손
+ 			else	// bare hands
 				SetAction(&c->Object, PLAYER_FENRIR_STAND);
 #ifdef PBG_ADD_NEWCHAR_MONK_ANI
 			}
@@ -280,12 +297,12 @@ void SetPlayerStop(CHARACTER *c)
 				}
 				else
 				{
-                //  무기가 없거나. 블러듴캐슬이 아닌 안전지대 일때
+                //  unarmed, or in a safe zone that isn't Blood Castle
 			    if ( ( c->Weapon[0].Type==-1 && c->Weapon[1].Type==-1 ) || ( c->SafeZone && ( gMapManager.InBloodCastle() == false ) ) )
 				{
 					if (gCharacterManager.GetBaseClass(c->Class) == CLASS_ELF)
 						SetAction(&c->Object, PLAYER_STOP_FEMALE);
-					else if (gCharacterManager.GetBaseClass(c->Class) == CLASS_SUMMONER && !gMapManager.InChaosCastle())	// 소환술사는 카오스캐슬에선 남자 애니메이션.
+					else if (gCharacterManager.GetBaseClass(c->Class) == CLASS_SUMMONER && !gMapManager.InChaosCastle())	// Summoner uses the male animation in Chaos Castle.
 						SetAction(&c->Object, PLAYER_STOP_SUMMONER);
 #ifdef PBG_ADD_NEWCHAR_MONK_ANI
 					else if (gCharacterManager.GetBaseClass(c->Class) == CLASS_RAGEFIGHTER)
@@ -296,7 +313,7 @@ void SetPlayerStop(CHARACTER *c)
 				}
 				else
 				{
-                    //  칼 장착.
+                    //  Sword equipped.
 					if(c->Weapon[0].Type>=MODEL_SWORD && c->Weapon[0].Type<MODEL_MACE+MAX_ITEM_INDEX)
 					{
 						if(!ItemAttribute[c->Weapon[0].Type-MODEL_ITEM].TwoHand)
@@ -312,12 +329,12 @@ void SetPlayerStop(CHARACTER *c)
 							SetAction(&c->Object,PLAYER_STOP_TWO_HAND_SWORD);
 						}
 					}
-                    //  창 장착.
+                    //  Spear equipped.
     				else if(c->Weapon[0].Type==MODEL_SPEAR+1 || c->Weapon[0].Type==MODEL_SPEAR+2)
 					{
 						SetAction(&c->Object,PLAYER_STOP_SPEAR);
 					}
-                    //  창 장착.
+                    //  Spear equipped.
 					else if(c->Weapon[0].Type>=MODEL_SPEAR && c->Weapon[0].Type<MODEL_SPEAR+MAX_ITEM_INDEX)
 					{
 						if(!ItemAttribute[c->Weapon[0].Type-MODEL_ITEM].TwoHand)
@@ -325,7 +342,7 @@ void SetPlayerStop(CHARACTER *c)
 						else
 							SetAction(&c->Object,PLAYER_STOP_SCYTHE);
 					}
-					// 소환술사 스틱.
+					// Summoner stick.
 					else if (c->Weapon[0].Type >= MODEL_STAFF+14 && c->Weapon[0].Type <= MODEL_STAFF+20)
 					{
 						::SetAction(&c->Object, PLAYER_STOP_WAND);
@@ -366,7 +383,7 @@ void SetPlayerStop(CHARACTER *c)
 	else
 	{
      	int Index = TERRAIN_INDEX_REPEAT(( c->PositionX),( c->PositionY));
-		if(o->Type==MODEL_MONSTER01+32 && (TerrainWall[Index]&TW_SAFEZONE)==TW_SAFEZONE)//발리
+		if(o->Type==MODEL_MONSTER01+32 && (TerrainWall[Index]&TW_SAFEZONE)==TW_SAFEZONE)//(dev note: "balli", meaning unclear)
     		SetAction(&c->Object,MONSTER01_APEAR);
 		else
 	    	SetAction(&c->Object,MONSTER01_STOP1);
@@ -541,11 +558,11 @@ void SetPlayerWalk(CHARACTER *c)
 			}
 #endif //PBG_ADD_NEWCHAR_MONK_ANI
         }
-        else if( c->Helper.Type==MODEL_HELPER+3 && !c->SafeZone )   //  페가시아를 타고있음.
+        else if( c->Helper.Type==MODEL_HELPER+3 && !c->SafeZone )   //  Riding a Pegasus.
 		{
             if ( gMapManager.WorldActive==WD_8TARKAN || gMapManager.WorldActive==WD_10HEAVEN || g_Direction.m_CKanturu.IsMayaScene() )
             {
-				// 애니메이션 튀는거때문에 아예 막아버림
+				// Blocked entirely because the animation was glitching
 //                if(c->Weapon[0].Type==-1 && c->Weapon[1].Type==-1)
 //				    SetAction(&c->Object,PLAYER_FLY_RIDE);
 //			    else
@@ -647,7 +664,7 @@ void SetPlayerWalk(CHARACTER *c)
 						{
 							SetAction( &c->Object, PLAYER_WALK_BOW);
 						}
-						// 석궁
+						// crossbow
 						else if( gCharacterManager.GetEquipedBowType( c ) == BOWTYPE_CROSSBOW )
 						{
 							SetAction( &c->Object, PLAYER_WALK_CROSSBOW);
@@ -935,7 +952,7 @@ void SetPlayerHighBowAttack ( CHARACTER* c )
 			{
 				SetAction( &c->Object, PLAYER_ATTACK_RIDE_BOW_UP );
 			}
-			// 석궁
+			// crossbow
 			else if( gCharacterManager.GetEquipedBowType( c ) == BOWTYPE_CROSSBOW )
 			{
 				SetAction( &c->Object, PLAYER_ATTACK_RIDE_CROSSBOW_UP );
@@ -979,7 +996,7 @@ void SetPlayerAttack(CHARACTER *c)
 			}
 			else if( gCharacterManager.GetEquipedBowType( c ) == BOWTYPE_CROSSBOW )
 			{
-				SetAction( &c->Object, PLAYER_FENRIR_ATTACK_CROSSBOW );	//석궁공격
+				SetAction( &c->Object, PLAYER_FENRIR_ATTACK_CROSSBOW );	//crossbow attack
 			}
 			else
 			{
@@ -1481,7 +1498,7 @@ void SetPlayerDie(CHARACTER *c)
 				}
 
 				if(c->Helper.Type == MODEL_HELPER+37)
-					PlayBuffer(SOUND_FENRIR_DEATH, o);	// 펜릴 죽는
+					PlayBuffer(SOUND_FENRIR_DEATH, o);	// Fenrir dying
 		    }
         }
         c->Object.AnimationFrame = 0.001f;
@@ -1865,7 +1882,7 @@ void AttackEffect(CHARACTER *c)
 			PlayBuffer(SOUND_METEORITE01);
 		}
 		break;
-	case 103://함정
+	case 103://trap
 		if(( c->Skill) == AT_SKILL_BOSS)
 		{
 			Vector(o->Position[0]+rand()%1024-512,o->Position[1]+rand()%1024-512,o->Position[2],Position);
@@ -1873,7 +1890,7 @@ void AttackEffect(CHARACTER *c)
 			PlayBuffer(SOUND_METEORITE01);
 		}
 		break;
-	case 45://물고기
+	case 45://fish
 		for(int i=0;i<4;i++)
 		{
 			Vector((float)(rand()%32-16),(float)(rand()%32-16),(float)(rand()%32-16),p);
@@ -1895,7 +1912,7 @@ void AttackEffect(CHARACTER *c)
 		{
 			switch(c->MonsterIndex)
 			{
-            case 163 :  //  카오스캐슬 궁수.
+            case 163 :  //  Chaos Castle archer.
             case 165 :
             case 167 :
             case 169 :
@@ -1936,7 +1953,7 @@ void AttackEffect(CHARACTER *c)
                 }
                 break;
 
-            case 89:   //  마법 해골.
+            case 89:   //  Magic skeleton.
             case 95:
             case 112:
             case 118:
@@ -1953,12 +1970,12 @@ void AttackEffect(CHARACTER *c)
 				}
                 break;
 
-            case 87 :	//. 자이언트오거1
-	        case 93 :	//. 자이언트오거2
-	        case 99 :	//. 자이언트오거3
-	        case 116 :	//. 자이언트오거4
-	        case 122 :	//. 자이언트오거5
-	        case 128 :	//. 자이언트오거6
+            case 87 :	//. Giant Ogre 1
+	        case 93 :	//. Giant Ogre 2
+	        case 99 :	//. Giant Ogre 3
+	        case 116 :	//. Giant Ogre 4
+	        case 122 :	//. Giant Ogre 5
+	        case 128 :	//. Giant Ogre 6
             case 141:
 		        if ( c->AttackTime==13 )
 		        {
@@ -1971,7 +1988,7 @@ void AttackEffect(CHARACTER *c)
 		        }
                 break;
 
-			case 77://불사조공격
+			case 77://Phoenix attack
 				if ( 14 == c->AttackTime)
 				{
 					Vector(0.f,0.f,0.f,p);
@@ -2016,7 +2033,7 @@ void AttackEffect(CHARACTER *c)
 				{
 					int Hand = 0;
 					if(i>=3) Hand = 1;
-					b->TransformPosition(o->BoneTransform[c->Weapon[Hand].LinkBone],p,Position,true);//에러
+					b->TransformPosition(o->BoneTransform[c->Weapon[Hand].LinkBone],p,Position,true);//error
 					Vector(0.f,0.f,(float)(rand()%360),Angle);
 					CreateJoint(BITMAP_JOINT_THUNDER,Position,to->Position,Angle,2,to,50.f);
 					CreateJoint(BITMAP_JOINT_THUNDER,Position,to->Position,Angle,2,to,10.f);
@@ -2088,7 +2105,7 @@ void AttackEffect(CHARACTER *c)
 		{
 			switch(c->MonsterIndex)
 			{
-            case 89:   //  마법 해골.
+            case 89:   //  Magic skeleton.
             case 95:
             case 112:
             case 118:
@@ -2110,7 +2127,7 @@ void AttackEffect(CHARACTER *c)
                 }
                 break;
 
-			case 77://불사조공격
+			case 77://Phoenix attack
 				if ( 8 <= c->AttackTime)
 				{
 					Vector(0.f,0.f,0.f,p);
@@ -2122,7 +2139,7 @@ void AttackEffect(CHARACTER *c)
 					}
 				}
 				break;
-			case 37://데빌
+			case 37://Devil
 				if(c->AttackTime == 1)
 					PlayBuffer(SOUND_EVIL);
 
@@ -2149,12 +2166,12 @@ void AttackEffect(CHARACTER *c)
 					CreateParticle(BITMAP_ENERGY,Position,o->Angle,Light);
 				}
 				break;
-			case 48://리자드킹
+			case 48://Lizard King
 				for(int i=0;i<6;i++)
 				{
 					int Hand = 0;
 					if(i>=3) Hand = 1;
-					b->TransformPosition(o->BoneTransform[c->Weapon[Hand].LinkBone],p,Position,true);//에러
+					b->TransformPosition(o->BoneTransform[c->Weapon[Hand].LinkBone],p,Position,true);//error
 					Vector(0.f,0.f,(float)(rand()%360),Angle);
 					CreateJoint(BITMAP_JOINT_THUNDER,Position,to->Position,Angle,2,to,50.f);
 					CreateJoint(BITMAP_JOINT_THUNDER,Position,to->Position,Angle,2,to,10.f);
@@ -2196,7 +2213,7 @@ void AttackEffect(CHARACTER *c)
 					CreateParticle(BITMAP_ENERGY,Position,o->Angle,Light);
 				}
 				break;
-			// 플레이어 이거나 기타 몬스터가 전기(번개)를 사용했을시
+			// When the player or another monster uses electricity (lightning)
 			default:
                 if ( b->NumBones<c->Weapon[0].LinkBone ) break;
 
@@ -2426,7 +2443,7 @@ bool AttackStage(CHARACTER* c, OBJECT* o)
 			}
 
 			if ( 2 <= c->AttackTime && c->AttackTime <= 8)
-			{	// 기 모으기
+			{	// Gathering energy
 				for ( int j = 0; j < 3; ++j)
 				{
 					vec3_t CurPos;
@@ -2441,7 +2458,7 @@ bool AttackStage(CHARACTER* c, OBJECT* o)
 				}
 			}
 			if ( c->AttackTime <= 8)
-			{	// 기 모일 곳 위치
+			{	// Position where the energy gathers
 				vec3_t Position2 = { 0.0f, 0.0f, 0.0f};
 				b->TransformPosition(o->BoneTransform[c->Weapon[Hand].LinkBone],Position2,o->m_vPosSword,true);
 
@@ -2450,7 +2467,7 @@ bool AttackStage(CHARACTER* c, OBJECT* o)
 				o->m_vPosSword[1] += -fDistance * cosf( o->Angle[2]*Q_PI/180.0f);
 			}
 			if ( 6 <= c->AttackTime && c->AttackTime <= 12)
-			{	// 꼬깔 만들기
+			{	// Creating the cone
 				vec3_t Position;
 
 				//memcpy( Position, o->Position, sizeof ( vec3_t));
@@ -2486,7 +2503,7 @@ bool AttackStage(CHARACTER* c, OBJECT* o)
 			}
 		}
 		break;
-	case AT_SKILL_SPEAR:	// 창찌르기
+	case AT_SKILL_SPEAR:	// Spear thrust
 		{
 			BMD *b = &Models[o->Type];
 
@@ -2496,7 +2513,7 @@ bool AttackStage(CHARACTER* c, OBJECT* o)
 				PlayBuffer( SOUND_RIDINGSPEAR);
 			}
 			else if ( c->AttackTime == 4)
-			{	// 준비동작
+			{	// Preparation motion
 				vec3_t Light = { 1.0f, 1.0f, .5f};
 				vec3_t Position2 = { 0.0f, 0.0f, 0.0f};
 				b->TransformPosition(o->BoneTransform[c->Weapon[Hand].LinkBone],Position2,p,true);
@@ -2504,7 +2521,7 @@ bool AttackStage(CHARACTER* c, OBJECT* o)
 				//CreateEffect(BITMAP_MAGIC+1,o->Position,o->Angle,Light,4,o);
 			}
 			else if ( 8 == c->AttackTime)
-			{	// 꼬깔 만들기
+			{	// Creating the cone
 				vec3_t Position;
 				memcpy( Position, o->Position, sizeof ( vec3_t));
 				Position[0] += 50.0f * sinf( o->Angle[2]*Q_PI/180.0f);
@@ -2515,7 +2532,7 @@ bool AttackStage(CHARACTER* c, OBJECT* o)
 				CreateEffect( MODEL_SPEAR, Position, o->Angle, Light, 0, o);
 			}
 			if ( 13 <= c->AttackTime && c->AttackTime <= 14)
-			{	// 현란한 창술
+			{	// Flashy spear technique
 				for ( int i = 0; i < 3; ++i)
 				{
 					vec3_t Position;
@@ -2553,7 +2570,7 @@ bool AttackStage(CHARACTER* c, OBJECT* o)
             }
         }
 
-        if( c->AttackTime==3 )  //  氣 모으기.
+        if( c->AttackTime==3 )  //  Gathering energy.
         {
 			CreateEffect(BITMAP_GATHERING,o->Position,o->Angle,o->Light,0,o);
 		    PlayBuffer(SOUND_PIERCING,o);
@@ -4681,7 +4698,7 @@ void MoveCharacter(CHARACTER *c,OBJECT *o)
 				(o->CurrentAction==PLAYER_ATTACK_BOW || o->CurrentAction==PLAYER_ATTACK_CROSSBOW ||
 				o->CurrentAction==PLAYER_ATTACK_FLY_BOW || o->CurrentAction==PLAYER_ATTACK_FLY_CROSSBOW ||
 				o->CurrentAction==PLAYER_ATTACK_RIDE_BOW || o->CurrentAction==PLAYER_ATTACK_RIDE_CROSSBOW
-				|| o->CurrentAction==PLAYER_FENRIR_ATTACK_BOW || o->CurrentAction==PLAYER_FENRIR_ATTACK_CROSSBOW	//^ 펜릴 스킬 관련(요정 화살 나가게 하는 것)
+				|| o->CurrentAction==PLAYER_FENRIR_ATTACK_BOW || o->CurrentAction==PLAYER_FENRIR_ATTACK_CROSSBOW	//^ Related to Fenrir skill (makes the fairy arrow fire)
 				))
             {
 				if(AT_SKILL_MULTI_SHOT != ( c->Skill))
@@ -7513,7 +7530,7 @@ void RenderLinkObject(float x,float y,float z,CHARACTER *c,PART_t *f,int Type,in
 			CreateSprite(BITMAP_FLARE_BLUE, p, 0.4f, o->Light, o);
 			CreateSprite(BITMAP_SHINY+6, p, fRendomScale, Light, o);
 			
-			// 잔상 Zx01
+			// Afterimage Zx01
 			vec3_t vColor;
 			VectorCopy(p, o->EyeLeft);
 			Vector(0.f, 0.f, 0.9f, vColor);
@@ -7530,7 +7547,7 @@ void RenderLinkObject(float x,float y,float z,CHARACTER *c,PART_t *f,int Type,in
 			CreateSprite(BITMAP_FLARE_BLUE, p, 0.4f, o->Light, o);
 			CreateSprite(BITMAP_SHINY+6, p, 0.4f, Light, o);
 			
-			// 칼주변
+			// Around the sword
 			Vector(0.0f, 0.3f, 0.7f, Light);
 			b->TransformPosition(BoneTransform[2], Position, p, true);		// rx01
 			CreateSprite(BITMAP_LIGHTMARKS, p, 1.0f, Light, o);
@@ -7659,8 +7676,8 @@ void RenderLinkObject(float x,float y,float z,CHARACTER *c,PART_t *f,int Type,in
 			}
 			// Object->m_iAnimation Random Texture
 			int iRandomTexure1, iRandomTexure2;
-			iRandomTexure1 = (Object->m_iAnimation/10)%3;	// 3개
-			iRandomTexure2 = (Object->m_iAnimation)%3;		// 3개
+			iRandomTexure1 = (Object->m_iAnimation/10)%3;	// 3
+			iRandomTexure2 = (Object->m_iAnimation)%3;		// 3
 
 			// Zx01
 			fRandomScale = (float)(rand()%10)/10.0f + 1.0f;		//(1.0~2.0)
@@ -7764,7 +7781,7 @@ void RenderLinkObject(float x,float y,float z,CHARACTER *c,PART_t *f,int Type,in
 			CreateSprite(BITMAP_SHINY+1, p, fRendomScale-0.3f, Light, o, 90.0f);
 			CreateParticle(BITMAP_SPARK+1, p, o->Angle, Light, 11, 2.0f);
 			
-			// 잔상
+			// Afterimage
 			vec3_t vColor;
 			VectorCopy(p, o->EyeLeft);
 			Vector(0.f, 0.f, 0.9f, vColor);
@@ -7937,7 +7954,7 @@ void RenderLinkObject(float x,float y,float z,CHARACTER *c,PART_t *f,int Type,in
 			Vector(0.8f, 0.8f, 0.2f, vLight);
 			CreateSprite(BITMAP_SHINY+1, vPos, 1.0f, vLight, Object);
 
-			//작은 구슬
+			//Small orb
 			for(int i=1; i<8; i++)
 			{
 				b->TransformByObjectBone(vPos, Object, i);
@@ -9624,7 +9641,7 @@ void RenderCharacter(CHARACTER *c,OBJECT *o,int Select)
 		VectorAdd(Light,o->Light,c->Light);
 
 		int nCastle = BLOODCASTLE_NUM + (gMapManager.WorldActive - WD_11BLOODCASTLE_END );
-        if(nCastle > 0 && nCastle <= BLOODCASTLE_NUM )		//. 블러드 캐슬일경우
+        if(nCastle > 0 && nCastle <= BLOODCASTLE_NUM )		//. When it's Blood Castle
 		{
 			if( (c->MonsterIndex >= 86 && c->MonsterIndex <= 89) ||
 				(c->MonsterIndex >= 92 && c->MonsterIndex <= 95) ||
@@ -12149,8 +12166,8 @@ void ChangeCharacterExt(int Key,BYTE *Equipment, CHARACTER * pCharacter, OBJECT 
 
 	Type = (Equipment[4]>>2)&3;
 #ifdef PBG_ADD_NEWCHAR_MONK_ITEM
-	//신규캐릭터 추가로 인한 날개 인덱스 확장 구조변경
-	if(Type == 1)			//1차 날개
+	//Structure change expanding the wing index due to new character addition
+	if(Type == 1)			//Tier-1 wing
 	{
 		Type = Equipment[8]&0x07;
 		switch(Type)
@@ -12163,7 +12180,7 @@ void ChangeCharacterExt(int Key,BYTE *Equipment, CHARACTER * pCharacter, OBJECT 
 			break;
 		}
 	}
-	else if(Type == 2)		//2차 날개
+	else if(Type == 2)		//Tier-2 wing
 	{
 		Type = Equipment[8]&0x07;
 		switch(Type)
@@ -12176,12 +12193,12 @@ void ChangeCharacterExt(int Key,BYTE *Equipment, CHARACTER * pCharacter, OBJECT 
 			break;
 		}
 	}
-	else if(Type == 3)		//3차 날개
+	else if(Type == 3)		//Tier-3 wing
 	{
 		Type = Equipment[8]&0x07;
 		switch(Type)
 		{
-		case 0:				//작은날개
+		case 0:				//Small wing
 			{
 				Type = (Equipment[16]>>5);
 				c->Wing.Type = MODEL_WING + 129+Type;
@@ -13268,7 +13285,7 @@ CHARACTER *CreateMonster(int Type,int PositionX,int PositionY,int Key)
 		c->Level = 1;
 		break;
 	case 38:
-	case 67:	//발록2
+	case 67:	//Balrog 2
     	OpenMonsterModel(27);
 		c = CreateCharacter(Key,MODEL_MONSTER01+27,PositionX,PositionY);
 		strcpy(c->ID,"발록");
@@ -13799,7 +13816,7 @@ CHARACTER *CreateMonster(int Type,int PositionX,int PositionY,int Key)
 		c = CreateCharacter(Key,MODEL_REFINERY_NPC,PositionX,PositionY);
 		o = &c->Object;
 		break;
-	case 370://환원
+	case 370://Recovery
 		OpenNpc(MODEL_RECOVERY_NPC);
 		c = CreateCharacter(Key,MODEL_RECOVERY_NPC,PositionX,PositionY);
 		o = &c->Object;
@@ -14223,13 +14240,13 @@ CHARACTER *CreateMonster(int Type,int PositionX,int PositionY,int Key)
 		}
 		break;
 	case 478:
-		//델가도
+		//Delgado
 		OpenNpc(MODEL_NPC_SERBIS);
 		c = CreateCharacter(Key, MODEL_NPC_SERBIS, PositionX, PositionY);
 		strcpy(c->ID, "Unknown");
 		break;
 	case 479:
-		// 결투장 문지기 NPC 타이투스
+		// Duel arena gatekeeper NPC Titus
 		OpenNpc(MODEL_DUEL_NPC_TITUS);
 		c = CreateCharacter(Key, MODEL_DUEL_NPC_TITUS, PositionX, PositionY);
 		strcpy(c->ID, "Unknown");
@@ -14829,7 +14846,7 @@ bool RenderCharacterBackItem(CHARACTER *c, OBJECT* o, bool bTranslate)
 				}
 			}
 
-            // 사탄
+            // Satan
 			int iType = c->Helper.Type;
 			int iLevel = c->Helper.Level;
 			int iOption1 = 0;
@@ -14861,7 +14878,7 @@ bool RenderCharacterBackItem(CHARACTER *c, OBJECT* o, bool bTranslate)
 #endif //PBG_ADD_NEWCHAR_MONK
 				Models[o->Type].TransformPosition(o->BoneTransform[w->LinkBone], vRelativePos, vPos, true);
 
-				// 스프라이트
+				// Sprite
 				float fLuminosity = (float)(rand()%30+70)*0.01f;
 				Vector(fLuminosity*0.5f, fLuminosity*0.f, fLuminosity*0.f, vLight);
 				CreateSprite(BITMAP_LIGHT, vPos, 1.5f, vLight ,o);
