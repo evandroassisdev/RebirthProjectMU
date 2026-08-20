@@ -203,11 +203,15 @@ void CMonsterManager::SetInfo(MONSTER_INFO info) // OK
 
 	info.DamageMax = ((__int64)info.DamageMax*gServerInfo.m_MonsterDamageRate)/100;
 
+	info.AttackRate = ((__int64)info.AttackRate*gServerInfo.m_MonsterAttackRate)/100;
+
 	#if(GAMESERVER_UPDATE>=701)
 
 	info.ElementalDamageMin = ((__int64)info.ElementalDamageMin*gServerInfo.m_MonsterDamageRate)/100;
 
 	info.ElementalDamageMax = ((__int64)info.ElementalDamageMax*gServerInfo.m_MonsterDamageRate)/100;
+
+	info.ElementalAttackRate = ((__int64)info.ElementalAttackRate*gServerInfo.m_MonsterAttackRate)/100;
 
 	#endif
 
