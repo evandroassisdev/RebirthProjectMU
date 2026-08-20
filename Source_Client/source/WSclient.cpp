@@ -5587,12 +5587,16 @@ void ReceiveDie(BYTE *ReceiveBuffer,int Size)
 			{
 				int TKey   = ((int)(Data->TKeyH)<<8) + Data->TKeyL;
 				int TIndex = FindCharacterIndex ( TKey );
-				CHARACTER* tc = &CharactersClient[TIndex];
-				OBJECT*    to = &tc->Object;
-				
-				o->Angle[2] = CreateAngle ( o->Position[0], o->Position[1], to->Position[0], to->Position[1] );
-				
-				VectorCopy ( o->Angle, o->HeadAngle );
+
+				if ( TIndex != MAX_CHARACTERS_CLIENT )
+				{
+					CHARACTER* tc = &CharactersClient[TIndex];
+					OBJECT*    to = &tc->Object;
+
+					o->Angle[2] = CreateAngle ( o->Position[0], o->Position[1], to->Position[0], to->Position[1] );
+
+					VectorCopy ( o->Angle, o->HeadAngle );
+				}
 			}
     }
 	
