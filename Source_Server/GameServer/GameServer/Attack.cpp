@@ -2431,7 +2431,28 @@ int CAttack::GetAttackDamage(LPOBJ lpObj,LPOBJ lpTarget,CSkill* lpSkill,WORD* ef
 		damage += lpObj->MonsterSkillElementOption.m_SkillElementAttack;
 	}
 
-	damage -= TargetDefense;
+	// Global MonsterDamageRate/MonsterAttackRate alone can't make monsters
+	// threaten a very-high-Defense character without also making trash
+	// mobs one-shot fresh level-1 characters (Defense is subtracted flat
+	// below, and a level-1's Defense is already near 0, so scaling every
+	// monster's damage up hits everyone in roughly the same proportion).
+	// This caps how much of a monster's raw roll Defense is ever allowed
+	// to block, so a full-stat/full-set character still takes a minimum
+	// trickle of damage no matter how high Defense goes, while a low-
+	// Defense character (who was never close to the cap anyway) is
+	// unaffected either way.
+	if((lpObj->Type == OBJECT_MONSTER || lpObj->Type == OBJECT_NPC) && lpTarget->Type == OBJECT_USER && gServerInfo.m_MonsterDefenseCapPercent > 0)
+	{
+		int MinDamage = (damage*(100-gServerInfo.m_MonsterDefenseCapPercent))/100;
+
+		damage -= TargetDefense;
+
+		damage = ((damage<MinDamage)?MinDamage:damage);
+	}
+	else
+	{
+		damage -= TargetDefense;
+	}
 
 	damage = ((damage<0)?0:damage);
 
